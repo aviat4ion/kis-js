@@ -11,7 +11,7 @@
 	
 	var $_, $, kis;
 	
-	var $_ = {};
+	$_ = {};
 	
 	window.$_ = window.$_ || $_;
 	
@@ -23,6 +23,11 @@
 	
 	window.$ = window.$ || $;
 	
+	/**
+	 * Ajax 
+	 *
+	 * Object for making ajax requests
+	 */
 	(function() {
 		var $_ = $_ || {};
 		var ajax = {
@@ -48,7 +53,7 @@
 					{
 						callback(request.responseText);
 					}
-				}
+				};
 				
 				if(type === "POST")
 				{
@@ -175,4 +180,4 @@
 		}
 	};
 	
-}}());
+})();
