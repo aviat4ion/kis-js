@@ -57,7 +57,7 @@
 				
 				if(type === "POST")
 				{
-					request.setRequestHeader("Content-Type: application/x-www-form-urlencoded");
+					request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 					request.send(this._serialize(data));
 				}
 				else
