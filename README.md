@@ -8,11 +8,9 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 
 ## Basic Use: ##
 
-* Selector:
-    var x = $(selector);
+* Selector:	`var x = $(selector);`
 
-* Function:
-    $_.module.function(params);
+* Function:	`$_.module.function(params);`
 
 ## Modules: ##
 
@@ -43,6 +41,22 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 		* Get: Retrieves the value of the key in the url string
 			Use:
 			    $_.qs.get(key);
+			    
+**Store**: localstorage wrapper with automatic data serialization
+
+	functions
+	
+		* Get:
+			Use:
+				$_.store.get(key);
+		
+		* Set
+			Use:
+				$_.store.set(key, value);
+				
+		* getALL: Retreives all localstorage data in raw form
+			Use:
+				$_.store.getAll();
 			
 			
 				
