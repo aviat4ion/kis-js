@@ -44,7 +44,7 @@
 				var type = (isPost) ? "POST" : "GET";
 				
 				url += (type === "GET") 
-					? "?" + this._serialize(data)
+					? "?" + this._serialize(data, true)
 					: '';  
 					
 				request.open(type, url);
@@ -66,7 +66,7 @@
 					request.send(null);
 				}
 			},
-			_serialize: function(data)
+			_serialize: function(data, encode)
 			{
 				var pairs = [];
 				
@@ -77,8 +77,11 @@
 					
 					var value = data[name].toString();
 					
-					name = encodeURIComponent(name.replace(" ", "+"));
-					value = encodeURIComponent(value.replace(" ","+"));
+					if(encode === true)
+					{
+						name = encodeURIComponent(name.replace(" ", "+"));
+						value = encodeURIComponent(value.replace(" ","+"));
+					}
 					
 					pairs.push(name + "=" + value);
 				}
