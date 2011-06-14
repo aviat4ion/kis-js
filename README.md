@@ -8,9 +8,11 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 
 ## Basic Use: ##
 
-* Selector:	`var x = $(selector);`
+* Selector:
+    var x = $(selector);
 
-* Function:	`$_.module.function(params);`
+* Function:
+    $_.module.function(params);
 
 ## Modules: ##
 
@@ -19,23 +21,28 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 	functions:
 		
 		* Get: 
-			Use: `$_.get(url, data_object, callback);`
+			Use:
+			    $_.get(url, data_object, callback);
 		
 		* Post:
-			Use: `$_.post(url, data_object, callback);`
+			Use:
+			    $_.post(url, data_object, callback);
 			
 **QS**: querystring parsing and serialization for hashbang strings, and pushState urls
 	
 	functions:
 		
 		* Parse:
-			Use: `$_.qs.parse(hb);`
+			Use:
+			    $_.qs.parse(hb);
 		
 		* Set: This function will set the hash url if browser doesn't have history.pushState
-			Use: `$_.qs.set(key, value);`
+			Use:
+			    $_.qs.set(key, value);
 		
 		* Get: Retrieves the value of the key in the url string
-			Use: `$_.qs.get(key);`
+			Use:
+			    $_.qs.get(key);
 			
 			
 				
