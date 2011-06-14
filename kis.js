@@ -14,8 +14,12 @@
 	$_ = {};
 	
 	window.$_ = window.$_ || $_;
-	window.$_.hb = (history.pushState) ? false : true;
 	
+	/**
+	 * $
+	 *
+	 * Simple DOM selector function
+	 */
 	$ = function(a)
 	{
 		var x = document.querySelectorAll(a);
@@ -107,6 +111,9 @@
 	 * Object for encoding and decoding querystrings and hashbang strings
 	 */
 	(function(){
+	
+		window.$_.hb = (history.pushState) ? false : true;
+	
 		var qs  = {
 			parse: function(hb)
 			{
@@ -206,7 +213,7 @@
 				{
 					value = JSON.stringify(value);
 				}
-				ls.setItem(key, value);
+				localStorage.setItem(key, value);
 			},
 			getAll: function()
 			{
@@ -228,4 +235,78 @@
 		window.$_.store = store;
 	}());
 	
+	/**
+	 * Event object
+	 *
+	 * Event api wrapper
+	 */
+	 (function(){
+	 	var attach, remove;
+	 	var eType = (document.addEventListener) ? "good" : "bad";
+	 	
+	 	if(eType === "good")
+	 	{
+	 		attach = function(sel, event, callback)
+	 		{
+	 			sel.addEventListener(event, callback, false)
+	 		};
+	 		
+	 		remove = function(sel, event, callback)
+	 		{
+	 			sel.removeEventListener(event, callback, true);
+	 		};	
+	 	}
+	 	else
+	 	{
+	 		attach = function(sel, event, callback)
+	 		{
+	 			sel.attachEvent(event, callback);
+	 		};
+	 		
+	 		remove = function(sel, event, callback)
+	 		{
+	 			sel.detachEvent(event, callback);
+	 		};
+	 	}
+	 	
+	 	var e = {
+	 		add: function(sel, event, callback)
+	 		{
+	 			var i,len;
+	 		
+	 			if(sel.length)
+	 			{
+	 				len = sel.length;
+	 				for(i=0;i<len;i++)
+	 				{
+	 					attach(sel[i], event, callback);
+	 				}
+	 			}
+	 			else
+	 			{
+	 				attach(sel, event, callback);
+	 			}
+	 		},
+	 		remove: function(sel, event, callback)
+	 		{
+	 			var i, len;
+	 			
+	 			if(sel.length)
+	 			{
+	 				len = sel.length;
+	 				for(i=0;i<len;i++)
+	 				{
+	 					remove(sel[i], event, callback);
+	 				}
+	 			}
+	 			else
+	 			{
+	 				remove(sel, event, callback);
+	 			}
+	 		}
+	 	};
+	 	
+	 	window.$_.event = e;
+	 	
+	 }());
 })();
