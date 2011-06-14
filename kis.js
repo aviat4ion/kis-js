@@ -14,6 +14,7 @@
 	$_ = {};
 	
 	window.$_ = window.$_ || $_;
+	window.$_.hb = (history.pushState) ? false : true;
 	
 	$ = function(a)
 	{
@@ -102,82 +103,126 @@
 	 * 
 	 * Object for encoding and decoding querystrings and hashbang strings
 	 */
-	$_.qs  = {
-		_parse: function(hb)
-		{
-			hb = hb || $_.hb;
-			var h, i, hString, pairs, pLen, data, y;
-			
-			data = {};
-
-			if(hb === true)
+	(function(){
+		var qs  = {
+			parse: function(hb)
 			{
-				h = location.hash.split('#!/');
-				hString = (h.length > 1) ? h[1] : '';
-			}
-			else if(hb === false || hb === undefined)
-			{
-				hString = window.location.search.substring(1);
-			}
-			else
-			{
-				return false;
-			}
-			
-			pairs = hString.split('&');
-			
-			pLen = pairs.length;
-			
-			for(i=0;i<pLen;i++)
-			{
-				y = pairs[i].split('=');
+				hb = hb || $_.hb;
+				var h, i, hString, pairs, pLen, data, y;
 				
-				if(y.length < 2)
+				data = {};
+	
+				if(hb === true)
 				{
-					return data;
+					h = location.hash.split('#!/');
+					hString = (h.length > 1) ? h[1] : '';
+				}
+				else if(hb === false || hb === undefined)
+				{
+					hString = window.location.search.substring(1);
+				}
+				else
+				{
+					return false;
 				}
 				
-				data[y[0]] = y[1];
-			}
-			
-			return data;
-		},
-		set: function(key, value, hb)
-		{
-			hb = hb || $_.hb;
-			var pairs = this._parse(hb);
-			
-			if(key !== undefined && value !== undefined)
+				pairs = hString.split('&');
+				
+				pLen = pairs.length;
+				
+				for(i=0;i<pLen;i++)
+				{
+					y = pairs[i].split('=');
+					
+					if(y.length < 2)
+					{
+						return data;
+					}
+					
+					data[y[0]] = y[1];
+				}
+				
+				return data;
+			},
+			set: function(key, value, hb)
 			{
-				pairs[key] = value;
+				hb = hb || $_.hb;
+				var pairs = this.parse(hb);
+				
+				if(key !== undefined && value !== undefined)
+				{
+					pairs[key] = value;
+				}
+			
+				var vars = [];
+				
+				for (var x in pairs)
+				{
+					if(pairs.hasOwnProperty(x))
+					{
+						vars.push(x+'='+pairs[x]);
+					}
+				}
+	
+				var qs = vars.join('&');
+				
+				if(hb === true)
+				{
+					qs = '!/'+ qs;
+					location.hash = qs;
+				}
+				
+				return qs;
+			},
+			get: function(key, hb)
+			{
+				hb = hb || $_.hb;
+				var pairs = this.parse(hb);
+				return (pairs[key]) ? pairs[key] : '';
 			}
+		};
 		
-			var vars = [];
-			
-			for (var x in pairs)
+		window.$_.qs = qs;
+		
+	}());
+	
+	/**
+	 * Store object
+	 * 
+	 * Wrapper for localstorage data serialization
+	 */
+	(function(){
+		var store = {
+			get: function(key)
 			{
-				if(pairs.hasOwnProperty(x))
+				return JSON.parse(localStorage.getItem(key));
+			},
+			set: function(key, value)
+			{
+				if(typeof value === "object")
 				{
-					vars.push(x+'='+pairs[x]);
+					value = JSON.stringify(value);
 				}
-			}
-
-			var qs = vars.join('&');
-			
-			if(hb === true)
+				ls.setItem(key, value);
+			},
+			getAll: function()
 			{
-				qs = '!/'+ qs;
-				location.hash = qs;
+				var i, len, data;
+				len = localStorage.length;
+				data = {};
+				
+				for(i=0;i<len;i++)
+				{
+					var name = localStorage.key(i);
+					var value = localStorage.getTime(name);
+					data[name] = value;
+				}
+				
+				return data;
 			}
-			
-			return qs;
-		},
-		get: function(key, hb)
-		{
-			hb = hb || $_.hb;
-			var pairs = this._parse(hb);
-			return (pairs[key]) ? pairs[key] : '';
-		}
-	};
+		};
+		
+		window.$_.store = store;
+	}());
 	
 })();
