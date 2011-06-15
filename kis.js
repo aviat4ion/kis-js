@@ -76,8 +76,8 @@
 				
 				for (var name in data)
 				{
-					if(!data.hasOwnProperty(name)) continue;
-					if(typeof data[name] === "function") continue;
+					if(!data.hasOwnProperty(name)){ continue };
+					if(typeof data[name] === "function"){ continue };
 					
 					var value = data[name].toString();
 					
@@ -242,13 +242,12 @@
 	 */
 	 (function(){
 	 	var attach, remove;
-	 	var eType = (document.addEventListener) ? "good" : "bad";
 	 	
-	 	if(eType === "good")
+	 	if(document.addEventListener)
 	 	{
 	 		attach = function(sel, event, callback)
 	 		{
-	 			sel.addEventListener(event, callback, false)
+	 			sel.addEventListener(event, callback, false);
 	 		};
 	 		
 	 		remove = function(sel, event, callback)

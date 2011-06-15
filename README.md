@@ -44,7 +44,7 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 			    
 **Store**: localstorage wrapper with automatic data serialization
 
-	functions
+	functions:
 	
 		* Get:
 			Use:
@@ -57,6 +57,19 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 		* getALL: Retreives all localstorage data in raw form
 			Use:
 				$_.store.getAll();
+				
+				
+**Event**: wrapper for applying events to DOM objects
+
+	function: 
+	
+		*Add: 
+			Use:
+			    $_.event.add(selector, event, callback);
+			    
+		*Remove
+			Use:
+			    $_.event.remove(selector, event, callback);
 			
 			
 				
