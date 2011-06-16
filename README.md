@@ -18,13 +18,13 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 
 	functions:
 		
-		* Get: 
-			Use:
-			    $_.get(url, data_object, callback);
-		
-		* Post:
-			Use:
-			    $_.post(url, data_object, callback);
+	* Get: 
+		Use:
+		    $_.get(url, data_object, callback);
+	
+	* Post:
+		Use:
+		    $_.post(url, data_object, callback);
 			
 **QS**: querystring parsing and serialization for hashbang strings, and pushState urls
 	

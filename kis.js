@@ -26,7 +26,7 @@
 		return (x.length === 1) ? x[0] : x;
 	};
 	
-	window.$ = window.$ || $;
+	window.$ = $;
 	
 	/**
 	 * Ajax 
@@ -272,6 +272,8 @@
 	 		add: function(sel, event, callback)
 	 		{
 	 			var i,len;
+	 			
+	 			if(!sel){return false;}
 	 		
 	 			if(sel.length)
 	 			{
@@ -289,6 +291,8 @@
 	 		remove: function(sel, event, callback)
 	 		{
 	 			var i, len;
+	 			
+	 			if(!sel){return false;}
 	 			
 	 			if(sel.length)
 	 			{
