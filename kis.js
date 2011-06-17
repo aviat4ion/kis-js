@@ -346,26 +346,4 @@
 	 	
 	 }());
 	 
-	 /** 
-	  * Class object
-	  *
-	  * Helper functions to add and remove classes
-	  */
-	 /*(function(){
-	 	var parse, class;
-	 	
-	 	parse = function(classes){
-	 	};
-	 	
-	 	class = {
-	 		add: function(sel, class)
-	 		{
-	 		},
-	 		remove: function(sel, class)
-	 		{
-	 		}
-	 	}
-	 }());*/
-	  
-	 
 })();
