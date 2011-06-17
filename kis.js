@@ -9,7 +9,7 @@
 
 	"use strict";
 	
-	var $_, $, kis;
+	var $_, $;
 	
 	$_ = {};
 	
@@ -76,8 +76,8 @@
 				
 				for (var name in data)
 				{
-					if(!data.hasOwnProperty(name)){ continue };
-					if(typeof data[name] === "function"){ continue };
+					if(!data.hasOwnProperty(name)){ continue; };
+					if(typeof data[name] === "function"){ continue; };
 					
 					var value = data[name].toString();
 					
@@ -241,7 +241,7 @@
 	 * Event api wrapper
 	 */
 	 (function(){
-	 	var attach, remove;
+	 	var attach, remove, add_remove, e;
 	 	
 	 	if(document.addEventListener)
 	 	{
@@ -268,44 +268,65 @@
 	 		};
 	 	}
 	 	
-	 	var e = {
+	 	add_remove = function (sel, event, callback, add)
+	 	{
+	 		var i,len;
+	 			
+ 			if(!sel)
+ 			{
+ 				return false;
+ 			}
+ 			
+ 			//Get the DOM object if you give me a selector string
+ 			if(typeof sel === "string")
+ 			{
+ 				sel = $(sel);
+ 			}
+ 			
+ 			//Multiple events? Run recursively!
+ 			event = event.split(" ");
+ 			
+ 			if(event.length > 1)
+ 			{
+ 				console.log(event);
+ 				
+ 				len = event.length;
+ 				
+ 				for(i=0;i<len;i++)
+ 				{
+ 					add_remove(sel, event[i], callback, add);
+ 				}
+ 				
+ 				return;
+ 			}
+ 		
+ 			//Check for multiple DOM objects
+ 			if(sel.length > 1)
+ 			{
+ 				len = sel.length;
+ 				for(i=0;i<len;i++)
+ 				{
+ 					(add === true)
+ 						? attach(sel[i], event, callback)
+ 						: remove(sel[i], event, callback);
+ 				}
+ 			}
+ 			else
+ 			{
+ 				(add === true)
+ 					? attach(sel, event, callback)
+ 					: remove(sel, event, callback);
+	 		}
+	 	};
+	 	
+	 	e = {
 	 		add: function(sel, event, callback)
 	 		{
-	 			var i,len;
-	 			
-	 			if(!sel){return false;}
-	 		
-	 			if(sel.length)
-	 			{
-	 				len = sel.length;
-	 				for(i=0;i<len;i++)
-	 				{
-	 					attach(sel[i], event, callback);
-	 				}
-	 			}
-	 			else
-	 			{
-	 				attach(sel, event, callback);
-	 			}
+	 			add_remove(sel, event, callback, true);
 	 		},
 	 		remove: function(sel, event, callback)
 	 		{
-	 			var i, len;
-	 			
-	 			if(!sel){return false;}
-	 			
-	 			if(sel.length)
-	 			{
-	 				len = sel.length;
-	 				for(i=0;i<len;i++)
-	 				{
-	 					remove(sel[i], event, callback);
-	 				}
-	 			}
-	 			else
-	 			{
-	 				remove(sel, event, callback);
-	 			}
+	 			add_remove(sel, event, callback, false);
 	 		}
 	 	};
 	 	
