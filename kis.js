@@ -300,7 +300,6 @@
  			
  			if(event.length > 1)
  			{
- 				console.log(event);
  				
  				len = event.length;
  				
