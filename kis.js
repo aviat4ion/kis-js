@@ -247,24 +247,36 @@
 	 	{
 	 		attach = function(sel, event, callback)
 	 		{
-	 			sel.addEventListener(event, callback, false);
+	 			if(sel.addEventListener)
+	 			{
+	 				sel.addEventListener(event, callback, false);
+	 			}
 	 		};
 	 		
 	 		remove = function(sel, event, callback)
 	 		{
-	 			sel.removeEventListener(event, callback, true);
+	 			if(sel.removeEventListener)
+	 			{
+	 				sel.removeEventListener(event, callback, false);
+	 			}
 	 		};	
 	 	}
 	 	else
 	 	{
 	 		attach = function(sel, event, callback)
 	 		{
-	 			sel.attachEvent(event, callback);
+	 			if(sel.attachEvent)
+	 			{
+	 				sel.attachEvent("on"+event, callback);
+	 			}
 	 		};
 	 		
 	 		remove = function(sel, event, callback)
 	 		{
-	 			sel.detachEvent(event, callback);
+	 			if(sel.detachEvent)
+	 			{
+	 				sel.detachEvent("on"+event, callback);
+	 			}
 	 		};
 	 	}
 	 	
@@ -333,4 +345,27 @@
 	 	window.$_.event = e;
 	 	
 	 }());
+	 
+	 /** 
+	  * Class object
+	  *
+	  * Helper functions to add and remove classes
+	  */
+	 /*(function(){
+	 	var parse, class;
+	 	
+	 	parse = function(classes){
+	 	};
+	 	
+	 	class = {
+	 		add: function(sel, class)
+	 		{
+	 		},
+	 		remove: function(sel, class)
+	 		{
+	 		}
+	 	}
+	 }());*/
+	  
+	 
 })();
