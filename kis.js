@@ -224,7 +224,7 @@
 				for(i=0;i<len;i++)
 				{
 					var name = localStorage.key(i);
-					var value = localStorage.getTime(name);
+					var value = localStorage.getItem(name);
 					data[name] = value;
 				}
 				
