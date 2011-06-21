@@ -412,6 +412,12 @@
 	 		{
 	 			sel = _sel(sel);
 	 			
+	 			if(sel.length < 2)
+	 			{
+	 				callback(sel);
+	 				return;
+	 			}
+	 			
 	 			for(var x in sel)
 	 			{
 	 				callback(sel[x]);
@@ -436,10 +442,17 @@
 	 		hide: function(sel)
 	 		{
 	 			sel = _sel(sel);
-	 		
-	 			this.each(sel, function(e){
-	 				e.style.display = "none";
-	 			});
+	 			
+	 			if(sel.length > 1)
+	 			{
+		 			this.each(sel, function(e){
+		 				e.style.display = "none";
+		 			});
+		 		}
+		 		else
+		 		{
+		 			sel.style.display = "none";
+		 		}
 	 			
 	 		},
 	 		show: function(sel, type)
@@ -451,9 +464,16 @@
 	 				type="block";
 	 			}
 	 			
-	 			this.each(sel, function(e){
-	 				e.style.display = type;
-	 			});
+	 			if(sel.length > 1)
+	 			{
+		 			this.each(sel, function(e){
+		 				e.style.display = type;
+		 			});
+		 		}
+		 		else
+		 		{
+		 			sel.style.display = type;
+		 		}
 	 		}
 	 	};
 	 	
