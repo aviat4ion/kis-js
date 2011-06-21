@@ -83,7 +83,17 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 			Use:
 			    $_.dom.removeClass(selector, className);
 			
-			
+		*each: For applying changes to every item matched by a selector
+			Use:
+			 	$.dom.each(selector, callback);
+			 	
+		*show: For setting dom elements as visible. Type defaults as "block", can be set with optional second parameter.
+			Use:
+				$.dom.show(selector, [type]);
+				
+		*hide: Hides the elements matching the selector
+			Use:
+				$.dom.hide(selector);
 				
 	
 	

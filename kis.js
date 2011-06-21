@@ -1,15 +1,15 @@
 /**
 	Kis JS		Keep It Simple JS Library
-  	Copyright	Timothy J. Warren
-  	License		Public Domain
-  	Version		0.0.1
+ 	Copyright	Timothy J. Warren
+ 	License		Public Domain
+ 	Version		0.1.0
 */
 
 (function(){
 
 	"use strict";
 	
-	var $_, $;
+	var $_, $, _sel;
 	
 	$_ = {};
 	
@@ -25,6 +25,16 @@
 		var x = document.querySelectorAll(a);
 		return (x.length === 1) ? x[0] : x;
 	};
+	
+	/**
+	 * _sel
+	 *
+	 * Return the selector for the string
+	 */
+	 _sel = function(s)
+	 {
+	 	return (typeof s === "string") ? $(s) : s;
+	 };
 	
 	window.$ = $;
 	
@@ -49,7 +59,7 @@
 				
 				url += (type === "GET") 
 					? "?" + this._serialize(data, true)
-					: '';  
+					: ''; 
 					
 				request.open(type, url);
 				
@@ -114,7 +124,7 @@
 	
 		window.$_.hb = (history.pushState) ? false : true;
 	
-		var qs  = {
+		var qs = {
 			parse: function(hb)
 			{
 				hb = hb || $_.hb;
@@ -290,10 +300,7 @@
  			}
  			
  			//Get the DOM object if you give me a selector string
- 			if(typeof sel === "string")
- 			{
- 				sel = $(sel);
- 			}
+ 			sel = _sel(sel);
  			
  			//Multiple events? Run recursively!
  			event = event.split(" ");
@@ -345,71 +352,108 @@
 	 	
 	 }());
 	 
-	 /**
-	  * Dom manipulation object
-	  *
-	  */
+	/**
+	 * Dom manipulation object
+	 *
+	 */
 	 (function(){
-	 	var d, c, cs, len;
+	 	var d, len;
 	 	
-	 	function _get(sel, c)
+	 	function _class(sel, c, add)
 	 	{
-	 		c = sel.className;
+	 		var ec, cs, len, i, classInd;
+	 	
+	 		sel = _sel(sel);
+	 	
+	 		ec = sel.className;
 	 		
-	 		if(typeof c === "string")
+	 		if(typeof ec === "string")
 	 		{
-		 		var cs = c.split(" ");
-		 		var len = cs.length;
+	 			cs = [];
+		 		cs = ec.split(" ");
+		 	
+		 		len = cs.length;
+		 		classInd = false;
 		 		
 		 		for(var i=0;i<len;i++)
 		 		{
 		 			if(cs[i] === c)
 		 			{
-		 				return [cs, i];
+		 				classInd = i;
+		 				break;
 		 			}
 		 		}
  			}
-	 		
-	 		return [[], false];
+ 			
+ 			if(add === true)
+ 			{
+ 				if(classInd === false)
+				{
+					cs.push(c);
+					sel.className = (cs.length > 1) ? cs.join(" ") : cs[0];
+				}
+ 			}
+			
+			if(add === false)
+			{
+				if(classInd !== false)
+ 				{	
+					cs.splice(classInd, 1);
+	 				sel.className = (cs.length > 1) ? cs.join(" ") : cs[0];
+				}
+ 			}
+ 			
+ 			return sel.className;
 	 		
 	 	}
 	 	
 	 	d = {
+	 		each: function(sel, callback)
+	 		{
+	 			sel = _sel(sel);
+	 			
+	 			for(var x in sel)
+	 			{
+	 				callback(sel[x]);
+	 			}
+	 		},
 	 		addClass: function(sel, c)
 	 		{
-	 			if(typeof sel === "string")
-		 		{
-		 			sel = $(sel);
-		 		}
+	 			sel = _sel(sel);
 	 		
-	 			var x, classInd, cs;
-	 			x = _get(sel, c);
-	 			classInd = (x[1] != false || x[1] === 0) ? x[1] : false;
-	 			cs = (x[0]) ? x[0] : [];
-	 			
-	 			if(classInd !== false)
-	 			{
-	 				cs.push(c);
-	 				sel.className = cs.join(" ");
-	 			}
+	 			this.each(sel, function(e){
+	 				_class(e, c, true);
+	 			});
 	 		},
 	 		removeClass: function(sel, c)
 	 		{
-	 			if(typeof sel === "string")
-		 		{
-		 			sel = $(sel);
-		 		}
+	 			sel = _sel(sel);
 	 		
-	 			var x, classInd, cs;
-	 			x = _get(sel, c);
-	 			classInd = (x[1]) ? x[1] : false;
-	 			cs = (x[0]) ? x[0] : [];
+	 			this.each(sel, function(e){
+	 				_class(e, c, false);
+	 			});
+	 		},
+	 		hide: function(sel)
+	 		{
+	 			sel = _sel(sel);
+	 		
+	 			this.each(sel, function(e){
+	 				e.style.display = "none";
+	 			});
 	 			
-	 			if(classInd !== false)
+	 		},
+	 		show: function(sel, type)
+	 		{
+	 			sel = _sel(sel);
+	 		
+	 			if(typeof type === "undefined")
 	 			{
-	 				cs.splice(classInd, 1);
-	 				sel.className = cs.join(" ");
+	 				type="block";
 	 			}
+	 			
+	 			this.each(sel, function(e){
+	 				e.style.display = type;
+	 			});
 	 		}
 	 	};
 	 	
