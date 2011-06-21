@@ -390,7 +390,6 @@
 	 			if(classInd !== false)
 	 			{
 	 				cs.push(c);
-	 				console.log(cs.join(" "));
 	 				sel.className = cs.join(" ");
 	 			}
 	 		},
@@ -403,7 +402,7 @@
 	 		
 	 			var x, classInd, cs;
 	 			x = _get(sel, c);
-	 			classInd = (x[1] != false || x[1] === 0) ? x[1] : false;
+	 			classInd = (x[1]) ? x[1] : false;
 	 			cs = (x[0]) ? x[0] : [];
 	 			
 	 			if(classInd !== false)
