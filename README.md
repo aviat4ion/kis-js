@@ -61,7 +61,7 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 				
 **Event**: wrapper for applying events to DOM objects
 
-	function: 
+	functions: 
 	
 		*Add: 
 			Use:
@@ -70,6 +70,18 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 		*Remove
 			Use:
 			    $_.event.remove(selector, event, callback);
+			    
+**DOM**: Dom manipulation module
+
+	function: 
+	
+		*addClass: 
+			Use:
+			    $_.dom.addClass(selector, className);
+			    
+		*RemoveClass:
+			Use:
+			    $_.dom.removeClass(selector, className);
 			
 			
 				

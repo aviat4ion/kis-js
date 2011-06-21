@@ -209,7 +209,7 @@
 			},
 			set: function(key, value)
 			{
-				if(typeof value === "object")
+				if(typeof value !== "string")
 				{
 					value = JSON.stringify(value);
 				}
@@ -343,6 +343,78 @@
 	 	
 	 	window.$_.event = e;
 	 	
+	 }());
+	 
+	 /**
+	  * Dom manipulation object
+	  *
+	  */
+	 (function(){
+	 	var d, c, cs, len;
+	 	
+	 	function _get(sel, c)
+	 	{
+	 		c = sel.className;
+	 		
+	 		if(typeof c === "string")
+	 		{
+		 		var cs = c.split(" ");
+		 		var len = cs.length;
+		 		
+		 		for(var i=0;i<len;i++)
+		 		{
+		 			if(cs[i] === c)
+		 			{
+		 				return [cs, i];
+		 			}
+		 		}
+ 			}
+	 		
+	 		return [[], false];
+	 		
+	 	}
+	 	
+	 	d = {
+	 		addClass: function(sel, c)
+	 		{
+	 			if(typeof sel === "string")
+		 		{
+		 			sel = $(sel);
+		 		}
+	 		
+	 			var x, classInd, cs;
+	 			x = _get(sel, c);
+	 			classInd = (x[1] != false || x[1] === 0) ? x[1] : false;
+	 			cs = (x[0]) ? x[0] : [];
+	 			
+	 			if(classInd !== false)
+	 			{
+	 				cs.push(c);
+	 				console.log(cs.join(" "));
+	 				sel.className = cs.join(" ");
+	 			}
+	 		},
+	 		removeClass: function(sel, c)
+	 		{
+	 			if(typeof sel === "string")
+		 		{
+		 			sel = $(sel);
+		 		}
+	 		
+	 			var x, classInd, cs;
+	 			x = _get(sel, c);
+	 			classInd = (x[1] != false || x[1] === 0) ? x[1] : false;
+	 			cs = (x[0]) ? x[0] : [];
+	 			
+	 			if(classInd !== false)
+	 			{
+	 				cs.splice(classInd, 1);
+	 				sel.className = cs.join(" ");
+	 			}
+	 		}
+	 	};
+	 	
+	 	window.$_.dom= d;
 	 }());
 	 
 })();
