@@ -31,12 +31,21 @@
 	 *
 	 * Return the selector for the string
 	 */
-	 _sel = function(s)
-	 {
-	 	return (typeof s === "string") ? $(s) : s;
-	 };
+	_sel = function(s)
+	{
+		return (typeof s === "string") ? $(s) : s;
+	};
 	
 	window.$ = $;
+	
+	//Console.log will contain error messages: if it doesn't exist, create a dummy method
+	if(typeof window.console === "undefined")
+	{
+		window.console = {
+			log: function(){}
+		};
+	}
+
 	
 	/**
 	 * Ajax 
@@ -356,69 +365,171 @@
 	 * Dom manipulation object
 	 *
 	 */
-	 (function(){
+	(function(){
 	 	var d, len;
 	 	
+	 	// Private function for class manipulation
 	 	function _class(sel, c, add)
 	 	{
 	 		var ec, cs, len, i, classInd;
-	 	
-	 		sel = _sel(sel);
-	 	
-	 		ec = sel.className;
 	 		
-	 		if(typeof ec === "string")
+	 		//We can do this the easy way
+	 		if(sel.classList)
 	 		{
-	 			cs = [];
-		 		cs = ec.split(" ");
-		 	
-		 		len = cs.length;
-		 		classInd = false;
+	 			if(add === true)
+	 			{
+	 				sel.classList.add(c);
+	 				return; 
+	 			}
+	 			else if(add === false)
+	 			{
+	 				sel.classList.remove(c);
+	 				return;
+	 			}
+	 		}
+	 		else //Or the hard way
+	 		{
+	 			//No class attribute? Set an empty string 
+		 		ec = _attr(sel, "class");
+		 		ec = (typeof ec === "string") ? ec : '';
 		 		
-		 		for(var i=0;i<len;i++)
+		 		
+	 			//Convert class attribute string into array
+		 		if(typeof ec === "string")
 		 		{
-		 			if(cs[i] === c)
-		 			{
-		 				classInd = i;
-		 				break;
-		 			}
-		 		}
- 			}
- 			
- 			if(add === true)
- 			{
- 				if(classInd === false)
+			 		cs = (ec !== '') ? ec.split(" ") : [];
+			 	
+			 		len = cs.length;
+			 		classInd = false;
+			 		
+			 		//Check for the class in the array
+			 		for(var i=0;i<len;i++)
+			 		{
+			 			if(cs[i] === c)
+			 			{
+			 				classInd = i;
+			 				break;
+			 			}
+			 		}
+	 			}
+	 			
+	 			//Add or remove from class array
+	 			if(add === true)
+	 			{
+					//Only add the class if isn't already there
+	 				if(classInd === false)
+					{
+						cs.push(c);
+					}
+	 			}
+				else if(add === false)
 				{
-					cs.push(c);
-					sel.className = (cs.length > 1) ? cs.join(" ") : cs[0];
+					//Make sure the class you want to remove exists
+					if(classInd !== false)
+	 				{	
+						cs.splice(classInd, 1);
+					}
+	 			}
+	 			
+	 			var cName = (cs.length > 1) ? cs.join(" ") : cs[0];
+				
+				//Check if trim method exists
+				if(cName.trim)
+				{
+					cName = cName.trim();
 				}
+				
+				if(typeof sel.className !== "undefined")
+				{
+					sel.className = cName;
+				}
+				else if(typeof sel.setAttribute !== "undefined")
+				{
+					sel.setAttribute('class', cName)
+				}
+				else
+				{
+					console.log(sel);
+				}
+	 			
+	 			return cName;
  			}
-			
-			if(add === false)
+	 		
+	 	}
+	 	
+	 	//Private function for getting/setting attributes
+	 	function _attr(sel, name, value)
+	 	{
+	 		var oldVal, doAttr;
+	 	
+	 		//Get the value of the attribute, if it exists
+			if(typeof sel.hasAttribute !== "undefined")
 			{
-				if(classInd !== false)
- 				{	
-					cs.splice(classInd, 1);
-	 				sel.className = (cs.length > 1) ? cs.join(" ") : cs[0];
+				if(sel.hasAttribute(name))
+				{
+					oldVal = sel.getAttribute(name);
 				}
+				
+				doAttr = true;	
+			}
+			else if(typeof sel[name] !== "undefined")
+			{
+				oldVal = sel[name];
+				doAttr = false;
+			}
+			else if(name === "class" && typeof sel.className !== "undefined") //className attribute
+			{
+				name = "className";
+				oldVal = sel.className;
+				doAttr = false;
+			}
+			
+			//Well, I guess that attribute doesn't exist
+			if(typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
+			{
+				console.log(sel);
+				console.log("Element does not have the selected attribute");
+				return;
+			}
+			
+			//No value to set? Return the current value
+			if(typeof value === "undefined")
+			{
+				return oldVal;
+			}
+			
+ 			//Determine what to do with the attribute
+ 			if(typeof value !== "undefined" && value !== null)
+ 			{
+ 				(doAttr === true)
+ 					? sel.setAttribute(name, value)
+ 					: sel[name] = value;
+ 			}
+ 			else if(value === null)
+ 			{
+ 				(doAttr === true)
+ 					? sel.removeAttribute(name)
+ 					: sel[name] = null;
  			}
  			
- 			return sel.className;
-	 		
+ 			return (typeof value !== "undefined") ? value : oldValue; 
 	 	}
 	 	
 	 	d = {
 	 		each: function(sel, callback)
 	 		{
-	 			sel = _sel(sel);
-	 			
-	 			if(sel.length < 2)
+	 			if(typeof sel === "string")
 	 			{
-	 				callback(sel);
-	 				return;
+	 				sel = $(sel);
 	 			}
 	 			
-	 			for(var x in sel)
+	 			var len = sel.length;
+	 			
+	 			if(len === 0){ return }
+	 			
+	 			if(len === 1){ return callback(sel); }
+	 			
+	 			for(var x=0;x<sel.length;x++)
 	 			{
 	 				callback(sel[x]);
 	 			}
@@ -426,7 +537,7 @@
 	 		addClass: function(sel, c)
 	 		{
 	 			sel = _sel(sel);
-	 		
+
 	 			this.each(sel, function(e){
 	 				_class(e, c, true);
 	 			});
@@ -451,7 +562,10 @@
 		 		}
 		 		else
 		 		{
-		 			sel.style.display = "none";
+		 			if(sel.style)
+		 			{
+		 				sel.style.display = "none";
+		 			}
 		 		}
 	 			
 	 		},
@@ -474,6 +588,30 @@
 		 		{
 		 			sel.style.display = type;
 		 		}
+	 		},
+	 		attr: function(sel, name, value)
+	 		{
+	 			var oldVal;
+	 			
+	 			sel = _sel(sel);
+	 			
+	 			//Make sure you don't try to get a bunch of elements
+	 			if(sel.length > 1 && typeof value === "undefined")
+	 			{	
+	 				console.log(sel);
+	 				console.log("Must be a singular element");
+	 				return;
+	 			}
+	 			else if(sel.length > 1 && typeof value !== "undefined") //You can set a bunch, though
+	 			{
+	 				this.each(sel, function(e){
+	 					_attr(e, name, value);
+	 				});
+	 			}
+	 			else //Normal behavior
+	 			{
+	 				return _attr(sel, name, value);
+	 			}
 	 		}
 	 	};
 	 	
