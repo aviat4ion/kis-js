@@ -63,6 +63,11 @@
 			},
 			_do: function(url, data, callback, isPost)
 			{
+				if(typeof callback === "undefined")
+				{
+					callback = function(){};
+				}
+			
 				var request = this._req();
 				var type = (isPost) ? "POST" : "GET";
 				
@@ -259,7 +264,7 @@
 	 *
 	 * Event api wrapper
 	 */
-	 (function(){
+	(function(){
 	 	var attach, remove, add_remove, e;
 	 	
 	 	if(document.addEventListener)
@@ -432,12 +437,6 @@
 	 			}
 	 			
 	 			var cName = (cs.length > 1) ? cs.join(" ") : cs[0];
-				
-				//Check if trim method exists
-				if(cName.trim)
-				{
-					cName = cName.trim();
-				}
 				
 				if(typeof sel.className !== "undefined")
 				{
