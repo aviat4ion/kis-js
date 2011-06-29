@@ -9,6 +9,12 @@
 
 	"use strict";
 	
+	//Browser requirements check
+	if(typeof document.querySelectorAll !== "function" || typeof window.addEventListener !== "function")
+	{
+		return;
+	}
+	
 	var $_, $, _sel;
 	
 	$_ = {};
@@ -38,29 +44,13 @@
 	
 	window.$ = $;
 	
-	//Console.log will contain error messages: if it doesn't exist, create a dummy method
-	if(typeof window.console === "undefined")
-	{
-		window.console = {
-			log: function(){}
-		};
-	}
-
-	
 	/**
 	 * Ajax 
 	 *
 	 * Object for making ajax requests
 	 */
 	(function() {
-		var $_ = $_ || {};
 		var ajax = {
-			_req: function()
-			{
-				return (typeof window.XMLHttpRequest === "function") 
-					? new XMLHttpRequest()
-					: false;
-			},
 			_do: function(url, data, callback, isPost)
 			{
 				if(typeof callback === "undefined")
@@ -68,7 +58,10 @@
 					callback = function(){};
 				}
 			
-				var request = this._req();
+				var request = (typeof window.XMLHttpRequest === "function") 
+					? new XMLHttpRequest() 
+					: false;
+				
 				var type = (isPost) ? "POST" : "GET";
 				
 				url += (type === "GET") 
@@ -353,6 +346,64 @@
 	(function(){
 	 	var d, len;
 	 	
+	 	//Private function for getting/setting attributes
+	 	function _attr(sel, name, value)
+	 	{
+	 		var oldVal, doAttr;
+	 	
+	 		//Get the value of the attribute, if it exists
+			if(typeof sel.hasAttribute !== "undefined")
+			{
+				if(sel.hasAttribute(name))
+				{
+					oldVal = sel.getAttribute(name);
+				}
+				
+				doAttr = true;	
+			}
+			else if(typeof sel[name] !== "undefined")
+			{
+				oldVal = sel[name];
+				doAttr = false;
+			}
+			else if(name === "class" && typeof sel.className !== "undefined") //className attribute
+			{
+				name = "className";
+				oldVal = sel.className;
+				doAttr = false;
+			}
+			
+			//Well, I guess that attribute doesn't exist
+			if(typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
+			{
+				console.log(sel);
+				console.log("Element does not have the selected attribute");
+				return;
+			}
+			
+			//No value to set? Return the current value
+			if(typeof value === "undefined")
+			{
+				return oldVal;
+			}
+			
+ 			//Determine what to do with the attribute
+ 			if(typeof value !== "undefined" && value !== null)
+ 			{
+ 				(doAttr === true)
+ 					? sel.setAttribute(name, value)
+ 					: sel[name] = value;
+ 			}
+ 			else if(value === null)
+ 			{
+ 				(doAttr === true)
+ 					? sel.removeAttribute(name)
+ 					: sel[name] = null;
+ 			}
+ 			
+ 			return (typeof value !== "undefined") ? value : oldValue; 
+	 	}
+	 	
 	 	// Private function for class manipulation
 	 	function _class(sel, c, add)
 	 	{
@@ -434,64 +485,6 @@
 	 			return cName;
  			}
 	 		
-	 	}
-	 	
-	 	//Private function for getting/setting attributes
-	 	function _attr(sel, name, value)
-	 	{
-	 		var oldVal, doAttr;
-	 	
-	 		//Get the value of the attribute, if it exists
-			if(typeof sel.hasAttribute !== "undefined")
-			{
-				if(sel.hasAttribute(name))
-				{
-					oldVal = sel.getAttribute(name);
-				}
-				
-				doAttr = true;	
-			}
-			else if(typeof sel[name] !== "undefined")
-			{
-				oldVal = sel[name];
-				doAttr = false;
-			}
-			else if(name === "class" && typeof sel.className !== "undefined") //className attribute
-			{
-				name = "className";
-				oldVal = sel.className;
-				doAttr = false;
-			}
-			
-			//Well, I guess that attribute doesn't exist
-			if(typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
-			{
-				console.log(sel);
-				console.log("Element does not have the selected attribute");
-				return;
-			}
-			
-			//No value to set? Return the current value
-			if(typeof value === "undefined")
-			{
-				return oldVal;
-			}
-			
- 			//Determine what to do with the attribute
- 			if(typeof value !== "undefined" && value !== null)
- 			{
- 				(doAttr === true)
- 					? sel.setAttribute(name, value)
- 					: sel[name] = value;
- 			}
- 			else if(value === null)
- 			{
- 				(doAttr === true)
- 					? sel.removeAttribute(name)
- 					: sel[name] = null;
- 			}
- 			
- 			return (typeof value !== "undefined") ? value : oldValue; 
 	 	}
 	 	
 	 	d = {
