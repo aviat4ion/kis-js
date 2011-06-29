@@ -87,6 +87,10 @@ Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
 			Use:
 			 	$_.dom.each(selector, callback);
 			 	
+			Example : $_.dom.each(".foo", function(e){
+						$_.dom.text(e, value);
+					  }):
+			 	
 		*show: For setting dom elements as visible. Type defaults as "block", can be set with optional second parameter.
 			Use:
 				$_.dom.show(selector, [type]);
@@ -95,11 +99,16 @@ Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
 			Use:
 				$_.dom.hide(selector);
 				
-		#attr: Gets, sets, or removes an attribute from a selector. 
+		*attr: Gets, sets, or removes an attribute from a selector. 
 			Use:
 				Set: $_.dom.attr(selector, attributeName, attributeValue);
 				Get: $_.dom.attr(selector, attributeName);
 				Remove: $_.dom.attr(selector, attributeName, null);
+				
+		*text: Gets or sets the text in between an element's tags
+			Use:
+				Set: $_.dom.text(selector, text);
+				Get: $_.dom.text(selector);
 				
 	
 	

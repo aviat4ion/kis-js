@@ -587,6 +587,32 @@
 				{
 					return _attr(sel, name, value);
 				}
+			},
+			text: function(sel, value)
+			{
+				var oldValue, set, type;
+			
+				sel = $(sel);
+				
+				set = (typeof value !== "undefined") ? true : false;
+				
+				type = (typeof sel.innerText !== "undefined")
+					? "innerText"
+					: (typeof sel.textContent !== "undefined")
+						? "textContent"
+						: "innerHTML";
+
+				oldValue = sel[type];
+				
+				if(set)
+				{
+					sel[type] = value;
+					return value;
+				}
+				else
+				{
+					return oldValue;
+				}
 			}
 		};
 
