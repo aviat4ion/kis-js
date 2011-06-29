@@ -4,7 +4,7 @@ A Minimal, Modular Javascript library for Modern browsers.
 
 Aims to be fast, small, and easily split into individual modules.
 
-Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
+Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
 
 ## Basic Use: ##
 

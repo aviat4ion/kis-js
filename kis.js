@@ -57,9 +57,9 @@
 		var ajax = {
 			_req: function()
 			{
-				return (window.XMLHttpRequest) 
+				return (typeof window.XMLHttpRequest === "function") 
 					? new XMLHttpRequest()
-					: new ActiveXObject("Microsoft.XMLHTTP");
+					: false;
 			},
 			_do: function(url, data, callback, isPost)
 			{
@@ -267,42 +267,22 @@
 	(function(){
 	 	var attach, remove, add_remove, e;
 	 	
-	 	if(document.addEventListener)
-	 	{
-	 		attach = function(sel, event, callback)
-	 		{
-	 			if(sel.addEventListener)
-	 			{
-	 				sel.addEventListener(event, callback, false);
-	 			}
-	 		};
-	 		
-	 		remove = function(sel, event, callback)
-	 		{
-	 			if(sel.removeEventListener)
-	 			{
-	 				sel.removeEventListener(event, callback, false);
-	 			}
-	 		};	
-	 	}
-	 	else
-	 	{
-	 		attach = function(sel, event, callback)
-	 		{
-	 			if(sel.attachEvent)
-	 			{
-	 				sel.attachEvent("on"+event, callback);
-	 			}
-	 		};
-	 		
-	 		remove = function(sel, event, callback)
-	 		{
-	 			if(sel.detachEvent)
-	 			{
-	 				sel.detachEvent("on"+event, callback);
-	 			}
-	 		};
-	 	}
+	 
+		attach = function(sel, event, callback)
+		{
+			if(typeof sel.addEventListener === "function")
+			{
+				sel.addEventListener(event, callback, false);
+			}
+		};
+		
+		remove = function(sel, event, callback)
+		{
+			if(typeof sel.removeEventListener === "function")
+			{
+				sel.removeEventListener(event, callback, false);
+			}
+		};	
 	 	
 	 	add_remove = function (sel, event, callback, add)
 	 	{
