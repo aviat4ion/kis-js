@@ -50,7 +50,9 @@
 					callback = function (){};
 				}
 
-				var request = (typeof window.XMLHttpRequest === "function") ? new XMLHttpRequest() : false;
+				var request = (typeof window.XMLHttpRequest === "function") 
+					? new XMLHttpRequest() 
+					: false;
 
 				var type = (isPost) ? "POST" : "GET";
 
@@ -309,12 +311,16 @@
 				len = sel.length;
 				for (i = 0; i < len; i++)
 				{
-					(add === true) ? attach(sel[i], event, callback) : remove(sel[i], event, callback);
+					(add === true) 
+						? attach(sel[i], event, callback) 
+						: remove(sel[i], event, callback);
 				}
 			}
 			else
 			{
-				(add === true) ? attach(sel, event, callback) : remove(sel, event, callback);
+				(add === true) 
+					? attach(sel, event, callback) 
+					: remove(sel, event, callback);
 			}
 		};
 
@@ -384,11 +390,15 @@
 			//Determine what to do with the attribute
 			if (typeof value !== "undefined" && value !== null)
 			{
-				(doAttr === true) ? sel.setAttribute(name, value) : sel[name] = value;
+				(doAttr === true) 
+					? sel.setAttribute(name, value) 
+					: sel[name] = value;
 			}
 			else if (value === null)
 			{
-				(doAttr === true) ? sel.removeAttribute(name) : sel[name] = null;
+				(doAttr === true) 
+					? sel.removeAttribute(name) 
+					: sel[name] = null;
 			}
 
 			return (typeof value !== "undefined") ? value : oldValue;
@@ -505,8 +515,7 @@
 			{
 				sel = $(sel);
 
-				this.each(sel, function (e)
-				{
+				this.each(sel, function (e){
 					_class(e, c, true);
 				});
 			},
@@ -514,8 +523,7 @@
 			{
 				sel = $(sel);
 
-				this.each(sel, function (e)
-				{
+				this.each(sel, function (e){
 					_class(e, c, false);
 				});
 			},
@@ -525,8 +533,7 @@
 
 				if (sel.length > 1)
 				{
-					this.each(sel, function (e)
-					{
+					this.each(sel, function (e){
 						e.style.display = "none";
 					});
 				}
@@ -550,8 +557,7 @@
 
 				if (sel.length > 1)
 				{
-					this.each(sel, function (e)
-					{
+					this.each(sel, function (e){
 						e.style.display = type;
 					});
 				}
@@ -573,8 +579,7 @@
 				}
 				else if (sel.length > 1 && typeof value !== "undefined") //You can set a bunch, though
 				{
-					this.each(sel, function (e)
-					{
+					this.each(sel, function (e){
 						_attr(e, name, value);
 					});
 				}
