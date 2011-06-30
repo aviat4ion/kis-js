@@ -14,6 +14,17 @@ Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
 
 ## Modules: ##
 
+**Support**: Provides browser feature detection
+
+  properties:
+
+	* attachEvent:
+		True if `attachEvent` is supported
+	* addEventListener:
+		True if `addEventListener` is supported
+	* querySelector:
+		True if `querySelectorAll` is supported
+
 **Ajax**: simple, jQuery-like ajax functions
 
 	functions:
@@ -60,6 +71,7 @@ Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
 				
 				
 **Event**: wrapper for applying events to DOM objects
+*Depends on the `Support` module*
 
 	functions: 
 	
