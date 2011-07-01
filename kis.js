@@ -572,22 +572,30 @@
 				{
 					sel = $(sel);
 				}
-
-				var len = sel.length;
-
-				if (len === 0)
+				
+				if(!sel.length)
 				{
-					return;
+					// sel is a DOM Element
+					callback(sel);
 				}
-
-				if (len === 1)
+				else
 				{
-					return callback(sel);
-				}
+					var len = sel.length;
 
-				for (var x = 0; x < sel.length; x++)
-				{
-					callback(sel[x]);
+					if (len === 0)
+					{
+						return;
+					}
+
+					if (len === 1)
+					{
+						return callback(sel);
+					}
+
+					for (var x = 0; x < sel.length; x++)
+					{
+						callback(sel[x]);
+					}
 				}
 			},
 			addClass: function (sel, c)
