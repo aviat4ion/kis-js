@@ -16,7 +16,7 @@ Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
 
 **Support**: Provides browser feature detection
 
-  properties:
+	properties:
 
 	* attachEvent:
 		True if `attachEvent` is supported
