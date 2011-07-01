@@ -4,7 +4,7 @@ A Minimal, Modular Javascript library for Modern browsers.
 
 Aims to be fast, small, and easily split into individual modules.
 
-Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
+Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 
 ## Basic Use: ##
 
@@ -13,17 +13,6 @@ Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
 * Function:	`$_.module.function(params);`
 
 ## Modules: ##
-
-**Support**: Provides browser feature detection
-
-	properties:
-
-	* attachEvent:
-		True if `attachEvent` is supported
-	* addEventListener:
-		True if `addEventListener` is supported
-	* querySelector:
-		True if `querySelectorAll` is supported
 
 **Ajax**: simple, jQuery-like ajax functions
 
@@ -71,7 +60,6 @@ Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
 				
 				
 **Event**: wrapper for applying events to DOM objects
-*Depends on the `Support` module*
 
 	functions: 
 	

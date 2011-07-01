@@ -48,7 +48,7 @@
 		var support = {
 			attachEvent: typeof window.attachEvent === "function",
 			addEventListener: typeof window.addEventListener === "function",
-			querySelector: typeof document.querySelectorAll === "function"
+			querySelector: typeof document.querySelectorAll === "function",
 		};
 		
 		$_.support = support;
