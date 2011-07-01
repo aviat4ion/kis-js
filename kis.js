@@ -1,16 +1,19 @@
 /**
- 	Kis JS		Keep It Simple JS Library
- 	Copyright	Timothy J. Warren
- 	License		Public Domain
- 	Version		0.1.0
+	Kis JS		Keep It Simple JS Library
+	Copyright	Timothy J. Warren
+	License		Public Domain
+	Version		0.1.0
  */
 
 (function (){
 
 	"use strict";
 
+	// Property name for expandos on DOM objects
+	var kis_expando = "KIS_0_1_0";
+
 	//Browser requirements check
-	if (typeof document.querySelectorAll !== "function" || typeof window.addEventListener !== "function")
+	if (!document.querySelectorAll)
 	{
 		return;
 	}
@@ -19,7 +22,7 @@
 
 	$_ = {};
 
-	window.$_ = window.$_ || $_;
+	$_ = window.$_ = window.$_ || $_;
 
 	/**
 	 * $
@@ -34,6 +37,23 @@
 	};
 
 	window.$ = $;
+	
+	/**
+	 * Support
+	 *
+	 * Module for browser feature detection
+	 */
+	(function (){
+	
+		var support = {
+			attachEvent: typeof window.attachEvent === "function",
+			addEventListener: typeof window.addEventListener === "function",
+			querySelector: typeof document.querySelectorAll === "function"
+		};
+		
+		$_.support = support;
+		
+	}());
 
 	/**
 	 * Ajax
@@ -108,12 +128,12 @@
 			}
 		};
 
-		window.$_.get = function (url, data, callback)
+		$_.get = function (url, data, callback)
 		{
 			ajax._do(url, data, callback, false);
 		};
 
-		window.$_.post = function (url, data, callback)
+		$_.post = function (url, data, callback)
 		{
 			ajax._do(url, data, callback, true);
 		};
@@ -126,7 +146,7 @@
 	 */
 	(function (){
 
-		window.$_.hb = (history.pushState) ? false : true;
+		$_.hb = (history.pushState) ? false : true;
 
 		var qs = {
 			parse: function (hb)
@@ -207,7 +227,7 @@
 			}
 		};
 
-		window.$_.qs = qs;
+		$_.qs = qs;
 
 	}());
 
@@ -249,33 +269,92 @@
 			}
 		};
 
-		window.$_.store = store;
+		$_.store = store;
 	}());
 
 	/**
 	 * Event object
 	 *
 	 * Event api wrapper
+	 * Requires Support module
 	 */
 	(function (){
 	
-		var attach, remove, add_remove, e;
+		var attach, remove, add_remove, e, support;
+		
+		support = $_.support;
 
-		attach = function (sel, event, callback)
+		// Define the proper attach and remove functions
+		// based on browser support
+		if(support.addEventListener)
 		{
-			if (typeof sel.addEventListener === "function")
+			attach = function (sel, event, callback)
 			{
-				sel.addEventListener(event, callback, false);
-			}
-		};
-
-		remove = function (sel, event, callback)
+				if (typeof sel.addEventListener === "function")
+				{
+					sel.addEventListener(event, callback, false);
+				}
+			};
+			remove = function (sel, event, callback)
+			{
+				if (typeof sel.removeEventListener === "function")
+				{
+					sel.removeEventListener(event, callback, false);
+				}
+			};
+		}
+		else if(support.attachEvent)
 		{
-			if (typeof sel.removeEventListener === "function")
+			attach = function (sel, event, callback)
 			{
-				sel.removeEventListener(event, callback, false);
-			}
-		};
+				function listener () {
+					// Internet Explorer fails to correctly set the 'this' object
+					// for event listeners, so we need to set it ourselves.
+					callback.apply(sel, arguments);
+				}
+				
+				if (typeof sel.attachEvent === "function")
+				{
+					remove(sel, event, callback); // Make sure we don't have duplicate listeners
+					
+					sel.attachEvent("on" + event, listener);
+					// Store our listener so we can remove it later
+					// TODO: Fix memory leak in IE6/7 with event listeners
+					var expando = sel[kis_expando] = sel[kis_expando] || {};
+					expando.listeners = expando.listeners || {};
+					expando.listeners[event] = expando.listeners[event] || [];
+					expando.listeners[event].push({
+						callback: callback,
+						listener: listener
+					});
+				}
+			};
+			remove = function (sel, event, callback)
+			{
+				if(typeof typeof sel.detachEvent === "function")
+				{
+					var expando = sel[kis_expando];
+					if (expando && expando.listeners
+							&& expando.listeners[event])
+					{
+						var listeners = expando.listeners[event];
+						for (var i=0; i<listeners.length; i++)
+						{
+							if (listeners[i].callback === callback)
+							{
+								sel.detachEvent("on" + event, listeners[i].listener);
+								listeners.splice(i, 1);
+								if(listeners.length === 0)
+								{
+									delete expando.listeners[event];
+								}
+								return;
+							}
+						}
+					}
+				}
+			};
+		}
 
 		add_remove = function (sel, event, callback, add)
 		{
@@ -335,7 +414,7 @@
 			}
 		};
 
-		window.$_.event = e;
+		$_.event = e;
 
 	}());
 
@@ -493,22 +572,30 @@
 				{
 					sel = $(sel);
 				}
-
-				var len = sel.length;
-
-				if (len === 0)
+				
+				if(!sel.length)
 				{
-					return;
+					// sel is a DOM Element
+					callback(sel);
 				}
-
-				if (len === 1)
+				else
 				{
-					return callback(sel);
-				}
+					var len = sel.length;
 
-				for (var x = 0; x < sel.length; x++)
-				{
-					callback(sel[x]);
+					if (len === 0)
+					{
+						return;
+					}
+
+					if (len === 1)
+					{
+						return callback(sel);
+					}
+
+					for (var x = 0; x < sel.length; x++)
+					{
+						callback(sel[x]);
+					}
 				}
 			},
 			addClass: function (sel, c)
@@ -616,7 +703,7 @@
 			}
 		};
 
-		window.$_.dom = d;
+		$_.dom = d;
 	}());
 
 }());
