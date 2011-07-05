@@ -52,23 +52,6 @@
 	};
 
 	window.$ = $;
-	
-	/**
-	 * Support
-	 *
-	 * Module for browser feature detection
-	 */
-	(function (){
-	
-		var support = {
-			attachEvent: typeof window.attachEvent === "function",
-			addEventListener: typeof window.addEventListener === "function",
-			querySelector: typeof document.querySelectorAll === "function"
-		};
-		
-		$_.support = support;
-		
-	}());
 
 	/**
 	 * Ajax
@@ -291,17 +274,14 @@
 	 * Event object
 	 *
 	 * Event api wrapper
-	 * Requires Support module
 	 */
 	(function (){
 	
-		var attach, remove, add_remove, e, support;
-		
-		support = $_.support;
+		var attach, remove, add_remove, e;
 
 		// Define the proper attach and remove functions
 		// based on browser support
-		if(support.addEventListener === true)
+		if(typeof document.addEventListener !== "undefined")
 		{
 			attach = function (sel, event, callback)
 			{
