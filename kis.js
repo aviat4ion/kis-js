@@ -17,14 +17,6 @@
 	{
 		return;
 	}
-	
-	//Define console.log dummy function if it doesn't exist
-	if(typeof window.console === "undefined")
-	{
-		window.console = {
-			log: function(){}
-		};
-	}
 
 	var $_, $;
 
@@ -54,7 +46,7 @@
 		else
 		{
 			x = document.querySelectorAll(a);
-		}	
+		}
 		
 		return (x.length === 1) ? x[0] : x;
 	};
@@ -93,7 +85,7 @@
 					callback = function (){};
 				}
 
-				var request = (typeof window.XMLHttpRequest === "function") 
+				var request = (typeof window.XMLHttpRequest !== "undefined") 
 					? new XMLHttpRequest() 
 					: false;
 
@@ -309,7 +301,7 @@
 
 		// Define the proper attach and remove functions
 		// based on browser support
-		if(support.addEventListener)
+		if(support.addEventListener === true)
 		{
 			attach = function (sel, event, callback)
 			{
@@ -326,7 +318,7 @@
 				}
 			};
 		}
-		else if(support.attachEvent)
+		else if(typeof document.attachEvent !== "undefined")
 		{
 			attach = function (sel, event, callback)
 			{
@@ -336,7 +328,7 @@
 					callback.apply(sel, arguments);
 				}
 				
-				if (typeof sel.attachEvent === "function")
+				if (typeof sel.attachEvent !== "undefined")
 				{
 					remove(sel, event, callback); // Make sure we don't have duplicate listeners
 					
@@ -351,10 +343,14 @@
 						listener: listener
 					});
 				}
+				else
+				{
+					console.log("Failed to attach event:"+event);
+				}
 			};
 			remove = function (sel, event, callback)
 			{
-				if(typeof typeof sel.detachEvent === "function")
+				if(typeof sel.detachEvent !== "undefined")
 				{
 					var expando = sel[kis_expando];
 					if (expando && expando.listeners
@@ -406,16 +402,21 @@
 
 				return;
 			}
+			else
+			{
+				event = event[0];
+			}
 
 			//Check for multiple DOM objects
 			if (sel.length > 1)
 			{
+				var selx = (sel.item(i)) ? sel.item(i) : sel[i];
 				len = sel.length;
 				for (i = 0; i < len; i++)
 				{
 					(add === true) 
-						? attach(sel[i], event, callback) 
-						: remove(sel[i], event, callback);
+						? attach(selx, event, callback) 
+						: remove(selx, event, callback);
 				}
 			}
 			else
@@ -451,7 +452,17 @@
 		//Private function for getting/setting attributes
 		function _attr(sel, name, value)
 		{
-			var oldVal, doAttr;
+			var oldVal, doAttr, i;
+			
+			if(sel.length > 1)
+			{
+				var len = sel.length;
+				for(i=0;i<len;i++)
+				{
+					_attr(sel[i], name, value);
+				}
+			
+			}
 
 			//Get the value of the attribute, if it exists
 			if (typeof sel.hasAttribute !== "undefined")
@@ -478,6 +489,7 @@
 			//Well, I guess that attribute doesn't exist
 			if (typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
 			{
+				console.log(value);
 				console.log(sel);
 				console.log("Element does not have the selected attribute");
 				return;
@@ -528,7 +540,7 @@
 			else //Or the hard way
 			{
 				//No class attribute? Set an empty string
-				ec = _attr(sel, "class");
+				ec = sel.className;//_attr(sel, "class");
 				ec = (typeof ec === "string") ? ec : '';
 
 				//Convert class attribute string into array
@@ -612,9 +624,11 @@
 						return callback(sel);
 					}
 
+					var selx;
 					for (var x = 0; x < sel.length; x++)
 					{
-						callback(sel[x]);
+						selx = (sel.item(x)) ? sel.item(x) : sel[x];
+						callback(selx);
 					}
 				}
 			},
