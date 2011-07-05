@@ -31,8 +31,23 @@
 	 */
 	$ = function (a)
 	{
+		var x;
 		if (typeof a !== "string"){ return a;}
-		var x = document.querySelectorAll(a);
+		
+		//Pick the quickest method for each kind of selector
+		if(a.match(/^#([\w\-]+$)/))
+		{
+			return document.getElementById(a.split('#')[1]);
+		}
+		else if(a.match(/^([\w\-]+)$/))
+		{
+			x = document.getElementsByTagName(a);
+		}
+		else
+		{
+			x = document.querySelectorAll(a);
+		}	
+		
 		return (x.length === 1) ? x[0] : x;
 	};
 
@@ -48,7 +63,7 @@
 		var support = {
 			attachEvent: typeof window.attachEvent === "function",
 			addEventListener: typeof window.addEventListener === "function",
-			querySelector: typeof document.querySelectorAll === "function",
+			querySelector: typeof document.querySelectorAll === "function"
 		};
 		
 		$_.support = support;
