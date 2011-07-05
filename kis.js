@@ -17,6 +17,14 @@
 	{
 		return;
 	}
+	
+	//Define console.log dummy function if it doesn't exist
+	if(typeof window.console === "undefined")
+	{
+		window.console = {
+			log: function(){}
+		};
+	}
 
 	var $_, $;
 
@@ -495,7 +503,7 @@
 					: sel[name] = null;
 			}
 
-			return (typeof value !== "undefined") ? value : oldValue;
+			return (typeof value !== "undefined") ? value : oldVal;
 		}
 
 		// Private function for class manipulation
@@ -583,10 +591,7 @@
 		d = {
 			each: function (sel, callback)
 			{
-				if (typeof sel === "string")
-				{
-					sel = $(sel);
-				}
+				sel = $(sel);
 				
 				if(!sel.length)
 				{
