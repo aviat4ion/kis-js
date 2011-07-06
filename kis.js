@@ -23,6 +23,13 @@
 	$_ = {};
 
 	$_ = window.$_ = window.$_ || $_;
+	
+	if(typeof window.console === "undefined")
+	{
+		window.console = {
+			log:function(){}
+		}
+	}
 
 	/**
 	 * $
@@ -298,7 +305,8 @@
 				}
 			};
 		}
-		else if(typeof document.attachEvent !== "undefined")
+		//typeof function doesn't work in IE where attachEvent is available: brute force it
+		else if(typeof document.attachEvent !== "undefined") 
 		{
 			attach = function (sel, event, callback)
 			{
@@ -308,13 +316,14 @@
 					callback.apply(sel, arguments);
 				}
 				
+				var i, len;
+				
 				if (typeof sel.attachEvent !== "undefined")
 				{
 					remove(sel, event, callback); // Make sure we don't have duplicate listeners
 					
 					sel.attachEvent("on" + event, listener);
 					// Store our listener so we can remove it later
-					// TODO: Fix memory leak in IE6/7 with event listeners
 					var expando = sel[kis_expando] = sel[kis_expando] || {};
 					expando.listeners = expando.listeners || {};
 					expando.listeners[event] = expando.listeners[event] || [];
@@ -325,7 +334,7 @@
 				}
 				else
 				{
-					console.log("Failed to attach event:"+event);
+					console.log("Failed to attach event:"+event+" on "+sel);
 				}
 			};
 			remove = function (sel, event, callback)
@@ -337,7 +346,8 @@
 							&& expando.listeners[event])
 					{
 						var listeners = expando.listeners[event];
-						for (var i=0; i<listeners.length; i++)
+						var len = listeners.length
+						for (var i=0; i<len; i++)
 						{
 							if (listeners[i].callback === callback)
 							{
@@ -357,9 +367,9 @@
 
 		add_remove = function (sel, event, callback, add)
 		{
-			var i, len;
+			var i, len, selx;
 
-			if (!sel)
+			if (typeof sel === "undefined")
 			{
 				return false;
 			}
@@ -368,11 +378,10 @@
 			sel = $(sel);
 
 			//Multiple events? Run recursively!
-			event = event.split(" ");
-
-			if (event.length > 1)
+			if (!event.match(/^([\w\-]+)$/))
 			{
-
+				event = event.split(" ");
+				
 				len = event.length;
 
 				for (i = 0; i < len; i++)
@@ -382,21 +391,17 @@
 
 				return;
 			}
-			else
-			{
-				event = event[0];
-			}
 
 			//Check for multiple DOM objects
 			if (sel.length > 1)
 			{
-				var selx = (sel.item(i)) ? sel.item(i) : sel[i];
 				len = sel.length;
 				for (i = 0; i < len; i++)
 				{
-					(add === true) 
-						? attach(selx, event, callback) 
-						: remove(selx, event, callback);
+					selx = (sel.item(i)) ? sel.item(i) : sel[i];
+					
+					//Call recursively
+					add_remove(selx, event, callback, add);
 				}
 			}
 			else
