@@ -585,6 +585,40 @@
 
 		}
 
+		function _css(sel, prop, val)
+		{
+			var equi;
+			
+			//Todo: camelCase things like border-left to borderLeft
+
+			//Let's try the easy way first
+			if(typeof sel.style[prop] !== "undefined")
+			{
+				sel.style[prop] = val;
+
+				//Short circuit
+				return;
+			}
+
+			//Let have an object with equivalent properties
+			//for `special` browsers, and other quirks
+			var equi = {
+				top: "",
+				right: "",
+				bottom: "",
+				left: ""
+			};
+
+			if(sel.style[equi[prop]])
+			{
+				sel.style[equi[prop]] = val;
+				return;
+			}
+			
+			//No matches? Well, lets log it for now
+			console.log("Property " + prop + " nor an equivalent seems to exist");
+		}
+
 		d = {
 			each: function (sel, callback)
 			{
@@ -719,6 +753,12 @@
 				{
 					return oldValue;
 				}
+			},
+			css: function(sel, prop, val)
+			{
+				this.each(sel, function (e){
+					_css(e, prop, val);
+				});
 			}
 		};
 
