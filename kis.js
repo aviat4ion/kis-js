@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.1.1
+	Version		0.2.0
  */
 
 (function (){
@@ -10,7 +10,7 @@
 	"use strict";
 
 	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_1_0";
+	var kis_expando = "KIS_0_2_0";
 
 	//Browser requirements check
 	if (!document.querySelectorAll)
@@ -18,17 +18,33 @@
 		return;
 	}
 
-	var $_, $;
+	var $_, $, sel;
 
-	$_ = {};
+	/**
+	 * $_
+	 *
+	 * Constructor function
+	 */
+	$_ = function(sel)
+	{
+		if(typeof sel === "undefined")
+		{
+			sel = window;
+		}
+	
+		$_.sel = $(sel);
+		
+		return $_;
+	};
 
 	$_ = window.$_ = window.$_ || $_;
 	
+	//console.log polyfill
 	if(typeof window.console === "undefined")
 	{
 		window.console = {
 			log:function(){}
-		}
+		};
 	}
 
 	/**
@@ -59,6 +75,38 @@
 	};
 
 	window.$ = $;
+	
+	$_.each = function (callback)
+	{
+		sel = $_.sel;
+		
+		if(!sel.length)
+		{
+			// sel is a DOM Element
+			callback(sel);
+		}
+		else
+		{
+			var len = sel.length;
+
+			if (len === 0)
+			{
+				return;
+			}
+
+			if (len === 1)
+			{
+				return callback(sel);
+			}
+
+			var selx;
+			for (var x = 0; x < sel.length; x++)
+			{
+				selx = (sel.item(x)) ? sel.item(x) : sel[x];
+				callback(selx);
+			}
+		}
+	};
 
 	/**
 	 * Ajax
@@ -313,14 +361,12 @@
 				function listener () {
 					// Internet Explorer fails to correctly set the 'this' object
 					// for event listeners, so we need to set it ourselves.
-					callback.apply(sel, arguments);
+					callback.apply(arguments);
 				}
-				
-				var i, len;
 				
 				if (typeof sel.attachEvent !== "undefined")
 				{
-					remove(sel, event, callback); // Make sure we don't have duplicate listeners
+					remove(event, callback); // Make sure we don't have duplicate listeners
 					
 					sel.attachEvent("on" + event, listener);
 					// Store our listener so we can remove it later
@@ -346,7 +392,7 @@
 							&& expando.listeners[event])
 					{
 						var listeners = expando.listeners[event];
-						var len = listeners.length
+						var len = listeners.length;
 						for (var i=0; i<len; i++)
 						{
 							if (listeners[i].callback === callback)
@@ -365,17 +411,27 @@
 			};
 		}
 
-		add_remove = function (sel, event, callback, add)
+		add_remove = function (event, callback, add)
 		{
 			var i, len, selx;
-
-			if (typeof sel === "undefined")
+			
+			//Get the DOM object
+			sel = $_.sel;
+			
+			if(arguments.length === 4)
 			{
+				sel = arguments[0];
+				event = arguments[1];
+				callback = arguments[2];
+				add = arguments[3];
+			}
+			
+			if(typeof sel === "undefined")
+			{
+				console.log(arguments);
+				console.log(event);
 				return false;
 			}
-
-			//Get the DOM object if you give me a selector string
-			sel = $(sel);
 
 			//Multiple events? Run recursively!
 			if (!event.match(/^([\w\-]+)$/))
@@ -386,40 +442,30 @@
 
 				for (i = 0; i < len; i++)
 				{
-					add_remove(sel, event[i], callback, add);
+					add_remove(event[i], callback, add);
 				}
 
 				return;
 			}
 
-			//Check for multiple DOM objects
-			if (sel.length > 1)
-			{
-				len = sel.length;
-				for (i = 0; i < len; i++)
-				{
-					selx = (sel.item(i)) ? sel.item(i) : sel[i];
-					
-					//Call recursively
-					add_remove(selx, event, callback, add);
-				}
-			}
-			else
-			{
+			//Go over additonal DOM objects as needed
+			$_.each(function(e){
+			
 				(add === true) 
-					? attach(sel, event, callback) 
-					: remove(sel, event, callback);
-			}
+					? attach(e, event, callback) 
+					: remove(e, event, callback);
+			
+			});
 		};
 
 		e = {
-			add: function (sel, event, callback)
+			add: function (event, callback)
 			{
-				add_remove(sel, event, callback, true);
+				add_remove(event, callback, true);
 			},
-			remove: function (sel, event, callback)
+			remove: function (event, callback)
 			{
-				add_remove(sel, event, callback, false);
+				add_remove(event, callback, false);
 			}
 		};
 
@@ -438,16 +484,6 @@
 		function _attr(sel, name, value)
 		{
 			var oldVal, doAttr, i;
-			
-			if(sel.length > 1)
-			{
-				var len = sel.length;
-				for(i=0;i<len;i++)
-				{
-					_attr(sel[i], name, value);
-				}
-			
-			}
 
 			//Get the value of the attribute, if it exists
 			if (typeof sel.hasAttribute !== "undefined")
@@ -525,7 +561,7 @@
 			else //Or the hard way
 			{
 				//No class attribute? Set an empty string
-				ec = sel.className;//_attr(sel, "class");
+				ec = sel.className;//_attr("class");
 				ec = (typeof ec === "string") ? ec : '';
 
 				//Convert class attribute string into array
@@ -585,7 +621,7 @@
 
 		}
 
-		function _css(sel, prop, val)
+		function _css(prop, val)
 		{
 			var equi;
 			
@@ -602,7 +638,7 @@
 
 			//Let have an object with equivalent properties
 			//for `special` browsers, and other quirks
-			var equi = {
+			equi = {
 				top: "",
 				right: "",
 				bottom: "",
@@ -620,60 +656,29 @@
 		}
 
 		d = {
-			each: function (sel, callback)
+			addClass: function (c)
 			{
-				sel = $(sel);
-				
-				if(!sel.length)
-				{
-					// sel is a DOM Element
-					callback(sel);
-				}
-				else
-				{
-					var len = sel.length;
+				var sel = $_.sel;
 
-					if (len === 0)
-					{
-						return;
-					}
-
-					if (len === 1)
-					{
-						return callback(sel);
-					}
-
-					var selx;
-					for (var x = 0; x < sel.length; x++)
-					{
-						selx = (sel.item(x)) ? sel.item(x) : sel[x];
-						callback(selx);
-					}
-				}
-			},
-			addClass: function (sel, c)
-			{
-				sel = $(sel);
-
-				this.each(sel, function (e){
+				$_.each(function (e){
 					_class(e, c, true);
 				});
 			},
-			removeClass: function (sel, c)
+			removeClass: function (c)
 			{
-				sel = $(sel);
+				var sel = $_.sel;
 
-				this.each(sel, function (e){
+				$_.each(function (e){
 					_class(e, c, false);
 				});
 			},
-			hide: function (sel)
+			hide: function ()
 			{
-				sel = $(sel);
+				var sel = $_.sel;
 
 				if (sel.length > 1)
 				{
-					this.each(sel, function (e){
+					$_.each(function (e){
 						e.style.display = "none";
 					});
 				}
@@ -686,9 +691,9 @@
 				}
 
 			},
-			show: function (sel, type)
+			show: function (type)
 			{
-				sel = $(sel);
+				var sel = $_.sel;
 
 				if (typeof type === "undefined")
 				{
@@ -697,7 +702,7 @@
 
 				if (sel.length > 1)
 				{
-					this.each(sel, function (e){
+					$_.each(function (e){
 						e.style.display = type;
 					});
 				}
@@ -706,9 +711,9 @@
 					sel.style.display = type;
 				}
 			},
-			attr: function (sel, name, value)
+			attr: function (name, value)
 			{
-				sel = $(sel);
+				var sel = $_.sel;
 
 				//Make sure you don't try to get a bunch of elements
 				if (sel.length > 1 && typeof value === "undefined")
@@ -719,7 +724,7 @@
 				}
 				else if (sel.length > 1 && typeof value !== "undefined") //You can set a bunch, though
 				{
-					this.each(sel, function (e){
+					$_.each(function (e){
 						_attr(e, name, value);
 					});
 				}
@@ -728,11 +733,11 @@
 					return _attr(sel, name, value);
 				}
 			},
-			text: function(sel, value)
+			text: function (value)
 			{
-				var oldValue, set, type;
+				var oldValue, set, type, sel;
 			
-				sel = $(sel);
+				sel = $_.sel;
 				
 				set = (typeof value !== "undefined") ? true : false;
 				
@@ -754,9 +759,9 @@
 					return oldValue;
 				}
 			},
-			css: function(sel, prop, val)
+			css: function (prop, val)
 			{
-				this.each(sel, function (e){
+				$_.each(function (e){
 					_css(e, prop, val);
 				});
 			}
