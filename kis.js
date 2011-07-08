@@ -18,41 +18,8 @@
 		return;
 	}
 
-	var $_, $, sel;
-
-	/**
-	 * $_
-	 *
-	 * Constructor function
-	 */
-	$_ = function(sel)
-	{
-		//Get the DOM objects from the selector
-		sel = $(sel);
+	var $_, $;
 	
-		//Have window be default selector, just in case
-		if(typeof sel === "undefined")
-		{
-			sel = (typeof $_.el !== "undefined") 
-				? $_.el 
-				: window;
-		}
-		
-		$_.el = sel;
-		
-		return $_;
-	};
-
-	$_ = window.$_ = window.$_ || $_;
-	
-	//console.log polyfill
-	if(typeof window.console === "undefined")
-	{
-		window.console = {
-			log:function(){}
-		};
-	}
-
 	/**
 	 * $
 	 *
@@ -81,7 +48,41 @@
 		return (x.length === 1) ? x[0] : x;
 	};
 
-	window.$ = $;
+	/**
+	 * $_
+	 *
+	 * Constructor function
+	 */
+	$_ = function(sel)
+	{
+		//Get the DOM objects from the selector
+		sel = $(sel);
+	
+		//Have window be default selector, just in case
+		if(typeof sel === "undefined")
+		{
+			sel = (typeof $_.el !== "undefined") 
+				? $_.el 
+				: window;
+		}
+		
+		$_.el = sel;
+		
+		return $_;
+	};
+
+	//Set global variables
+	$_ = window.$_ = window.$_ || $_;
+	
+	//console.log polyfill
+	if(typeof window.console === "undefined")
+	{
+		window.console = {
+			log:function(){}
+		};
+	}
+	
+	// --------------------------------------------------------------------------
 	
 	$_.each = function (callback)
 	{
@@ -672,6 +673,8 @@
 			//No matches? Well, lets log it for now
 			console.log("Property " + prop + " nor an equivalent seems to exist");
 		}
+		
+		// --------------------------------------------------------------------------
 
 		d = {
 			addClass: function (c)
