@@ -27,12 +27,18 @@
 	 */
 	$_ = function(sel)
 	{
+		//Get the DOM objects from the selector
+		sel = $(sel);
+	
+		//Have window be default selector, just in case
 		if(typeof sel === "undefined")
 		{
-			sel = window;
+			sel = (typeof $_.el !== "undefined") 
+				? $_.el 
+				: window;
 		}
-	
-		$_.sel = $(sel);
+		
+		$_.el = sel;
 		
 		return $_;
 	};
@@ -71,6 +77,7 @@
 			x = document.querySelectorAll(a);
 		}
 		
+		//Return the single object if applicable
 		return (x.length === 1) ? x[0] : x;
 	};
 
@@ -78,14 +85,15 @@
 	
 	$_.each = function (callback)
 	{
-		sel = $_.sel;
+		var sel = $_.el
 		
-		if(!sel.length)
+		//Don't try to iterate over the window object
+		if(sel === window || typeof sel === "undefined")
 		{
-			// sel is a DOM Element
-			callback(sel);
+			return;
 		}
-		else
+		
+		if(typeof sel.length !== "undefined")
 		{
 			var len = sel.length;
 
@@ -105,6 +113,10 @@
 				selx = (sel.item(x)) ? sel.item(x) : sel[x];
 				callback(selx);
 			}
+		}
+		else
+		{
+			callback(sel);
 		}
 	};
 
@@ -416,7 +428,7 @@
 			var i, len, selx;
 			
 			//Get the DOM object
-			sel = $_.sel;
+			var sel = $_.el
 			
 			if(arguments.length === 4)
 			{
@@ -531,9 +543,14 @@
 			}
 			else if (value === null)
 			{
-				(doAttr === true) 
-					? sel.removeAttribute(name) 
-					: sel[name] = null;
+				if(doAttr === true)
+				{
+					sel.removeAttribute(name);
+				}
+				else
+				{
+					delete sel[name];
+				} 
 			}
 
 			return (typeof value !== "undefined") ? value : oldVal;
@@ -621,7 +638,7 @@
 
 		}
 
-		function _css(prop, val)
+		function _css(sel, prop, val)
 		{
 			var equi;
 			
@@ -638,11 +655,12 @@
 
 			//Let have an object with equivalent properties
 			//for `special` browsers, and other quirks
+			
+			//Todo: get more common properties
 			equi = {
-				top: "",
-				right: "",
-				bottom: "",
-				left: ""
+				outerHeight: "offsetHeight",
+				outerWidth: "offsetWidth",
+				top: "posTop"
 			};
 
 			if(sel.style[equi[prop]])
@@ -658,7 +676,7 @@
 		d = {
 			addClass: function (c)
 			{
-				var sel = $_.sel;
+				var sel = $_.el
 
 				$_.each(function (e){
 					_class(e, c, true);
@@ -666,7 +684,7 @@
 			},
 			removeClass: function (c)
 			{
-				var sel = $_.sel;
+				var sel = $_.el
 
 				$_.each(function (e){
 					_class(e, c, false);
@@ -674,46 +692,20 @@
 			},
 			hide: function ()
 			{
-				var sel = $_.sel;
-
-				if (sel.length > 1)
-				{
-					$_.each(function (e){
-						e.style.display = "none";
-					});
-				}
-				else
-				{
-					if (sel.style)
-					{
-						sel.style.display = "none";
-					}
-				}
-
+				this.css('display', 'none');
 			},
 			show: function (type)
 			{
-				var sel = $_.sel;
-
 				if (typeof type === "undefined")
 				{
 					type = "block";
 				}
 
-				if (sel.length > 1)
-				{
-					$_.each(function (e){
-						e.style.display = type;
-					});
-				}
-				else
-				{
-					sel.style.display = type;
-				}
+				this.css("display", type);
 			},
 			attr: function (name, value)
 			{
-				var sel = $_.sel;
+				var sel = $_.el
 
 				//Make sure you don't try to get a bunch of elements
 				if (sel.length > 1 && typeof value === "undefined")
@@ -737,7 +729,7 @@
 			{
 				var oldValue, set, type, sel;
 			
-				sel = $_.sel;
+				var sel = $_.el
 				
 				set = (typeof value !== "undefined") ? true : false;
 				

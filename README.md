@@ -13,11 +13,11 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 ## Modules: ##
 **Global**: Core functions
 	
+	properties:
+	
+		* el: The html object returned by the selector function.
+	
 	functions:
-		
-		* $:
-			Use: 
-				$(selector);
 				
 		*each: For applying changes to every item matched by a selector
 			Use:
@@ -115,6 +115,8 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 			Use:
 				Set: $_(selector).dom.text(text);
 				Get: $_(selector).dom.text();
+		
+		
 				
 	
 	
