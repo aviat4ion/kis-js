@@ -21,6 +21,16 @@
 	var $_, $;
 	
 	/**
+	 * String trim function polyfill
+	 */
+	if(typeof String.prototype.trim === "undefined")
+	{
+		String.prototype.trim = function(){
+			return this.replace(/^\s+|\s+$/g, "");
+		};
+	}
+	
+	/**
 	 * $
 	 *
 	 * Simple DOM selector function
@@ -38,6 +48,10 @@
 		else if(a.match(/^([\w\-]+)$/))
 		{
 			x = document.getElementsByTagName(a);
+		}
+		else if(a.match(/^\.([\w\-]+)$/) && document.getElementsByClassName !== "undefined")
+		{
+			x = document.getElementsByClassName(a);
 		}
 		else
 		{
@@ -86,7 +100,7 @@
 	
 	$_.each = function (callback)
 	{
-		var sel = $_.el
+		var sel = $_.el;
 		
 		//Don't try to iterate over the window object
 		if(sel === window || typeof sel === "undefined")
@@ -142,8 +156,10 @@
 
 				var type = (isPost) ? "POST" : "GET";
 
-				url += (type === "GET") ? "?" + this._serialize(data, true) : '';
+				var d = (data.length > 0) ? "?"+this._serialize(data, true) : '';
 
+				url += (type === "GET") ? d : '';
+				
 				request.open(type, url);
 
 				request.onreadystatechange = function ()
@@ -426,10 +442,10 @@
 
 		add_remove = function (event, callback, add)
 		{
-			var i, len, selx;
+			var i, len;
 			
 			//Get the DOM object
-			var sel = $_.el
+			var sel = $_.el;
 			
 			if(arguments.length === 4)
 			{
@@ -496,7 +512,7 @@
 		//Private function for getting/setting attributes
 		function _attr(sel, name, value)
 		{
-			var oldVal, doAttr, i;
+			var oldVal, doAttr;
 
 			//Get the value of the attribute, if it exists
 			if (typeof sel.hasAttribute !== "undefined")
@@ -638,12 +654,20 @@
 			}
 
 		}
+		
+		function _toCamel(s)
+		{
+			return s.replace(/(\-[a-z])/g, function($1){
+				return $1.toUpperCase().replace('-','');
+			});
+		}
 
 		function _css(sel, prop, val)
 		{
 			var equi;
 			
-			//Todo: camelCase things like border-left to borderLeft
+			//Camel-case
+			prop = _toCamel(prop);
 
 			//Let's try the easy way first
 			if(typeof sel.style[prop] !== "undefined")
@@ -679,16 +703,12 @@
 		d = {
 			addClass: function (c)
 			{
-				var sel = $_.el
-
 				$_.each(function (e){
 					_class(e, c, true);
 				});
 			},
 			removeClass: function (c)
 			{
-				var sel = $_.el
-
 				$_.each(function (e){
 					_class(e, c, false);
 				});
@@ -708,7 +728,7 @@
 			},
 			attr: function (name, value)
 			{
-				var sel = $_.el
+				var sel = $_.el;
 
 				//Make sure you don't try to get a bunch of elements
 				if (sel.length > 1 && typeof value === "undefined")
@@ -732,7 +752,7 @@
 			{
 				var oldValue, set, type, sel;
 			
-				var sel = $_.el
+				sel = $_.el;
 				
 				set = (typeof value !== "undefined") ? true : false;
 				
