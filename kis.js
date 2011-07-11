@@ -49,10 +49,6 @@
 		{
 			x = document.getElementsByTagName(a);
 		}
-		else if(a.match(/^\.([\w\-]+)$/) && document.getElementsByClassName !== "undefined")
-		{
-			x = document.getElementsByClassName(a);
-		}
 		else
 		{
 			x = document.querySelectorAll(a);
@@ -87,6 +83,7 @@
 
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
+	$_.$ = $;
 	
 	//console.log polyfill
 	if(typeof window.console === "undefined")
@@ -156,9 +153,7 @@
 
 				var type = (isPost) ? "POST" : "GET";
 
-				var d = (data.length > 0) ? "?"+this._serialize(data, true) : '';
-
-				url += (type === "GET") ? d : '';
+				url += (type === "GET") ? "?"+this._serialize(data, true) : '';
 				
 				request.open(type, url);
 
@@ -369,14 +364,14 @@
 		{
 			attach = function (sel, event, callback)
 			{
-				if (typeof sel.addEventListener === "function")
+				if (typeof sel.addEventListener !== "undefined")
 				{
 					sel.addEventListener(event, callback, false);
 				}
 			};
 			remove = function (sel, event, callback)
 			{
-				if (typeof sel.removeEventListener === "function")
+				if (typeof sel.removeEventListener !== "undefined")
 				{
 					sel.removeEventListener(event, callback, false);
 				}
