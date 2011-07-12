@@ -4,7 +4,6 @@
 	License		Public Domain
 	Version		0.2.0
  */
-
 (function (){
 
 	"use strict";
@@ -18,7 +17,7 @@
 		return;
 	}
 
-	var $_, $;
+	var $_, $, dcopy;
 	
 	/**
 	 * String trim function polyfill
@@ -72,13 +71,45 @@
 		if(typeof sel === "undefined")
 		{
 			sel = (typeof $_.el !== "undefined") 
-				? $_.el 
+				? $_.el
 				: window;
 		}
-		
+	
 		$_.el = sel;
 		
-		return $_;
+		return dcopy($_);
+	};
+	
+	/**
+	 * Deep copy/prototypical constructor function
+	 */
+	dcopy = function(obj)
+	{
+		var type, f;
+		
+		if(obj == null)
+		{
+			return;
+		}
+		
+		if(typeof Object.create !== "undefined")
+		{
+			return Object.create(obj);
+		}
+		
+		var type = typeof obj;
+		
+		if(type !== "object" && type !== "function")
+		{
+			return;
+		}
+		
+		var f = function(){};
+		
+		f.prototype = obj;
+		
+		return new f();
+		
 	};
 
 	//Set global variables
