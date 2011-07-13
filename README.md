@@ -116,6 +116,10 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 				Set: $_(selector).dom.text(text);
 				Get: $_(selector).dom.text();
 		
+		*css: Sets css styles on the selected element(s)
+			Use:
+				Set: $_(selector).dom.css(property, value);
+				
 		
 				
 	
