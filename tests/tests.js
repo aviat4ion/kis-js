@@ -33,4 +33,42 @@
 	
 	module("ajax");
 	
+	
+	// --------------------------------------------------------------------------
+	
+	module("events");
+	
+	test("Browser expando support", function() {
+		expect(3);
+		// kis-js events uses expando properties to store event listeners
+		// If this test fails, the event module will likely fail as well
+		var ele = document.createElement("div");
+		ele.expando = {a:5, b:"c", c: function cool(){return ele}};
+		equals(ele.expando.a, 5);
+		equals(ele.expando.b, "c");
+		equals(ele.expando.c(), ele, 
+			"Closure isn't broken by being assigned to an expando property");
+	});
+	
+	// --------------------------------------------------------------------------
+	
+	module("dom");
+	
+	test("Add/Remove Class", function() {
+		expect(4);
+		var $test = $_("#testSpan");
+		var ele = $test.el;
+		
+		$test.dom.addClass("coolClass");
+		equals(ele.className, "coolClass");
+		
+		$test.dom.addClass("anotherClass");
+		equals(ele.className, "coolClass anotherClass");
+		
+		$test.dom.removeClass("coolClass");
+		equals(ele.className, "anotherClass");
+		
+		$test.dom.removeClass("anotherClass");
+		ok(ele.className === undefined || ele.className === "", "testSpan.className is empty");
+	});
 }());
