@@ -64,20 +64,23 @@
 	 */
 	$_ = function(sel)
 	{
+		// Make a copy before adding properties
+		var self = dcopy($_);
+
 		//Get the DOM objects from the selector
 		sel = $(sel);
-	
+
 		//Have window be default selector, just in case
 		if(typeof sel === "undefined")
 		{
-			sel = (typeof $_.el !== "undefined") 
-				? $_.el
+			sel = (typeof self.el !== "undefined")
+				? self.el
 				: window;
 		}
 	
-		$_.el = sel;
+		self.el = sel;
 		
-		return dcopy($_);
+		return self;
 	};
 	
 	/**
