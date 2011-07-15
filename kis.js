@@ -6,7 +6,7 @@
  */
 (function (){
 
-	//"use strict";
+	"use strict";
 
 	// Property name for expandos on DOM objects
 	var kis_expando = "KIS_0_2_0";
