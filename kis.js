@@ -6,7 +6,7 @@
  */
 (function (){
 
-	"use strict";
+	//"use strict";
 
 	// Property name for expandos on DOM objects
 	var kis_expando = "KIS_0_2_0";
@@ -17,17 +17,7 @@
 		return;
 	}
 
-	var $_, $, dcopy;
-	
-	/**
-	 * String trim function polyfill
-	 */
-	if(typeof String.prototype.trim === "undefined")
-	{
-		String.prototype.trim = function(){
-			return this.replace(/^\s+|\s+$/g, "");
-		};
-	}
+	var $_, $, dcopy, sel;
 	
 	/**
 	 * $
@@ -37,7 +27,7 @@
 	$ = function (a)
 	{
 		var x;
-		if (typeof a !== "string"){ return a;}
+		if (typeof a !== "string" || typeof a === "undefined"){ return a;}
 		
 		//Pick the quickest method for each kind of selector
 		if(a.match(/^#([\w\-]+$)/))
@@ -62,21 +52,22 @@
 	 *
 	 * Constructor function
 	 */
-	$_ = function(sel)
+	$_ = function(s)
 	{
+		//Have documentElement be default selector, just in case
+		if(typeof s == "undefined")
+		{
+			sel = (typeof $_.el !== "undefined") 
+				? $_.el
+				: document.documentElement;
+		}
+		else
+		{
+			sel = $(s);// || document.documentElement;
+		}
+	
 		// Make a copy before adding properties
 		var self = dcopy($_);
-
-		//Get the DOM objects from the selector
-		sel = $(sel);
-
-		//Have window be default selector, just in case
-		if(typeof sel === "undefined")
-		{
-			sel = (typeof self.el !== "undefined")
-				? self.el
-				: window;
-		}
 	
 		self.el = sel;
 		
@@ -114,6 +105,40 @@
 		return new f();
 		
 	};
+	
+	//Function to add to $_ object, and get sel
+	$_.ext = function(name, obj)
+	{
+		$_[name] = obj;
+		obj.el = sel;
+		
+		console.log(obj.el);
+	};
+	
+	//Selector iteration
+	$_.ext('each', function (callback)
+	{	
+		if(typeof sel.length !== "undefined")
+		{
+			var len = sel.length;
+
+			if (len === 0)
+			{
+				return;
+			}
+
+			var selx;
+			for (var x = 0; x < len; x++)
+			{
+				selx = (sel.item(x)) ? sel.item(x) : sel[x];
+				callback(selx);
+			}
+		}
+		else
+		{
+			callback(sel);
+		}
+	});
 
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
@@ -127,44 +152,22 @@
 		};
 	}
 	
-	// --------------------------------------------------------------------------
-	
-	$_.each = function (callback)
+	/**
+	 * String trim function polyfill
+	 */
+	if(typeof String.prototype.trim === "undefined")
 	{
-		var sel = $_.el;
-		
-		//Don't try to iterate over the window object
-		if(sel === window || typeof sel === "undefined")
-		{
-			return;
-		}
-		
-		if(typeof sel.length !== "undefined")
-		{
-			var len = sel.length;
+		String.prototype.trim = function(){
+			return this.replace(/^\s+|\s+$/g, "");
+		};
+	}
+	
+	// --------------------------------------------------------------------------
+}());
 
-			if (len === 0)
-			{
-				return;
-			}
-
-			if (len === 1)
-			{
-				return callback(sel);
-			}
-
-			var selx;
-			for (var x = 0; x < sel.length; x++)
-			{
-				selx = (sel.item(x)) ? sel.item(x) : sel[x];
-				callback(selx);
-			}
-		}
-		else
-		{
-			callback(sel);
-		}
-	};
+(function(){
+	
+	"use strict";
 
 	/**
 	 * Ajax
@@ -239,15 +242,13 @@
 			}
 		};
 
-		$_.get = function (url, data, callback)
-		{
+		$_.ext('get', function (url, data, callback){
 			ajax._do(url, data, callback, false);
-		};
+		});
 
-		$_.post = function (url, data, callback)
-		{
+		$_.ext('post', function (url, data, callback){
 			ajax._do(url, data, callback, true);
-		};
+		});
 	}());
 
 	/**
@@ -338,7 +339,7 @@
 			}
 		};
 
-		$_.qs = qs;
+		$_.ext('qs', qs);
 
 	}());
 
@@ -380,7 +381,7 @@
 			}
 		};
 
-		$_.store = store;
+		$_.ext('store', store);
 	}());
 
 	/**
@@ -469,20 +470,9 @@
 			};
 		}
 
-		add_remove = function (event, callback, add)
+		add_remove = function (sel, event, callback, add)
 		{
 			var i, len;
-			
-			//Get the DOM object
-			var sel = $_.el;
-			
-			if(arguments.length === 4)
-			{
-				sel = arguments[0];
-				event = arguments[1];
-				callback = arguments[2];
-				add = arguments[3];
-			}
 			
 			if(typeof sel === "undefined")
 			{
@@ -500,34 +490,34 @@
 
 				for (i = 0; i < len; i++)
 				{
-					add_remove(event[i], callback, add);
+					add_remove(sel, event[i], callback, add);
 				}
 
 				return;
 			}
 
-			//Go over additonal DOM objects as needed
-			$_.each(function(e){
 			
-				(add === true) 
-					? attach(e, event, callback) 
-					: remove(e, event, callback);
-			
-			});
+			(add === true) 
+				? attach(e, event, callback) 
+				: remove(e, event, callback);
 		};
 
 		e = {
 			add: function (event, callback)
 			{
-				add_remove(event, callback, true);
+				$_.each(function(e){
+					add_remove(e, event, callback, true);
+				});
 			},
 			remove: function (event, callback)
 			{
-				add_remove(event, callback, false);
+				$_.each(function(e){
+					add_remove(e, event, callback, false);
+				});
 			}
 		};
 
-		$_.event = e;
+		$_.ext('event', e);
 
 	}());
 
@@ -601,87 +591,164 @@
 
 			return (typeof value !== "undefined") ? value : oldVal;
 		}
+		
+		/*
+		 * classList.js: Cross-browser full element.classList implementation.
+		 * 2011-06-15
+		 *
+		 * By Eli Grey, http://eligrey.com
+		 * Public Domain.
+		 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+		 */
 
-		// Private function for class manipulation
-		function _class(sel, c, add)
+		/*global self, document, DOMException */
+
+		/*! @source http://purl.eligrey.com/github/classList.js/blob/master/classList.js*/
+
+		if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
 		{
-			var ec, cs, len, i, classInd;
+			(function (view){
+				"use strict";
 
-			//We can do this the easy way
-			if (sel.classList)
-			{
-				if (add === true)
-				{
-					sel.classList.add(c);
-					return;
-				}
-				else if (add === false)
-				{
-					sel.classList.remove(c);
-					return;
-				}
-			}
-			else //Or the hard way
-			{
-				//No class attribute? Set an empty string
-				ec = sel.className;//_attr("class");
-				ec = (typeof ec === "string") ? ec : '';
-
-				//Convert class attribute string into array
-				if (typeof ec === "string")
-				{
-					cs = (ec !== '') ? ec.split(" ") : [];
-
-					len = cs.length;
-					classInd = false;
-
-					//Check for the class in the array
-					for (i = 0; i < len; i++)
+				var classListProp = "classList",
+					protoProp = "prototype",
+					elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
+					objCtr = Object,
+					strTrim = String[protoProp].trim ||
+					function ()
 					{
-						if (cs[i] === c)
+						return this.replace(/^\s+|\s+$/g, "");
+					},
+					arrIndexOf = Array[protoProp].indexOf ||
+					function (item)
+					{
+						var
+						i = 0,
+							len = this.length;
+						for (; i < len; i++)
 						{
-							classInd = i;
-							break;
+							if (i in this && this[i] === item)
+							{
+								return i;
+							}
+						}
+						return -1;
+					}
+					// Vendors: please allow content code to instantiate DOMExceptions
+					,
+					DOMEx = function (type, message)
+					{
+						this.name = type;
+						this.code = DOMException[type];
+						this.message = message;
+					},
+					checkTokenAndGetIndex = function (classList, token)
+					{
+						if (token === "")
+						{
+							throw new DOMEx("SYNTAX_ERR", "An invalid or illegal string was specified");
+						}
+						if (/\s/.test(token))
+						{
+							throw new DOMEx("INVALID_CHARACTER_ERR", "String contains an invalid character");
+						}
+						return arrIndexOf.call(classList, token);
+					},
+					ClassList = function (elem)
+					{
+						var
+						trimmedClasses = strTrim.call(elem.className),
+							classes = trimmedClasses ? trimmedClasses.split(/\s+/) : [],
+							i = 0,
+							len = classes.length;
+						for (; i < len; i++)
+						{
+							this.push(classes[i]);
+						}
+						this._updateClassName = function ()
+						{
+							elem.className = this.toString();
+						};
+					},
+					classListProto = ClassList[protoProp] = [],
+					classListGetter = function ()
+					{
+						return new ClassList(this);
+					};
+				// Most DOMException implementations don't allow calling DOMException's toString()
+				// on non-DOMExceptions. Error's toString() is sufficient here.
+				DOMEx[protoProp] = Error[protoProp];
+				classListProto.item = function (i)
+				{
+					return this[i] || null;
+				};
+				classListProto.contains = function (token)
+				{
+					token += "";
+					return checkTokenAndGetIndex(this, token) !== -1;
+				};
+				classListProto.add = function (token)
+				{
+					token += "";
+					if (checkTokenAndGetIndex(this, token) === -1)
+					{
+						this.push(token);
+						this._updateClassName();
+					}
+				};
+				classListProto.remove = function (token)
+				{
+					token += "";
+					var index = checkTokenAndGetIndex(this, token);
+					if (index !== -1)
+					{
+						this.splice(index, 1);
+						this._updateClassName();
+					}
+				};
+				classListProto.toggle = function (token)
+				{
+					token += "";
+					if (checkTokenAndGetIndex(this, token) === -1)
+					{
+						this.add(token);
+					}
+					else
+					{
+						this.remove(token);
+					}
+				};
+				classListProto.toString = function ()
+				{
+					return this.join(" ");
+				};
+
+				if (objCtr.defineProperty)
+				{
+					var classListPropDesc = {
+						get: classListGetter,
+						enumerable: true,
+						configurable: true
+					};
+					try
+					{
+						objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
+					}
+					catch (ex)
+					{ // IE 8 doesn't support enumerable:true
+						if (ex.number === -0x7FF5EC54)
+						{
+							classListPropDesc.enumerable = false;
+							objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
 						}
 					}
 				}
-
-				//Add or remove from class array
-				if (add === true)
+				else if (objCtr[protoProp].__defineGetter__)
 				{
-					//Only add the class if isn't already there
-					if (classInd === false)
-					{
-						cs.push(c);
-					}
-				}
-				else if (add === false)
-				{
-					//Make sure the class you want to remove exists
-					if (classInd !== false)
-					{
-						cs.splice(classInd, 1);
-					}
+					elemCtrProto.__defineGetter__(classListProp, classListGetter);
 				}
 
-				var cName = (cs.length > 1) ? cs.join(" ") : cs[0];
-
-				if (typeof sel.className !== "undefined")
-				{
-					sel.className = cName;
-				}
-				else if (typeof sel.setAttribute !== "undefined")
-				{
-					sel.setAttribute('class', cName);
-				}
-				else
-				{
-					console.log(sel);
-				}
-
-				return cName;
-			}
-
+			}(self));
 		}
 		
 		function _toCamel(s)
@@ -733,13 +800,15 @@
 			addClass: function (c)
 			{
 				$_.each(function (e){
-					_class(e, c, true);
+					console.log(e);
+					console.log(c);
+					e.classList.add(c);
 				});
 			},
 			removeClass: function (c)
 			{
 				$_.each(function (e){
-					_class(e, c, false);
+					e.classList.remove(c);
 				});
 			},
 			hide: function ()
@@ -757,7 +826,7 @@
 			},
 			attr: function (name, value)
 			{
-				var sel = $_.el;
+				var sel = this.el;
 
 				//Make sure you don't try to get a bunch of elements
 				if (sel.length > 1 && typeof value === "undefined")
@@ -769,7 +838,7 @@
 				else if (sel.length > 1 && typeof value !== "undefined") //You can set a bunch, though
 				{
 					$_.each(function (e){
-						_attr(e, name, value);
+						return _attr(e, name, value);
 					});
 				}
 				else //Normal behavior
@@ -781,7 +850,7 @@
 			{
 				var oldValue, set, type, sel;
 			
-				sel = $_.el;
+				sel = this.el;
 				
 				set = (typeof value !== "undefined") ? true : false;
 				
@@ -811,7 +880,8 @@
 			}
 		};
 
-		$_.dom = d;
+		$_.ext('dom', d);
+		
 	}());
 
 }());
