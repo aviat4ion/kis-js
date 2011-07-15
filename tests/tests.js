@@ -1,15 +1,25 @@
 (function(){
 	"use strict";
+	
+	//Selector test function
+	function $(a)
+	{
+		var x = document.querySelectorAll(a);
+		
+		//Return the single object if applicable
+		return (x.length === 1) ? x[0] : x;
+	}
 
 	module("core");
 	
 	test("Basic requirements", function(){
-		expect(5);
+		expect(6);
 		ok(document.querySelectorAll, "querySelectorAll");
 		ok(document.getElementById, "getElementById");
 		ok(document.getElementsByTagName, "getElementsByTagName");
 		ok(String.prototype.trim, "String.trim()");
-		ok($_, "Global var");
+		strictEqual(typeof $_, "function", "Global var");
+		strictEqual(typeof $_(), "object");
 	});
 	
 	test("Unique Selectors", function(){
@@ -23,14 +33,13 @@
 	test("Extend function", function(){
 		var o = $_("ol");
 	
-		expect(3);
+		expect(4);
 		ok(o.ext, "Extend function exists");
 		
 		$_.ext('test', {});
 		strictEqual(typeof o.test, "object", "Extend function adds to $_");
-		equal(o.test.el, $_("ol").el, "Extend function adds selector to passed object");
-		
-		
+		strictEqual(o.test.el, $_("ol").el, "Extend function adds selector to passed object");
+		strictEqual(o.test.el, o.el, "Selector is the same on parent and child object");
 	});
 	
 	test("Selector tests", function(){
@@ -88,10 +97,8 @@
 	
 	test("Add/Remove Class", function() {
 		expect(4);
-		//var $test = $_("#testSpan");
-		//var ele = $test.el;
-		var ele = document.getElementById('testSpan');
-		var $test = $_(ele);
+		var $test = $_("#testSpan");
+		var ele = $test.el;
 		
 		$test.dom.addClass("coolClass");
 		equal(ele.className, "coolClass");
@@ -104,6 +111,40 @@
 		
 		$test.dom.removeClass("anotherClass");
 		ok(ele.className === undefined || ele.className === "", "testSpan.className is empty");
+	});
+	
+	test("Show/Hide", function(){
+		expect(3);
+	
+		var $test = $_("#classChild .child");
+		var ele = $test.el;
+		
+		$test.dom.hide();
+		equal(ele.style.display, "none", "Element hidden with display:none");
+		
+		$test.dom.show();
+		equal(ele.style.display, "block", "Element shown with display:block");
+		
+		$test.dom.hide();
+		$test.dom.show('inline-block');
+		
+		equal(ele.style.display, "inline-block", "Element shown with custom display type");
+	});
+	
+	test("Text", function(){
+		var $test = $_("article#r14");
+		var ele = $test.el;
+		var text = (typeof ele.innerText !== "undefined") ? ele.innerText : ele.textContent;
+		
+		equal($test.el, $("article#r14"), "Selector property is correct");
+		equal($test.dom.text(), text, "Getting test");
+	});
+	
+	test("Attr", function(){
+		var $test = $_("section");
+		var ele = $test.el;
+		
+		equal($test.dom.attr('hidden'), "hidden", "Getting attribute");
 	});
 	
 }());

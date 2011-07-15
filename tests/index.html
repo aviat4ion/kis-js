@@ -15,9 +15,13 @@
 			test markup, will be hidden
 			<span id="testSpan"></span>
 		</div>
-		<section>
-			<article id="r14"></article>
-			<aside></aside>
+		<section hidden="hidden">
+			<article id="r14">
+				This is important text!
+			</article>
+			<aside id="classChild">
+				<div class="child"></div>
+			</aside>
 		</section>
 		<script src="../kis.js"></script>
 		<script src="qunit/qunit.js"></script>
