@@ -65,12 +65,19 @@
 		{
 			sel = $(s);// || document.documentElement;
 		}
-	
+
 		// Make a copy before adding properties
 		var self = dcopy($_);
-	
+
+		// Give sel to each extension.
+		for(var i in self) 
+		{
+			if(typeof self[i] === "object")
+				self[i].el = sel;	
+		}
+
 		self.el = sel;
-		
+	
 		return self;
 	};
 	
