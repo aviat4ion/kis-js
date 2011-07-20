@@ -8,9 +8,6 @@
 
 	"use strict";
 
-	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_2_0";
-
 	//Browser requirements check
 	if (!document.querySelectorAll)
 	{
@@ -63,7 +60,7 @@
 		}
 		else
 		{
-			sel = $(s);// || document.documentElement;
+			sel = $(s);
 		}
 
 		// Make a copy before adding properties
@@ -88,9 +85,9 @@
 	 */
 	dcopy = function(obj)
 	{
-		var type, f;
+		var type, F;
 		
-		if(obj == null)
+		if(typeof obj === "undefined")
 		{
 			return;
 		}
@@ -100,18 +97,18 @@
 			return Object.create(obj);
 		}
 		
-		var type = typeof obj;
+		type = typeof obj;
 		
 		if(type !== "object" && type !== "function")
 		{
 			return;
 		}
 		
-		var f = function(){};
+		F = function(){};
 		
-		f.prototype = obj;
+		F.prototype = obj;
 		
-		return new f();
+		return new F();
 		
 	};
 	
@@ -120,14 +117,12 @@
 	{
 		$_[name] = obj;
 		obj.el = sel;
-		
-		console.log(obj.el);
 	};
 	
 	//Selector iteration
 	$_.ext('each', function (callback)
-	{	
-		if(typeof sel.length !== "undefined")
+	{
+		if(typeof sel.length !== "undefined" && sel !== window)
 		{
 			var len = sel.length;
 
@@ -177,6 +172,11 @@
 (function(){
 	
 	"use strict";
+	
+	var $_ = $_ || window.$_;
+	
+	// Property name for expandos on DOM objects
+	var kis_expando = "KIS_0_2_0";
 
 	/**
 	 * Ajax
@@ -408,14 +408,14 @@
 		{
 			attach = function (sel, event, callback)
 			{
-				if (typeof sel.addEventListener != null)
+				if (typeof sel.addEventListener !== "undefined")
 				{
 					sel.addEventListener(event, callback, false);
 				}
 			};
 			remove = function (sel, event, callback)
 			{
-				if (typeof sel.removeEventListener != null)
+				if (typeof sel.removeEventListener !== "undefined")
 				{
 					sel.removeEventListener(event, callback, false);
 				}
@@ -506,9 +506,14 @@
 			}
 
 			
-			(add === true) 
-				? attach(sel, event, callback) 
-				: remove(sel, event, callback);
+			if(add === true)
+			{
+				attach(sel, event, callback);
+			}
+			else
+			{
+				remove(sel, event, callback);
+			}
 		};
 
 		e = {
@@ -582,9 +587,14 @@
 			//Determine what to do with the attribute
 			if (typeof value !== "undefined" && value !== null)
 			{
-				(doAttr === true) 
-					? sel.setAttribute(name, value) 
-					: sel[name] = value;
+				if(doAttr === true)
+				{
+					sel.setAttribute(name, value);
+				}
+				else
+				{
+					sel[name] = value;
+				} 
 			}
 			else if (value === null)
 			{
@@ -617,7 +627,6 @@
 		if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
 		{
 			(function (view){
-				"use strict";
 
 				var classListProp = "classList",
 					protoProp = "prototype",
@@ -809,8 +818,6 @@
 			addClass: function (c)
 			{
 				$_.each(function (e){
-					console.log(e);
-					console.log(c);
 					e.classList.add(c);
 				});
 			},
