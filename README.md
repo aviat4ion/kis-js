@@ -19,13 +19,19 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 	
 	functions:
 				
-		*each: For applying changes to every item matched by a selector
+		* each: For applying changes to every item matched by a selector
 			Use:
 			 	$_(selector).dom.each(callback);
 			 	
 			Example : $_(".foo").dom.each(function(e){
 						$_(e).dom.text(value);
 					  }):
+					  
+		* ext: For extending the library, adds this.el to the object or function supplied
+			Use: $_.ext("name", functionOrObject)
+			
+			Example: $_.ext("zip", function(){ //function });
+						Adds 'zip' function to $_.
 		
 
 **Ajax**: simple, jQuery-like ajax functions
