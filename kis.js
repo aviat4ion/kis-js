@@ -73,7 +73,9 @@
 		for(var i in self) 
 		{
 			if(typeof self[i] === "object")
-				self[i].el = sel;	
+			{
+				self[i].el = sel;
+			}	
 		}
 
 		self.el = sel;
@@ -406,14 +408,14 @@
 		{
 			attach = function (sel, event, callback)
 			{
-				if (typeof sel.addEventListener !== "undefined")
+				if (typeof sel.addEventListener != null)
 				{
 					sel.addEventListener(event, callback, false);
 				}
 			};
 			remove = function (sel, event, callback)
 			{
-				if (typeof sel.removeEventListener !== "undefined")
+				if (typeof sel.removeEventListener != null)
 				{
 					sel.removeEventListener(event, callback, false);
 				}
@@ -505,8 +507,8 @@
 
 			
 			(add === true) 
-				? attach(e, event, callback) 
-				: remove(e, event, callback);
+				? attach(sel, event, callback) 
+				: remove(sel, event, callback);
 		};
 
 		e = {
