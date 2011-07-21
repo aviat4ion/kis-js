@@ -2,7 +2,12 @@
 
 A Minimal, Modular Javascript library for Modern browsers.
 
-Aims to be fast, small, and easily split into individual modules.
+Aims to be fast, small, and easily split into individual modules. 
+
+You can create your own library by adding and removing modules from the 
+src directory, and running the "combine.php" script. This will output a 
+"kis-custom.js" file. (Be careful, as the script will overwrite any "kis-custom.js"
+file that already exists).
 
 Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 
@@ -10,7 +15,7 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 
 * Function:	`$_(selector).module.function(params);`
 
-## Modules: ##
+## Official Modules: ##
 **Global**: Core functions
 	
 	properties:
