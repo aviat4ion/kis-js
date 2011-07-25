@@ -4,75 +4,6 @@
  */
 (function (){
 	var d;
-
-	//Private function for getting/setting attributes
-	function _attr(sel, name, value)
-	{
-		var oldVal, doAttr;
-
-		//Get the value of the attribute, if it exists
-		if (typeof sel.hasAttribute !== "undefined")
-		{
-			if (sel.hasAttribute(name))
-			{
-				oldVal = sel.getAttribute(name);
-			}
-
-			doAttr = true;
-		}
-		else if (typeof sel[name] !== "undefined")
-		{
-			oldVal = sel[name];
-			doAttr = false;
-		}
-		else if (name === "class" && typeof sel.className !== "undefined") //className attribute
-		{
-			name = "className";
-			oldVal = sel.className;
-			doAttr = false;
-		}
-
-		//Well, I guess that attribute doesn't exist
-		if (typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
-		{
-			console.log(value);
-			console.log(sel);
-			console.log("Element does not have the selected attribute");
-			return;
-		}
-
-		//No value to set? Return the current value
-		if (typeof value === "undefined")
-		{
-			return oldVal;
-		}
-
-		//Determine what to do with the attribute
-		if (typeof value !== "undefined" && value !== null)
-		{
-			if(doAttr === true)
-			{
-				sel.setAttribute(name, value);
-			}
-			else
-			{
-				sel[name] = value;
-			} 
-		}
-		else if (value === null)
-		{
-			if(doAttr === true)
-			{
-				sel.removeAttribute(name);
-			}
-			else
-			{
-				delete sel[name];
-			} 
-		}
-
-		return (typeof value !== "undefined") ? value : oldVal;
-	}
 	
 	/*
 	 * classList.js: Cross-browser full element.classList implementation.
@@ -82,10 +13,6 @@
 	 * Public Domain.
 	 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
 	 */
-
-	/*global self, document, DOMException */
-
-	/*! @source http://purl.eligrey.com/github/classList.js/blob/master/classList.js*/
 
 	if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
 	{
@@ -232,6 +159,77 @@
 		}(self));
 	}
 	
+	// --------------------------------------------------------------------------
+
+	//Private function for getting/setting attributes
+	function _attr(sel, name, value)
+	{
+		var oldVal, doAttr;
+
+		//Get the value of the attribute, if it exists
+		if (typeof sel.hasAttribute !== "undefined")
+		{
+			if (sel.hasAttribute(name))
+			{
+				oldVal = sel.getAttribute(name);
+			}
+
+			doAttr = true;
+		}
+		else if (typeof sel[name] !== "undefined")
+		{
+			oldVal = sel[name];
+			doAttr = false;
+		}
+		else if (name === "class" && typeof sel.className !== "undefined") //className attribute
+		{
+			name = "className";
+			oldVal = sel.className;
+			doAttr = false;
+		}
+
+		//Well, I guess that attribute doesn't exist
+		if (typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
+		{
+			console.log(value);
+			console.log(sel);
+			console.log("Element does not have the selected attribute");
+			return;
+		}
+
+		//No value to set? Return the current value
+		if (typeof value === "undefined")
+		{
+			return oldVal;
+		}
+
+		//Determine what to do with the attribute
+		if (typeof value !== "undefined" && value !== null)
+		{
+			if(doAttr === true)
+			{
+				sel.setAttribute(name, value);
+			}
+			else
+			{
+				sel[name] = value;
+			} 
+		}
+		else if (value === null)
+		{
+			if(doAttr === true)
+			{
+				sel.removeAttribute(name);
+			}
+			else
+			{
+				delete sel[name];
+			} 
+		}
+
+		return (typeof value !== "undefined") ? value : oldVal;
+	}
+	
 	function _toCamel(s)
 	{
 		return s.replace(/(\-[a-z])/g, function($1){
@@ -246,6 +244,24 @@
 		//Camel-case
 		prop = _toCamel(prop);
 
+		//Equivalent properties for 'special' browsers
+		equi = {
+			outerHeight: "offsetHeight",
+			outerWidth: "offsetWidth",
+			top: "posTop"
+		}
+		
+		
+		//If you don't define a value, try returning the existing value
+		if(typeof val === "undefined" && sel.style[prop] !== "undefined")
+		{
+			return sel.style[prop];
+		}
+		else if(typeof val === "undefined" && sel.style[equi[prop]] !== "undefined")
+		{
+			return sel.style[equi[prop]];
+		}
+
 		//Let's try the easy way first
 		if(typeof sel.style[prop] !== "undefined")
 		{
@@ -254,18 +270,7 @@
 			//Short circuit
 			return;
 		}
-
-		//Let have an object with equivalent properties
-		//for `special` browsers, and other quirks
-		
-		//Todo: get more common properties
-		equi = {
-			outerHeight: "offsetHeight",
-			outerWidth: "offsetWidth",
-			top: "posTop"
-		};
-
-		if(sel.style[equi[prop]])
+		else if(sel.style[equi[prop]])
 		{
 			sel.style[equi[prop]] = val;
 			return;
@@ -353,6 +358,12 @@
 		},
 		css: function (prop, val)
 		{
+			//Return the current value if a value is not set
+			if(typeof val === "undefined")
+			{
+				return _css(this.el, prop);
+			}
+		
 			$_.each(function (e){
 				_css(e, prop, val);
 			});

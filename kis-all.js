@@ -170,372 +170,15 @@
 
 // --------------------------------------------------------------------------
 
+//Function to maintain module scope
 (function(){
-	
+
 	"use strict";
-	
+
 	//Fix $_ is not defined errors
 	var $_ = $_ || window.$_;
-	
-	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_2_0";
 
-	/**
-	 * Ajax
-	 *
-	 * Object for making ajax requests
-	 */
-	(function (){
-	
-		var ajax = {
-			_do: function (url, data, callback, isPost)
-			{
-				if (typeof callback === "undefined")
-				{
-					callback = function (){};
-				}
-
-				var request = (typeof window.XMLHttpRequest !== "undefined") 
-					? new XMLHttpRequest() 
-					: false;
-
-				var type = (isPost) ? "POST" : "GET";
-
-				url += (type === "GET") ? "?"+this._serialize(data, true) : '';
-				
-				request.open(type, url);
-
-				request.onreadystatechange = function ()
-				{
-					if (request.readyState === 4)
-					{
-						callback(request.responseText);
-					}
-				};
-
-				if (type === "POST")
-				{
-					request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-					request.send(this._serialize(data));
-				}
-				else
-				{
-					request.send(null);
-				}
-			},
-			_serialize: function (data, encode)
-			{
-				var pairs = [];
-
-				for (var name in data)
-				{
-					if (!data.hasOwnProperty(name))
-					{
-						continue;
-					}
-					if (typeof data[name] === "function")
-					{
-						continue;
-					}
-
-					var value = data[name].toString();
-
-					if (encode === true)
-					{
-						name = encodeURIComponent(name.replace(" ", "+"));
-						value = encodeURIComponent(value.replace(" ", "+"));
-					}
-
-					pairs.push(name + "=" + value);
-				}
-
-				return pairs.join("&");
-			}
-		};
-
-		$_.ext('get', function (url, data, callback){
-			ajax._do(url, data, callback, false);
-		});
-
-		$_.ext('post', function (url, data, callback){
-			ajax._do(url, data, callback, true);
-		});
-	}());
-
-	/**
-	 * Qs
-	 *
-	 * Object for encoding and decoding querystrings and hashbang strings
-	 */
-	(function (){
-
-		$_.hb = (history.pushState) ? false : true;
-
-		var qs = {
-			parse: function (hb)
-			{
-				hb = hb || $_.hb;
-				
-				var h, i, hString, pairs, pLen, data, y;
-
-				data = {};
-
-				if (hb === true)
-				{
-					h = location.hash.split('#!/');
-					hString = (h.length > 1) ? h[1] : '';
-				}
-				else if (hb === false || hb === undefined)
-				{
-					hString = window.location.search.substring(1);
-				}
-				else
-				{
-					return false;
-				}
-
-				pairs = hString.split('&');
-
-				pLen = pairs.length;
-
-				for (i = 0; i < pLen; i++)
-				{
-					y = pairs[i].split('=');
-
-					if (y.length < 2)
-					{
-						return data;
-					}
-
-					data[y[0]] = y[1];
-				}
-
-				return data;
-			},
-			set: function (key, value, hb)
-			{
-				hb = hb || $_.hb;
-				var pairs = this.parse(hb);
-
-				if (key !== undefined && value !== undefined)
-				{
-					pairs[key] = value;
-				}
-
-				var vars = [];
-
-				for (var x in pairs)
-				{
-					if (pairs.hasOwnProperty(x))
-					{
-						vars.push(x + '=' + pairs[x]);
-					}
-				}
-
-				var qs = vars.join('&');
-
-				if (hb === true)
-				{
-					qs = '!/' + qs;
-					location.hash = qs;
-				}
-
-				return qs;
-			},
-			get: function (key, hb)
-			{
-				hb = hb || $_.hb;
-				var pairs = this.parse(hb);
-				return (pairs[key]) ? pairs[key] : '';
-			}
-		};
-
-		$_.ext('qs', qs);
-
-	}());
-
-	/**
-	 * Store object
-	 *
-	 * Wrapper for localstorage data serialization
-	 */
-	(function (){
-		var store = {
-			get: function (key)
-			{
-				return JSON.parse(localStorage.getItem(key));
-			},
-			set: function (key, value)
-			{
-				if (typeof value !== "string")
-				{
-					value = JSON.stringify(value);
-				}
-				localStorage.setItem(key, value);
-			},
-			getAll: function ()
-			{
-				var i,
-					len,
-					data;
-				len = localStorage.length;
-				data = {};
-
-				for (i = 0; i < len; i++)
-				{
-					var name = localStorage.key(i);
-					var value = localStorage.getItem(name);
-					data[name] = value;
-				}
-
-				return data;
-			}
-		};
-
-		$_.ext('store', store);
-	}());
-
-	/**
-	 * Event object
-	 *
-	 * Event api wrapper
-	 */
-	(function (){
-	
-		var attach, remove, add_remove, e;
-
-		// Define the proper attach and remove functions
-		// based on browser support
-		if(typeof document.addEventListener !== "undefined")
-		{
-			attach = function (sel, event, callback)
-			{
-				if (typeof sel.addEventListener !== "undefined")
-				{
-					sel.addEventListener(event, callback, false);
-				}
-			};
-			remove = function (sel, event, callback)
-			{
-				if (typeof sel.removeEventListener !== "undefined")
-				{
-					sel.removeEventListener(event, callback, false);
-				}
-			};
-		}
-		//typeof function doesn't work in IE where attachEvent is available: brute force it
-		else if(typeof document.attachEvent !== "undefined") 
-		{
-			attach = function (sel, event, callback)
-			{
-				function listener () {
-					// Internet Explorer fails to correctly set the 'this' object
-					// for event listeners, so we need to set it ourselves.
-					callback.apply(arguments);
-				}
-				
-				if (typeof sel.attachEvent !== "undefined")
-				{
-					remove(event, callback); // Make sure we don't have duplicate listeners
-					
-					sel.attachEvent("on" + event, listener);
-					// Store our listener so we can remove it later
-					var expando = sel[kis_expando] = sel[kis_expando] || {};
-					expando.listeners = expando.listeners || {};
-					expando.listeners[event] = expando.listeners[event] || [];
-					expando.listeners[event].push({
-						callback: callback,
-						listener: listener
-					});
-				}
-				else
-				{
-					console.log("Failed to attach event:"+event+" on "+sel);
-				}
-			};
-			remove = function (sel, event, callback)
-			{
-				if(typeof sel.detachEvent !== "undefined")
-				{
-					var expando = sel[kis_expando];
-					if (expando && expando.listeners
-							&& expando.listeners[event])
-					{
-						var listeners = expando.listeners[event];
-						var len = listeners.length;
-						for (var i=0; i<len; i++)
-						{
-							if (listeners[i].callback === callback)
-							{
-								sel.detachEvent("on" + event, listeners[i].listener);
-								listeners.splice(i, 1);
-								if(listeners.length === 0)
-								{
-									delete expando.listeners[event];
-								}
-								return;
-							}
-						}
-					}
-				}
-			};
-		}
-
-		add_remove = function (sel, event, callback, add)
-		{
-			var i, len;
-			
-			if(typeof sel === "undefined")
-			{
-				console.log(arguments);
-				console.log(event);
-				return false;
-			}
-
-			//Multiple events? Run recursively!
-			if (!event.match(/^([\w\-]+)$/))
-			{
-				event = event.split(" ");
-				
-				len = event.length;
-
-				for (i = 0; i < len; i++)
-				{
-					add_remove(sel, event[i], callback, add);
-				}
-
-				return;
-			}
-
-			
-			if(add === true)
-			{
-				attach(sel, event, callback);
-			}
-			else
-			{
-				remove(sel, event, callback);
-			}
-		};
-
-		e = {
-			add: function (event, callback)
-			{
-				$_.each(function(e){
-					add_remove(e, event, callback, true);
-				});
-			},
-			remove: function (event, callback)
-			{
-				$_.each(function(e){
-					add_remove(e, event, callback, false);
-				});
-			}
-		};
-
-		$_.ext('event', e);
-
-	}());
+	// --------------------------------------------------------------------------
 
 	/**
 	 * Dom manipulation object
@@ -543,75 +186,6 @@
 	 */
 	(function (){
 		var d;
-
-		//Private function for getting/setting attributes
-		function _attr(sel, name, value)
-		{
-			var oldVal, doAttr;
-
-			//Get the value of the attribute, if it exists
-			if (typeof sel.hasAttribute !== "undefined")
-			{
-				if (sel.hasAttribute(name))
-				{
-					oldVal = sel.getAttribute(name);
-				}
-
-				doAttr = true;
-			}
-			else if (typeof sel[name] !== "undefined")
-			{
-				oldVal = sel[name];
-				doAttr = false;
-			}
-			else if (name === "class" && typeof sel.className !== "undefined") //className attribute
-			{
-				name = "className";
-				oldVal = sel.className;
-				doAttr = false;
-			}
-
-			//Well, I guess that attribute doesn't exist
-			if (typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
-			{
-				console.log(value);
-				console.log(sel);
-				console.log("Element does not have the selected attribute");
-				return;
-			}
-
-			//No value to set? Return the current value
-			if (typeof value === "undefined")
-			{
-				return oldVal;
-			}
-
-			//Determine what to do with the attribute
-			if (typeof value !== "undefined" && value !== null)
-			{
-				if(doAttr === true)
-				{
-					sel.setAttribute(name, value);
-				}
-				else
-				{
-					sel[name] = value;
-				} 
-			}
-			else if (value === null)
-			{
-				if(doAttr === true)
-				{
-					sel.removeAttribute(name);
-				}
-				else
-				{
-					delete sel[name];
-				} 
-			}
-
-			return (typeof value !== "undefined") ? value : oldVal;
-		}
 		
 		/*
 		 * classList.js: Cross-browser full element.classList implementation.
@@ -621,10 +195,6 @@
 		 * Public Domain.
 		 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
 		 */
-
-		/*global self, document, DOMException */
-
-		/*! @source http://purl.eligrey.com/github/classList.js/blob/master/classList.js*/
 
 		if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
 		{
@@ -771,6 +341,77 @@
 			}(self));
 		}
 		
+		// --------------------------------------------------------------------------
+
+		//Private function for getting/setting attributes
+		function _attr(sel, name, value)
+		{
+			var oldVal, doAttr;
+
+			//Get the value of the attribute, if it exists
+			if (typeof sel.hasAttribute !== "undefined")
+			{
+				if (sel.hasAttribute(name))
+				{
+					oldVal = sel.getAttribute(name);
+				}
+
+				doAttr = true;
+			}
+			else if (typeof sel[name] !== "undefined")
+			{
+				oldVal = sel[name];
+				doAttr = false;
+			}
+			else if (name === "class" && typeof sel.className !== "undefined") //className attribute
+			{
+				name = "className";
+				oldVal = sel.className;
+				doAttr = false;
+			}
+
+			//Well, I guess that attribute doesn't exist
+			if (typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
+			{
+				console.log(value);
+				console.log(sel);
+				console.log("Element does not have the selected attribute");
+				return;
+			}
+
+			//No value to set? Return the current value
+			if (typeof value === "undefined")
+			{
+				return oldVal;
+			}
+
+			//Determine what to do with the attribute
+			if (typeof value !== "undefined" && value !== null)
+			{
+				if(doAttr === true)
+				{
+					sel.setAttribute(name, value);
+				}
+				else
+				{
+					sel[name] = value;
+				} 
+			}
+			else if (value === null)
+			{
+				if(doAttr === true)
+				{
+					sel.removeAttribute(name);
+				}
+				else
+				{
+					delete sel[name];
+				} 
+			}
+
+			return (typeof value !== "undefined") ? value : oldVal;
+		}
+		
 		function _toCamel(s)
 		{
 			return s.replace(/(\-[a-z])/g, function($1){
@@ -785,6 +426,24 @@
 			//Camel-case
 			prop = _toCamel(prop);
 
+			//Equivalent properties for 'special' browsers
+			equi = {
+				outerHeight: "offsetHeight",
+				outerWidth: "offsetWidth",
+				top: "posTop"
+			}
+			
+			
+			//If you don't define a value, try returning the existing value
+			if(typeof val === "undefined" && sel.style[prop] !== "undefined")
+			{
+				return sel.style[prop];
+			}
+			else if(typeof val === "undefined" && sel.style[equi[prop]] !== "undefined")
+			{
+				return sel.style[equi[prop]];
+			}
+
 			//Let's try the easy way first
 			if(typeof sel.style[prop] !== "undefined")
 			{
@@ -793,18 +452,7 @@
 				//Short circuit
 				return;
 			}
-
-			//Let have an object with equivalent properties
-			//for `special` browsers, and other quirks
-			
-			//Todo: get more common properties
-			equi = {
-				outerHeight: "offsetHeight",
-				outerWidth: "offsetWidth",
-				top: "posTop"
-			};
-
-			if(sel.style[equi[prop]])
+			else if(sel.style[equi[prop]])
 			{
 				sel.style[equi[prop]] = val;
 				return;
@@ -892,6 +540,11 @@
 			},
 			css: function (prop, val)
 			{
+				if(typeof val === "undefined")
+				{
+					return _css(this.el, prop);
+				}
+			
 				$_.each(function (e){
 					_css(e, prop, val);
 				});
@@ -900,6 +553,374 @@
 
 		$_.ext('dom', d);
 		
+	}());
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Store object
+	 *
+	 * Wrapper for localstorage data serialization
+	 */
+	(function (){
+		var store = {
+			get: function (key)
+			{
+				return JSON.parse(localStorage.getItem(key));
+			},
+			set: function (key, value)
+			{
+				if (typeof value !== "string")
+				{
+					value = JSON.stringify(value);
+				}
+				localStorage.setItem(key, value);
+			},
+			getAll: function ()
+			{
+				var i,
+					len,
+					data;
+				len = localStorage.length;
+				data = {};
+
+				for (i = 0; i < len; i++)
+				{
+					var name = localStorage.key(i);
+					var value = localStorage.getItem(name);
+					data[name] = value;
+				}
+
+				return data;
+			}
+		};
+
+		$_.ext('store', store);
+	}());
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Qs
+	 *
+	 * Object for encoding and decoding querystrings and hashbang strings
+	 */
+	(function (){
+
+		$_.hb = (history.pushState) ? false : true;
+
+		var qs = {
+			parse: function (hb)
+			{
+				hb = hb || $_.hb;
+				
+				var h, i, hString, pairs, pLen, data, y;
+
+				data = {};
+
+				if (hb === true)
+				{
+					h = location.hash.split('#!/');
+					hString = (h.length > 1) ? h[1] : '';
+				}
+				else if (hb === false || hb === undefined)
+				{
+					hString = window.location.search.substring(1);
+				}
+				else
+				{
+					return false;
+				}
+
+				pairs = hString.split('&');
+
+				pLen = pairs.length;
+
+				for (i = 0; i < pLen; i++)
+				{
+					y = pairs[i].split('=');
+
+					if (y.length < 2)
+					{
+						return data;
+					}
+
+					data[y[0]] = y[1];
+				}
+
+				return data;
+			},
+			set: function (key, value, hb)
+			{
+				hb = hb || $_.hb;
+				var pairs = this.parse(hb);
+
+				if (key !== undefined && value !== undefined)
+				{
+					pairs[key] = value;
+				}
+
+				var vars = [];
+
+				for (var x in pairs)
+				{
+					if (pairs.hasOwnProperty(x))
+					{
+						vars.push(x + '=' + pairs[x]);
+					}
+				}
+
+				var qs = vars.join('&');
+
+				if (hb === true)
+				{
+					qs = '!/' + qs;
+					location.hash = qs;
+				}
+
+				return qs;
+			},
+			get: function (key, hb)
+			{
+				hb = hb || $_.hb;
+				var pairs = this.parse(hb);
+				return (pairs[key]) ? pairs[key] : '';
+			}
+		};
+
+		$_.ext('qs', qs);
+
+	}());
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Ajax
+	 *
+	 * Object for making ajax requests
+	 */
+	(function (){
+
+		var ajax = {
+			_do: function (url, data, callback, isPost)
+			{
+				if (typeof callback === "undefined")
+				{
+					callback = function (){};
+				}
+
+				var request = (typeof window.XMLHttpRequest !== "undefined") 
+					? new XMLHttpRequest() 
+					: false;
+
+				var type = (isPost) ? "POST" : "GET";
+
+				url += (type === "GET") ? "?"+this._serialize(data, true) : '';
+				
+				request.open(type, url);
+
+				request.onreadystatechange = function ()
+				{
+					if (request.readyState === 4)
+					{
+						callback(request.responseText);
+					}
+				};
+
+				if (type === "POST")
+				{
+					request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					request.send(this._serialize(data));
+				}
+				else
+				{
+					request.send(null);
+				}
+			},
+			_serialize: function (data, encode)
+			{
+				var pairs = [];
+
+				for (var name in data)
+				{
+					if (!data.hasOwnProperty(name))
+					{
+						continue;
+					}
+					if (typeof data[name] === "function")
+					{
+						continue;
+					}
+
+					var value = data[name].toString();
+
+					if (encode === true)
+					{
+						name = encodeURIComponent(name.replace(" ", "+"));
+						value = encodeURIComponent(value.replace(" ", "+"));
+					}
+
+					pairs.push(name + "=" + value);
+				}
+
+				return pairs.join("&");
+			}
+		};
+
+		$_.ext('get', function (url, data, callback){
+			ajax._do(url, data, callback, false);
+		});
+
+		$_.ext('post', function (url, data, callback){
+			ajax._do(url, data, callback, true);
+		});
+	}());
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Event object
+	 *
+	 * Event api wrapper
+	 */
+	(function (){
+
+		// Property name for expandos on DOM objects
+		var kis_expando = "KIS_0_2_0";
+
+		var attach, remove, add_remove, e;
+
+		// Define the proper attach and remove functions
+		// based on browser support
+		if(typeof document.addEventListener !== "undefined")
+		{
+			attach = function (sel, event, callback)
+			{
+				if (typeof sel.addEventListener !== "undefined")
+				{
+					sel.addEventListener(event, callback, false);
+				}
+			};
+			remove = function (sel, event, callback)
+			{
+				if (typeof sel.removeEventListener !== "undefined")
+				{
+					sel.removeEventListener(event, callback, false);
+				}
+			};
+		}
+		//typeof function doesn't work in IE where attachEvent is available: brute force it
+		else if(typeof document.attachEvent !== "undefined") 
+		{
+			attach = function (sel, event, callback)
+			{
+				function listener () {
+					// Internet Explorer fails to correctly set the 'this' object
+					// for event listeners, so we need to set it ourselves.
+					callback.apply(arguments);
+				}
+				
+				if (typeof sel.attachEvent !== "undefined")
+				{
+					remove(event, callback); // Make sure we don't have duplicate listeners
+					
+					sel.attachEvent("on" + event, listener);
+					// Store our listener so we can remove it later
+					var expando = sel[kis_expando] = sel[kis_expando] || {};
+					expando.listeners = expando.listeners || {};
+					expando.listeners[event] = expando.listeners[event] || [];
+					expando.listeners[event].push({
+						callback: callback,
+						listener: listener
+					});
+				}
+				else
+				{
+					console.log("Failed to attach event:"+event+" on "+sel);
+				}
+			};
+			remove = function (sel, event, callback)
+			{
+				if(typeof sel.detachEvent !== "undefined")
+				{
+					var expando = sel[kis_expando];
+					if (expando && expando.listeners
+							&& expando.listeners[event])
+					{
+						var listeners = expando.listeners[event];
+						var len = listeners.length;
+						for (var i=0; i<len; i++)
+						{
+							if (listeners[i].callback === callback)
+							{
+								sel.detachEvent("on" + event, listeners[i].listener);
+								listeners.splice(i, 1);
+								if(listeners.length === 0)
+								{
+									delete expando.listeners[event];
+								}
+								return;
+							}
+						}
+					}
+				}
+			};
+		}
+
+		add_remove = function (sel, event, callback, add)
+		{
+			var i, len;
+			
+			if(typeof sel === "undefined")
+			{
+				console.log(arguments);
+				console.log(event);
+				return false;
+			}
+
+			//Multiple events? Run recursively!
+			if (!event.match(/^([\w\-]+)$/))
+			{
+				event = event.split(" ");
+				
+				len = event.length;
+
+				for (i = 0; i < len; i++)
+				{
+					add_remove(sel, event[i], callback, add);
+				}
+
+				return;
+			}
+
+			
+			if(add === true)
+			{
+				attach(sel, event, callback);
+			}
+			else
+			{
+				remove(sel, event, callback);
+			}
+		};
+
+		e = {
+			add: function (event, callback)
+			{
+				$_.each(function(e){
+					add_remove(e, event, callback, true);
+				});
+			},
+			remove: function (event, callback)
+			{
+				$_.each(function(e){
+					add_remove(e, event, callback, false);
+				});
+			}
+		};
+
+		$_.ext('event', e);
+
 	}());
 
 }());

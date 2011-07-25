@@ -132,6 +132,8 @@
 	});
 	
 	test("Text", function(){
+		expect(2);
+	
 		var $test = $_("article#r14");
 		var ele = $test.el;
 		var text = (typeof ele.innerText !== "undefined") ? ele.innerText : ele.textContent;
@@ -141,10 +143,27 @@
 	});
 	
 	test("Attr", function(){
+		expect(2);
+	
 		var $test = $_("section");
 		var ele = $test.el;
 		
-		equal($test.dom.attr('hidden'), "hidden", "Getting attribute");
+		$test.dom.attr("id", "testing");
+		
+		equal($test.dom.attr('id'), "testing", "Getting attribute");
+		equal(ele.id, "testing", "Setting attribute");
+		
+	});
+	
+	test("CSS", function(){
+		expect(2);
+		
+		var $test = $_("section[hidden='hidden']");
+		var ele = $test.el;
+		
+		$test.dom.css("display", "block");
+		equal(ele.style.display, "block", "Setting CSS");
+		equal($test.dom.css("display"), "block", "Getting CSS");
 	});
 	
 }());
