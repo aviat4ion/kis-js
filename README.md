@@ -18,25 +18,25 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 ## Official Modules: ##
 ### Global: Core functions  ###
 	
-properties:
+**properties:**
 
-	* el: The html object returned by the selector function.
+* el: The html object returned by the selector function.
 
-functions:
+**functions:**
 			
-	* each: For applying changes to every item matched by a selector
-		Use:
-		 	$_(selector).dom.each(callback);
+* each: For applying changes to every item matched by a selector
+	Use:
+		 $_(selector).dom.each(callback);
 		 	
-		Example : $_(".foo").dom.each(function(e){
-					$_(e).dom.text(value);
-				  }):
+	Example : $_(".foo").dom.each(function(e){
+			$_(e).dom.text(value);
+		}):
 				  
-	* ext: For extending the library, adds this.el to the object or function supplied
-		Use: $_.ext("name", functionOrObject)
+* ext: For extending the library, adds this.el to the object or function supplied
+	Use: $_.ext("name", functionOrObject)
 		
-		Example: $_.ext("zip", function(){ //function });
-					Adds 'zip' function to $_.
+	Example: $_.ext("zip", function(){ //function });
+		Adds 'zip' function to $_.
 		
 
 ### Ajax: simple, jQuery-like ajax functions ###
@@ -100,34 +100,34 @@ functions:
 
 **functions:** 
 
-*addClass: 
+* addClass: 
 	Use:
 	    $_(selector).dom.addClass(className);
 	    
-*RemoveClass:
+* RemoveClass:
 	Use:
 	    $_(selector).dom.removeClass(className);
 	 	
-*show: For setting dom elements as visible. Type defaults as "block", can be set with optional second parameter.
+* show: For setting dom elements as visible. Type defaults as "block", can be set with optional second parameter.
 	Use:
 		$_(selector).dom.show([type]);
 		
-*hide: Hides the elements matching the selector
+* hide: Hides the elements matching the selector
 	Use:
 		$_(selector).dom.hide();
 		
-*attr: Gets, sets, or removes an attribute from a selector. 
+* attr: Gets, sets, or removes an attribute from a selector. 
 	Use:
 		Set: $_(selector).dom.attr(attributeName, attributeValue);
 		Get: $_(selector).dom.attr(attributeName);
 		Remove: $_(selector).dom.attr(attributeName, null);
 		
-*text: Gets or sets the text in between an element's tags
+* text: Gets or sets the text in between an element's tags
 	Use:
 		Set: $_(selector).dom.text(text);
 		Get: $_(selector).dom.text();
 
-*css: Sets css styles on the selected element(s)
+* css: Sets css styles on the selected element(s)
 	Use:
 		Set: $_(selector).dom.css(property, value);
 		Get: $_(selector).dom.css(property);
