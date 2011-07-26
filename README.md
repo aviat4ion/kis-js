@@ -16,7 +16,7 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 * Function:	`$_(selector).module.function(params);`
 
 ## Official Modules: ##
-###Global###: Core functions
+### Global ###: Core functions
 	
 properties:
 
@@ -39,7 +39,7 @@ functions:
 					Adds 'zip' function to $_.
 		
 
-###Ajax###: simple, jQuery-like ajax functions
+### Ajax ###: simple, jQuery-like ajax functions
 
 functions:
 	
@@ -51,7 +51,7 @@ functions:
 	Use:
 	    $_.post(url, data_object, callback);
 			
-###QS###: querystring parsing and serialization for hashbang strings, and pushState urls
+### QS ###: querystring parsing and serialization for hashbang strings, and pushState urls
 	
 functions:
 	
@@ -67,7 +67,7 @@ functions:
 		Use:
 		    $_.qs.get(key);
 			    
-###Store###: localstorage wrapper with automatic data serialization
+### Store ###: localstorage wrapper with automatic data serialization
 
 functions:
 
@@ -84,7 +84,7 @@ functions:
 			$_.store.getAll();
 				
 				
-###Event###: wrapper for applying events to DOM objects
+### Event ###: wrapper for applying events to DOM objects
 
 functions: 
 
@@ -96,7 +96,7 @@ functions:
 		Use:
 		    $_(selector).event.remove(event, callback);
 			    
-###DOM###: Dom manipulation module
+### DOM ###: Dom manipulation module
 
 functions: 
 
