@@ -13,7 +13,7 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 
 ## Basic Use: ##
 
-* Function:	`$_(selector).module.function(params);`
+* Function:	```$_(selector).module.function(params);```
 
 ## Official Modules: ##
 **Global**: Core functions
