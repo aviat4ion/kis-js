@@ -334,11 +334,13 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	{
 		for(var i in $_) 
 		{
-			if(typeof $_[i] === "object")
+			if(typeof $_[i] === "object" || typeof $_[i] === "function")
 			{
 				$_[i].el = sel;
 			}	
 		}
+		
+		return $_;
 	}
 	
 	// --------------------------------------------------------------------------
@@ -443,10 +445,10 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 		
 			//Update the $_ object to reflect the new selector
-			_set_sel(sel);
+			$_ = _set_sel(sel);
 
 			//Return the $_ object for chaining
-			return $_
+			return $_;
 		}
 	};
 

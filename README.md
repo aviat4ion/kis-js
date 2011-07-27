@@ -88,11 +88,11 @@ functions:
 
 **functions:** 
 
-*Add: 
+* Add: 
 	Use:
 	    $_(selector).event.add(event, callback);
 	    
-*Remove
+* Remove
 	Use:
 	    $_(selector).event.remove(event, callback);
 			    

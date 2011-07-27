@@ -166,4 +166,12 @@
 		equal($test.dom.css("display"), "block", "Getting CSS");
 	});
 	
+	test("Children", function(){
+		var $test = $_("section");
+		var ele = $test.el;
+		
+		equal($test.dom.children().el, ele.children, "Returns children without parameters");
+		equal($test.dom.children('#r14').el, document.getElementById('r14'), "Finds id");
+	});
+	
 }());

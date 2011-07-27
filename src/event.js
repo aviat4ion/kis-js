@@ -6,7 +6,7 @@
 (function (){
 
 	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_2_0";
+	var kis_expando = "KIS_0_3_0";
 
 	var attach, remove, add_remove, e;
 

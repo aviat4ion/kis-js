@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.2.0
+	Version		0.3.0
  */
 (function (){
 
@@ -180,169 +180,174 @@
 
 	// --------------------------------------------------------------------------
 
+	/*
+	 * classList.js: Cross-browser full element.classList implementation.
+	 * 2011-06-15
+	 *
+	 * By Eli Grey, http://eligrey.com
+	 * Public Domain.
+	 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+	 */
+
+	if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
+	{
+		(function (view){
+		
+			var classListProp = "classList",
+				protoProp = "prototype",
+				elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
+				objCtr = Object,
+				strTrim = String[protoProp].trim ||
+				function ()
+				{
+					return this.replace(/^\s+|\s+$/g, "");
+				},
+				arrIndexOf = Array[protoProp].indexOf ||
+				function (item)
+				{
+					var
+					i = 0,
+						len = this.length;
+					for (; i < len; i++)
+					{
+						if (i in this && this[i] === item)
+						{
+							return i;
+						}
+					}
+					return -1;
+				}
+				// Vendors: please allow content code to instantiate DOMExceptions
+				,
+				DOMEx = function (type, message)
+				{
+					this.name = type;
+					this.code = DOMException[type];
+					this.message = message;
+				},
+				checkTokenAndGetIndex = function (classList, token)
+				{
+					if (token === "")
+					{
+						throw new DOMEx("SYNTAX_ERR", "An invalid or illegal string was specified");
+					}
+					if (/\s/.test(token))
+					{
+						throw new DOMEx("INVALID_CHARACTER_ERR", "String contains an invalid character");
+					}
+					return arrIndexOf.call(classList, token);
+				},
+				ClassList = function (elem)
+				{
+					var
+					trimmedClasses = strTrim.call(elem.className),
+						classes = trimmedClasses ? trimmedClasses.split(/\s+/) : [],
+						i = 0,
+						len = classes.length;
+					for (; i < len; i++)
+					{
+						this.push(classes[i]);
+					}
+					this._updateClassName = function ()
+					{
+						elem.className = this.toString();
+					};
+				},
+				classListProto = ClassList[protoProp] = [],
+				classListGetter = function ()
+				{
+					return new ClassList(this);
+				};
+			// Most DOMException implementations don't allow calling DOMException's toString()
+			// on non-DOMExceptions. Error's toString() is sufficient here.
+			DOMEx[protoProp] = Error[protoProp];
+			classListProto.item = function (i)
+			{
+				return this[i] || null;
+			};
+			classListProto.contains = function (token)
+			{
+				token += "";
+				return checkTokenAndGetIndex(this, token) !== -1;
+			};
+			classListProto.add = function (token)
+			{
+				token += "";
+				if (checkTokenAndGetIndex(this, token) === -1)
+				{
+					this.push(token);
+					this._updateClassName();
+				}
+			};
+			classListProto.remove = function (token)
+			{
+				token += "";
+				var index = checkTokenAndGetIndex(this, token);
+				if (index !== -1)
+				{
+					this.splice(index, 1);
+					this._updateClassName();
+				}
+			};
+			classListProto.toggle = function (token)
+			{
+				token += "";
+				if (checkTokenAndGetIndex(this, token) === -1)
+				{
+					this.add(token);
+				}
+				else
+				{
+					this.remove(token);
+				}
+			};
+			classListProto.toString = function ()
+			{
+				return this.join(" ");
+			};
+
+			if (objCtr.defineProperty)
+			{
+				var classListPropDesc = {
+					get: classListGetter,
+					enumerable: true,
+					configurable: true
+				};
+				try
+				{
+					objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
+				}
+				catch (ex)
+				{ // IE 8 doesn't support enumerable:true
+					if (ex.number === -0x7FF5EC54)
+					{
+						classListPropDesc.enumerable = false;
+						objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
+					}
+				}
+			}
+			else if (objCtr[protoProp].__defineGetter__)
+			{
+				elemCtrProto.__defineGetter__(classListProp, classListGetter);
+			}
+
+		}(self));
+	}
+
+	// --------------------------------------------------------------------------
+
 	/**
 	 * Dom manipulation object
 	 *
 	 */
 	(function (){
-		var d;
+		var d, tag_reg, id_reg, class_reg;
 		
-		/*
-		 * classList.js: Cross-browser full element.classList implementation.
-		 * 2011-06-15
-		 *
-		 * By Eli Grey, http://eligrey.com
-		 * Public Domain.
-		 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
-		 */
-
-		if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
-		{
-			(function (view){
-
-				var classListProp = "classList",
-					protoProp = "prototype",
-					elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
-					objCtr = Object,
-					strTrim = String[protoProp].trim ||
-					function ()
-					{
-						return this.replace(/^\s+|\s+$/g, "");
-					},
-					arrIndexOf = Array[protoProp].indexOf ||
-					function (item)
-					{
-						var
-						i = 0,
-							len = this.length;
-						for (; i < len; i++)
-						{
-							if (i in this && this[i] === item)
-							{
-								return i;
-							}
-						}
-						return -1;
-					}
-					// Vendors: please allow content code to instantiate DOMExceptions
-					,
-					DOMEx = function (type, message)
-					{
-						this.name = type;
-						this.code = DOMException[type];
-						this.message = message;
-					},
-					checkTokenAndGetIndex = function (classList, token)
-					{
-						if (token === "")
-						{
-							throw new DOMEx("SYNTAX_ERR", "An invalid or illegal string was specified");
-						}
-						if (/\s/.test(token))
-						{
-							throw new DOMEx("INVALID_CHARACTER_ERR", "String contains an invalid character");
-						}
-						return arrIndexOf.call(classList, token);
-					},
-					ClassList = function (elem)
-					{
-						var
-						trimmedClasses = strTrim.call(elem.className),
-							classes = trimmedClasses ? trimmedClasses.split(/\s+/) : [],
-							i = 0,
-							len = classes.length;
-						for (; i < len; i++)
-						{
-							this.push(classes[i]);
-						}
-						this._updateClassName = function ()
-						{
-							elem.className = this.toString();
-						};
-					},
-					classListProto = ClassList[protoProp] = [],
-					classListGetter = function ()
-					{
-						return new ClassList(this);
-					};
-				// Most DOMException implementations don't allow calling DOMException's toString()
-				// on non-DOMExceptions. Error's toString() is sufficient here.
-				DOMEx[protoProp] = Error[protoProp];
-				classListProto.item = function (i)
-				{
-					return this[i] || null;
-				};
-				classListProto.contains = function (token)
-				{
-					token += "";
-					return checkTokenAndGetIndex(this, token) !== -1;
-				};
-				classListProto.add = function (token)
-				{
-					token += "";
-					if (checkTokenAndGetIndex(this, token) === -1)
-					{
-						this.push(token);
-						this._updateClassName();
-					}
-				};
-				classListProto.remove = function (token)
-				{
-					token += "";
-					var index = checkTokenAndGetIndex(this, token);
-					if (index !== -1)
-					{
-						this.splice(index, 1);
-						this._updateClassName();
-					}
-				};
-				classListProto.toggle = function (token)
-				{
-					token += "";
-					if (checkTokenAndGetIndex(this, token) === -1)
-					{
-						this.add(token);
-					}
-					else
-					{
-						this.remove(token);
-					}
-				};
-				classListProto.toString = function ()
-				{
-					return this.join(" ");
-				};
-
-				if (objCtr.defineProperty)
-				{
-					var classListPropDesc = {
-						get: classListGetter,
-						enumerable: true,
-						configurable: true
-					};
-					try
-					{
-						objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
-					}
-					catch (ex)
-					{ // IE 8 doesn't support enumerable:true
-						if (ex.number === -0x7FF5EC54)
-						{
-							classListPropDesc.enumerable = false;
-							objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
-						}
-					}
-				}
-				else if (objCtr[protoProp].__defineGetter__)
-				{
-					elemCtrProto.__defineGetter__(classListProp, classListGetter);
-				}
-
-			}(self));
-		}
+		tag_reg = /^([\w\-]+)$/;
+		id_reg = /#([\w\-]+$)/;
+		class_reg = /\.([\w\-]+)$/;
 		
-		// --------------------------------------------------------------------------
-
+		
 		//Private function for getting/setting attributes
 		function _attr(sel, name, value)
 		{
@@ -462,6 +467,64 @@
 			console.log("Property " + prop + " nor an equivalent seems to exist");
 		}
 		
+		function _sel_filter(filter, curr_sel)
+		{
+			var i,
+				len = curr_sel.length,
+				matches = [];
+			
+			if(typeof filter !== "string")
+			{
+				return filter;
+			}
+		
+			//Filter by tag
+			if(filter.match(tag_reg))
+			{
+				for(i=0;i<len;i++)
+				{
+					if(curr_sell[i].tagName.toLowerCase() == filter.toLowerCase())
+					{
+						matches.push(curr_sel[i]);
+					}
+				}
+			}
+			else if(filter.match(class_reg))
+			{
+				for(i=0;i<len;i++)
+				{
+					if(curr_sel[i].classList.contains(filter))
+					{
+						matches.push(curr_sel[i]);
+					}
+				}
+			}
+			else if(filter.match(id_reg))
+			{
+				return document.getElementById(filter);
+			}
+			else
+			{
+				console.log(filter+" is not a valid filter");
+			}
+			
+			return (matches.length === 1) ? matches[0] : matches;
+			
+		}
+		
+		function _set_sel(sel)
+		{
+			for(var i in $_) 
+			{
+				if(typeof $_[i] === "object" || typeof $_[i] === "function")
+				{
+					$_[i].el = sel;
+				}	
+			}
+			
+			return $_;
+		}
+		
 		// --------------------------------------------------------------------------
 
 		d = {
@@ -540,6 +603,7 @@
 			},
 			css: function (prop, val)
 			{
+				//Return the current value if a value is not set
 				if(typeof val === "undefined")
 				{
 					return _css(this.el, prop);
@@ -548,6 +612,25 @@
 				$_.each(function (e){
 					_css(e, prop, val);
 				});
+			}, 
+			children: function(filter)
+			{
+				var sel;
+			
+				if(typeof sel === "undefined")
+				{
+					sel =  this.el.children;
+				}
+				else
+				{
+					sel = _sel_filter(filter, this.el.children);
+				}
+			
+				//Update the $_ object to reflect the new selector
+				$_ = _set_sel(sel);
+
+				//Return the $_ object for chaining
+				return $_;
 			}
 		};
 
@@ -786,7 +869,7 @@
 	(function (){
 
 		// Property name for expandos on DOM objects
-		var kis_expando = "KIS_0_2_0";
+		var kis_expando = "KIS_0_3_0";
 
 		var attach, remove, add_remove, e;
 
