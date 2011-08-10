@@ -33,10 +33,13 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 		}):
 				  
 * ext: For extending the library, adds this.el to the object or function supplied
-	Use: $_.ext("name", functionOrObject)
+	Use: $_.ext("name", functionOrObject);
 		
 	Example: $_.ext("zip", function(){ //function });
 		Adds 'zip' function to $_.
+		
+* type: For getting the type of a variable
+	Use: $_.type(var);
 		
 
 ### Ajax: simple, jQuery-like ajax functions ###

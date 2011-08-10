@@ -19,7 +19,7 @@
 
 			var type = (isPost) ? "POST" : "GET";
 
-			url += (type === "GET") ? "?"+this._serialize(data, true) : '';
+			url += (type === "GET") ? "?"+this._serialize(data) : '';
 			
 			request.open(type, url);
 
@@ -41,7 +41,7 @@
 				request.send(null);
 			}
 		},
-		_serialize: function (data, encode)
+		_serialize: function (data)
 		{
 			var pairs = [];
 
@@ -58,11 +58,8 @@
 
 				var value = data[name].toString();
 
-				if (encode === true)
-				{
-					name = encodeURIComponent(name.replace(" ", "+"));
-					value = encodeURIComponent(value.replace(" ", "+"));
-				}
+				name = encodeURIComponent(name);
+				value = encodeURIComponent(value);
 
 				pairs.push(name + "=" + value);
 			}

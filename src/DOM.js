@@ -159,10 +159,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
  *
  */
 (function (){
-	var d, tag_reg, id_reg, class_reg;
+	var d, tag_reg, class_reg;
 	
 	tag_reg = /^([\w\-]+)$/;
-	id_reg = /#([\w\-]+$)/;
 	class_reg = /\.([\w\-]+)$/;
 	
 	
@@ -254,7 +253,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			outerHeight: "offsetHeight",
 			outerWidth: "offsetWidth",
 			top: "posTop"
-		}
+		};
 		
 		
 		//If you don't define a value, try returning the existing value
@@ -290,18 +289,13 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		var i,
 			len = curr_sel.length,
 			matches = [];
-		
-		if(typeof filter !== "string")
-		{
-			return filter;
-		}
 	
 		//Filter by tag
 		if(filter.match(tag_reg))
 		{
 			for(i=0;i<len;i++)
 			{
-				if(curr_sell[i].tagName.toLowerCase() == filter.toLowerCase())
+				if(curr_sel[i].tagName.toLowerCase() == filter.toLowerCase())
 				{
 					matches.push(curr_sel[i]);
 				}
@@ -309,6 +303,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		}
 		else if(filter.match(class_reg))
 		{
+			//Remove the .
+			filter = filter.replace(".", "");
+			
 			for(i=0;i<len;i++)
 			{
 				if(curr_sel[i].classList.contains(filter))
@@ -317,30 +314,13 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				}
 			}
 		}
-		else if(filter.match(id_reg))
-		{
-			return document.getElementById(filter);
-		}
 		else
 		{
 			console.log(filter+" is not a valid filter");
 		}
 		
-		return (matches.length === 1) ? matches[0] : matches;
+		return (matches.length == 1) ? matches[0] : matches;
 		
-	}
-	
-	function _set_sel(sel)
-	{
-		for(var i in $_) 
-		{
-			if(typeof $_[i] === "object" || typeof $_[i] === "function")
-			{
-				$_[i].el = sel;
-			}	
-		}
-		
-		return $_;
 	}
 	
 	// --------------------------------------------------------------------------
@@ -433,22 +413,27 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		}, 
 		children: function(filter)
 		{
-			var sel;
-		
-			if(typeof sel === "undefined")
+			//Return the children directly, if there is no filter
+			if(typeof filter === "undefined")
 			{
-				sel =  this.el.children;
+				return $_(this.el.children);
+			}
+			
+			var childs = (typeof this.el.children !== "undefined") ? this.el.children : this.el;
+			
+			if($_.type(filter) !== "string")
+			{
+				return $_(filter);
+			}
+			else if(filter.match(/#([\w\-]+$)/))
+			{
+				return $_($_.$(filter));
 			}
 			else
 			{
-				sel = _sel_filter(filter, this.el.children);
+				var filtered = _sel_filter(filter, childs);
+				return $_(filtered);
 			}
-		
-			//Update the $_ object to reflect the new selector
-			$_ = _set_sel(sel);
-
-			//Return the $_ object for chaining
-			return $_;
 		}
 	};
 

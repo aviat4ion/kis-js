@@ -52,7 +52,7 @@
 	$_ = function(s)
 	{
 		//Have documentElement be default selector, just in case
-		if(typeof s == "undefined")
+		if(typeof s === "undefined")
 		{
 			sel = (typeof $_.el !== "undefined") 
 				? $_.el
@@ -60,7 +60,7 @@
 		}
 		else
 		{
-			sel = $(s);
+			sel = (typeof s !== "object") ? $(s) : s;
 		}
 
 		// Make a copy before adding properties
@@ -115,8 +115,8 @@
 	//Function to add to $_ object, and get sel
 	$_.ext = function(name, obj)
 	{
-		$_[name] = obj;
 		obj.el = sel;
+		$_[name] = obj;
 	};
 	
 	//Selector iteration
@@ -143,6 +143,18 @@
 			callback(sel);
 		}
 	});
+	
+	//Type retriever
+	$_.type = function(obj) 
+	{
+		if((function() {return obj && (obj !== this)}).call(obj))
+		{
+			//fallback on 'typeof' for truthy primitive values
+			return (typeof obj).toLowerCase();
+		}
+		
+		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
+	}
 
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
@@ -341,10 +353,9 @@
 	 *
 	 */
 	(function (){
-		var d, tag_reg, id_reg, class_reg;
+		var d, tag_reg, class_reg;
 		
 		tag_reg = /^([\w\-]+)$/;
-		id_reg = /#([\w\-]+$)/;
 		class_reg = /\.([\w\-]+)$/;
 		
 		
@@ -436,7 +447,7 @@
 				outerHeight: "offsetHeight",
 				outerWidth: "offsetWidth",
 				top: "posTop"
-			}
+			};
 			
 			
 			//If you don't define a value, try returning the existing value
@@ -472,18 +483,13 @@
 			var i,
 				len = curr_sel.length,
 				matches = [];
-			
-			if(typeof filter !== "string")
-			{
-				return filter;
-			}
 		
 			//Filter by tag
 			if(filter.match(tag_reg))
 			{
 				for(i=0;i<len;i++)
 				{
-					if(curr_sell[i].tagName.toLowerCase() == filter.toLowerCase())
+					if(curr_sel[i].tagName.toLowerCase() == filter.toLowerCase())
 					{
 						matches.push(curr_sel[i]);
 					}
@@ -491,6 +497,9 @@
 			}
 			else if(filter.match(class_reg))
 			{
+				//Remove the .
+				filter = filter.replace(".", "");
+				
 				for(i=0;i<len;i++)
 				{
 					if(curr_sel[i].classList.contains(filter))
@@ -499,30 +508,13 @@
 					}
 				}
 			}
-			else if(filter.match(id_reg))
-			{
-				return document.getElementById(filter);
-			}
 			else
 			{
 				console.log(filter+" is not a valid filter");
 			}
 			
-			return (matches.length === 1) ? matches[0] : matches;
+			return (matches.length == 1) ? matches[0] : matches;
 			
-		}
-		
-		function _set_sel(sel)
-		{
-			for(var i in $_) 
-			{
-				if(typeof $_[i] === "object" || typeof $_[i] === "function")
-				{
-					$_[i].el = sel;
-				}	
-			}
-			
-			return $_;
 		}
 		
 		// --------------------------------------------------------------------------
@@ -615,22 +607,27 @@
 			}, 
 			children: function(filter)
 			{
-				var sel;
-			
-				if(typeof sel === "undefined")
+				//Return the children directly, if there is no filter
+				if(typeof filter === "undefined")
 				{
-					sel =  this.el.children;
+					return $_(this.el.children);
+				}
+				
+				var childs = (typeof this.el.children !== "undefined") ? this.el.children : this.el;
+				
+				if($_.type(filter) !== "string")
+				{
+					return $_(filter);
+				}
+				else if(filter.match(/#([\w\-]+$)/))
+				{
+					return $_($_.$(filter));
 				}
 				else
 				{
-					sel = _sel_filter(filter, this.el.children);
+					var filtered = _sel_filter(filter, childs);
+					return $_(filtered);
 				}
-			
-				//Update the $_ object to reflect the new selector
-				$_ = _set_sel(sel);
-
-				//Return the $_ object for chaining
-				return $_;
 			}
 		};
 
@@ -798,7 +795,7 @@
 
 				var type = (isPost) ? "POST" : "GET";
 
-				url += (type === "GET") ? "?"+this._serialize(data, true) : '';
+				url += (type === "GET") ? "?"+this._serialize(data) : '';
 				
 				request.open(type, url);
 
@@ -820,7 +817,7 @@
 					request.send(null);
 				}
 			},
-			_serialize: function (data, encode)
+			_serialize: function (data)
 			{
 				var pairs = [];
 
@@ -837,11 +834,8 @@
 
 					var value = data[name].toString();
 
-					if (encode === true)
-					{
-						name = encodeURIComponent(name.replace(" ", "+"));
-						value = encodeURIComponent(value.replace(" ", "+"));
-					}
+					name = encodeURIComponent(name);
+					value = encodeURIComponent(value);
 
 					pairs.push(name + "=" + value);
 				}
@@ -871,7 +865,7 @@
 		// Property name for expandos on DOM objects
 		var kis_expando = "KIS_0_3_0";
 
-		var attach, remove, add_remove, e;
+		var attach, remove, add_remove, e, attach_delegate, attach_live;
 
 		// Define the proper attach and remove functions
 		// based on browser support
@@ -986,6 +980,27 @@
 				remove(sel, event, callback);
 			}
 		};
+		
+		attach_delegate = function(sel, target, event, callback)
+		{
+		
+			//Attach the listener to the parent object
+			add_remove(sel, event, function(e){
+			
+				//Get the live version of the target selector
+				sel = $_.$(sel);
+			
+			
+				//todo: fire target callback when event bubbles from target
+			}, true);
+		};
+		
+		attach_live = function(target, event, callback)
+		{
+			attach_delegate(document.documentElement, target, event, callback);
+		};
+		
+		// --------------------------------------------------------------------------
 
 		e = {
 			add: function (event, callback)
@@ -998,6 +1013,18 @@
 			{
 				$_.each(function(e){
 					add_remove(e, event, callback, false);
+				});
+			},
+			live: function (event, callback)
+			{
+				$_.each(function(e){
+					attach_live(e, event, callback);
+				});
+			},
+			delegate: function(target, event, callback)
+			{
+				$_.each(function(e){
+					attach_delegate(e, target, event, callback);
 				});
 			}
 		};

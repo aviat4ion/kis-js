@@ -8,7 +8,7 @@
 	// Property name for expandos on DOM objects
 	var kis_expando = "KIS_0_3_0";
 
-	var attach, remove, add_remove, e;
+	var attach, remove, add_remove, e, attach_delegate, attach_live;
 
 	// Define the proper attach and remove functions
 	// based on browser support
@@ -123,6 +123,27 @@
 			remove(sel, event, callback);
 		}
 	};
+	
+	attach_delegate = function(sel, target, event, callback)
+	{
+	
+		//Attach the listener to the parent object
+		add_remove(sel, event, function(e){
+		
+			//Get the live version of the target selector
+			sel = $_.$(sel);
+		
+		
+			//todo: fire target callback when event bubbles from target
+		}, true);
+	};
+	
+	attach_live = function(target, event, callback)
+	{
+		attach_delegate(document.documentElement, target, event, callback);
+	};
+	
+	// --------------------------------------------------------------------------
 
 	e = {
 		add: function (event, callback)
@@ -135,6 +156,18 @@
 		{
 			$_.each(function(e){
 				add_remove(e, event, callback, false);
+			});
+		},
+		live: function (event, callback)
+		{
+			$_.each(function(e){
+				attach_live(e, event, callback);
+			});
+		},
+		delegate: function(target, event, callback)
+		{
+			$_.each(function(e){
+				attach_delegate(e, target, event, callback);
 			});
 		}
 	};

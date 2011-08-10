@@ -77,5 +77,16 @@ $new_file .= "\n}());";
 //Output the full file
 file_put_contents("kis-custom.js", $new_file);
 
+//Get a much-minified version from Google's closure compiler
+$ch = curl_init('http://closure-compiler.appspot.com/compile');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, 'output_info=compiled_code&output_format=text&compilation_level=SIMPLE_OPTIMIZATIONS&js_code=' . urlencode($new_file));
+$output = curl_exec($ch);
+curl_close($ch);
+
+file_put_contents("kis-min.js", $output);
+
+
 //Display the output on-screen too
 echo '<pre>'.htmlspecialchars($new_file).'</pre>';

@@ -1,5 +1,5 @@
 (function(){
-	"use strict";
+	//"use strict";
 	
 	//Selector test function
 	function $(a)
@@ -20,6 +20,16 @@
 		ok(String.prototype.trim, "String.trim()");
 		strictEqual(typeof $_, "function", "Global var");
 		strictEqual(typeof $_(), "object");
+	});
+	
+	test("Type Checking", function(){
+		equal($_.type(5), "number", "Number type");
+		equal($_.type("abc"), "string", "String type");
+		equal($_.type({}), "object", "Object type");
+		equal($_.type([0,1,2]), "array", "Array type");
+		equal($_.type(/x/), "regexp", "Regex type");
+		equal($_.type(function(){}), "function", "Function type");
+		equal($_.type(true), "boolean", "Boolean type");
 	});
 	
 	test("Unique Selectors", function(){
@@ -116,7 +126,7 @@
 	test("Show/Hide", function(){
 		expect(3);
 	
-		var $test = $_("#classChild .child");
+		var $test = $_("#classChild .nephew");
 		var ele = $test.el;
 		
 		$test.dom.hide();
@@ -132,14 +142,15 @@
 	});
 	
 	test("Text", function(){
-		expect(2);
+		expect(3);
 	
 		var $test = $_("article#r14");
 		var ele = $test.el;
 		var text = (typeof ele.innerText !== "undefined") ? ele.innerText : ele.textContent;
 		
 		equal($test.el, $("article#r14"), "Selector property is correct");
-		equal($test.dom.text(), text, "Getting test");
+		equal($test.dom.text(), text, "Getting text");
+		equal($test.dom.text(""), "", "Setting text");
 	});
 	
 	test("Attr", function(){
@@ -168,10 +179,13 @@
 	
 	test("Children", function(){
 		var $test = $_("section");
-		var ele = $test.el;
+		var ele = $("section");
+		var ele2 = $_("section aside").el;
 		
-		equal($test.dom.children().el, ele.children, "Returns children without parameters");
-		equal($test.dom.children('#r14').el, document.getElementById('r14'), "Finds id");
+		equal($_("section").dom.children().el, ele.children, "Returns children without parameters");
+		equal($_("section").dom.children('#r14').el, document.getElementById('r14'), "Finds id");
+		equal($_("section").dom.children("aside").el, ele2, "Finds children by tag name");
+		equal($_("section aside").dom.children(".child").el, $_("#classChild .child").el, "Finds children by class");
 	});
 	
 }());

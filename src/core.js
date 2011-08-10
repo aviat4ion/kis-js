@@ -52,7 +52,7 @@
 	$_ = function(s)
 	{
 		//Have documentElement be default selector, just in case
-		if(typeof s == "undefined")
+		if(typeof s === "undefined")
 		{
 			sel = (typeof $_.el !== "undefined") 
 				? $_.el
@@ -60,7 +60,7 @@
 		}
 		else
 		{
-			sel = $(s);
+			sel = (typeof s !== "object") ? $(s) : s;
 		}
 
 		// Make a copy before adding properties
@@ -115,8 +115,8 @@
 	//Function to add to $_ object, and get sel
 	$_.ext = function(name, obj)
 	{
-		$_[name] = obj;
 		obj.el = sel;
+		$_[name] = obj;
 	};
 	
 	//Selector iteration
@@ -143,6 +143,18 @@
 			callback(sel);
 		}
 	});
+	
+	//Type retriever
+	$_.type = function(obj) 
+	{
+		if((function() {return obj && (obj !== this)}).call(obj))
+		{
+			//fallback on 'typeof' for truthy primitive values
+			return (typeof obj).toLowerCase();
+		}
+		
+		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
+	}
 
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
