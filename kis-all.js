@@ -656,6 +656,10 @@
 				}
 				localStorage.setItem(key, value);
 			},
+			remove: function (key)
+			{
+				localStorage.removeItem(key);
+			},
 			getAll: function ()
 			{
 				var i,
