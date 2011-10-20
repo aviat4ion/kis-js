@@ -146,6 +146,18 @@ functions:
 
 		Set: $_(selector).dom.css(property, value);
 		Get: $_(selector).dom.css(property);
+
+### Util: Array and string manipulation functions ###
+
+** functions:**
+
+* object_keys: Gets the name of the properties of an object
+
+		$_.util.object_keys(object);
+
+* object_values: Gets the values of the top-level members of an object
+
+		$_.util.object_values(object);
 		
 				
 	

@@ -27,11 +27,11 @@
 		if (typeof a !== "string" || typeof a === "undefined"){ return a;}
 		
 		//Pick the quickest method for each kind of selector
-		if(a.match(/^#([\w\-]+$)/))
+		if (a.match(/^#([\w\-]+$)/))
 		{
 			return document.getElementById(a.split('#')[1]);
 		}
-		else if(a.match(/^([\w\-]+)$/))
+		else if (a.match(/^([\w\-]+)$/))
 		{
 			x = document.getElementsByTagName(a);
 		}
@@ -62,6 +62,9 @@
 		{
 			sel = (typeof s !== "object") ? $(s) : s;
 		}
+		
+		// Add the selector to the prototype
+		$_.prototype.el = sel;
 
 		// Make a copy before adding properties
 		var self = dcopy($_);
@@ -478,45 +481,6 @@
 			console.log("Property " + prop + " nor an equivalent seems to exist");
 		}
 		
-		function _sel_filter(filter, curr_sel)
-		{
-			var i,
-				len = curr_sel.length,
-				matches = [];
-		
-			//Filter by tag
-			if(filter.match(tag_reg))
-			{
-				for(i=0;i<len;i++)
-				{
-					if(curr_sel[i].tagName.toLowerCase() == filter.toLowerCase())
-					{
-						matches.push(curr_sel[i]);
-					}
-				}
-			}
-			else if(filter.match(class_reg))
-			{
-				//Remove the .
-				filter = filter.replace(".", "");
-				
-				for(i=0;i<len;i++)
-				{
-					if(curr_sel[i].classList.contains(filter))
-					{
-						matches.push(curr_sel[i]);
-					}
-				}
-			}
-			else
-			{
-				console.log(filter+" is not a valid filter");
-			}
-			
-			return (matches.length == 1) ? matches[0] : matches;
-			
-		}
-		
 		// --------------------------------------------------------------------------
 
 		d = {
@@ -604,30 +568,6 @@
 				$_.each(function (e){
 					_css(e, prop, val);
 				});
-			}, 
-			children: function(filter)
-			{
-				//Return the children directly, if there is no filter
-				if(typeof filter === "undefined")
-				{
-					return $_(this.el.children);
-				}
-				
-				var childs = (typeof this.el.children !== "undefined") ? this.el.children : this.el;
-				
-				if($_.type(filter) !== "string")
-				{
-					return $_(filter);
-				}
-				else if(filter.match(/#([\w\-]+$)/))
-				{
-					return $_($_.$(filter));
-				}
-				else
-				{
-					var filtered = _sel_filter(filter, childs);
-					return $_(filtered);
-				}
 			}
 		};
 
@@ -855,6 +795,49 @@
 		$_.ext('post', function (url, data, callback){
 			ajax._do(url, data, callback, true);
 		});
+	}());
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Util Object
+	 * 
+	 * Various object and string manipulation functions
+	 */
+	(function(){
+		var u = {
+			object_keys: function(o)
+			{
+				var keys = [],
+					key;
+					
+				for(key in o)
+				{
+					if(o.hasOwnProperty(key))
+					{
+						keys.push(key);
+					}
+				}
+				
+				return keys;
+			},
+			object_values: function(o)
+			{
+				var vals = [],
+					prop;
+				
+				for(prop in o)
+				{
+					vals.push(o[prop]);
+				}
+				
+				return vals;
+			}
+			
+		};
+
+		//Add it to the $_ object
+		$_.ext('util', u);
 	}());
 
 	// --------------------------------------------------------------------------

@@ -177,7 +177,7 @@
 		equal($test.dom.css("display"), "block", "Getting CSS");
 	});
 	
-	test("Children", function(){
+	/*test("Children", function(){
 		var $test = $_("section");
 		var ele = $("section");
 		var ele2 = $_("section aside").el;
@@ -186,6 +186,12 @@
 		equal($_("section").dom.children('#r14').el, document.getElementById('r14'), "Finds id");
 		equal($_("section").dom.children("aside").el, ele2, "Finds children by tag name");
 		equal($_("section aside").dom.children(".child").el, $_("#classChild .child").el, "Finds children by class");
-	});
+	});*/
+
+	// --------------------------------------------------------------------------
+
+	module("util");
+
+	
 	
 }());

@@ -284,45 +284,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		console.log("Property " + prop + " nor an equivalent seems to exist");
 	}
 	
-	function _sel_filter(filter, curr_sel)
-	{
-		var i,
-			len = curr_sel.length,
-			matches = [];
-	
-		//Filter by tag
-		if(filter.match(tag_reg))
-		{
-			for(i=0;i<len;i++)
-			{
-				if(curr_sel[i].tagName.toLowerCase() == filter.toLowerCase())
-				{
-					matches.push(curr_sel[i]);
-				}
-			}
-		}
-		else if(filter.match(class_reg))
-		{
-			//Remove the .
-			filter = filter.replace(".", "");
-			
-			for(i=0;i<len;i++)
-			{
-				if(curr_sel[i].classList.contains(filter))
-				{
-					matches.push(curr_sel[i]);
-				}
-			}
-		}
-		else
-		{
-			console.log(filter+" is not a valid filter");
-		}
-		
-		return (matches.length == 1) ? matches[0] : matches;
-		
-	}
-	
 	// --------------------------------------------------------------------------
 
 	d = {
@@ -410,30 +371,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			$_.each(function (e){
 				_css(e, prop, val);
 			});
-		}, 
-		children: function(filter)
-		{
-			//Return the children directly, if there is no filter
-			if(typeof filter === "undefined")
-			{
-				return $_(this.el.children);
-			}
-			
-			var childs = (typeof this.el.children !== "undefined") ? this.el.children : this.el;
-			
-			if($_.type(filter) !== "string")
-			{
-				return $_(filter);
-			}
-			else if(filter.match(/#([\w\-]+$)/))
-			{
-				return $_($_.$(filter));
-			}
-			else
-			{
-				var filtered = _sel_filter(filter, childs);
-				return $_(filtered);
-			}
 		}
 	};
 

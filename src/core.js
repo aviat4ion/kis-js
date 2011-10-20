@@ -27,11 +27,11 @@
 		if (typeof a !== "string" || typeof a === "undefined"){ return a;}
 		
 		//Pick the quickest method for each kind of selector
-		if(a.match(/^#([\w\-]+$)/))
+		if (a.match(/^#([\w\-]+$)/))
 		{
 			return document.getElementById(a.split('#')[1]);
 		}
-		else if(a.match(/^([\w\-]+)$/))
+		else if (a.match(/^([\w\-]+)$/))
 		{
 			x = document.getElementsByTagName(a);
 		}
@@ -62,6 +62,9 @@
 		{
 			sel = (typeof s !== "object") ? $(s) : s;
 		}
+		
+		// Add the selector to the prototype
+		$_.prototype.el = sel;
 
 		// Make a copy before adding properties
 		var self = dcopy($_);
