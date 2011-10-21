@@ -176,22 +176,68 @@
 		equal(ele.style.display, "block", "Setting CSS");
 		equal($test.dom.css("display"), "block", "Getting CSS");
 	});
-	
-	/*test("Children", function(){
-		var $test = $_("section");
-		var ele = $("section");
-		var ele2 = $_("section aside").el;
-		
-		equal($_("section").dom.children().el, ele.children, "Returns children without parameters");
-		equal($_("section").dom.children('#r14').el, document.getElementById('r14'), "Finds id");
-		equal($_("section").dom.children("aside").el, ele2, "Finds children by tag name");
-		equal($_("section aside").dom.children(".child").el, $_("#classChild .child").el, "Finds children by class");
-	});*/
 
 	// --------------------------------------------------------------------------
 
 	module("util");
-
 	
+	test("Object keys", function(){
+		expect(1);
+	
+		var test_o = {
+			"x": 2,
+			"a": 4,
+			"q": 3,
+			"r": 6
+		};
+		
+		var test_keys = ["x", "a", "q", "r"];
+		
+		deepEqual($_.util.object_keys(test_o), test_keys, "Retrieves object keys correctly");
+	
+	});
+	
+	test("Object values", function(){
+		expect(1);
+	
+		var test_o = {
+			"x": 2,
+			"a": 4,
+			"q": 3,
+			"r": 6,
+			"p": "q"
+		};
+		
+		var test_values = [2,4,3,6,"q"];
+		
+		deepEqual($_.util.object_values(test_o), test_values, "Retrieves object values correctly");
+	
+	});
+	
+	test("Reverse Key Sort", function(){
+		expect(2);
+	
+		var test_o = {
+			"x": 2,
+			"a": 4,
+			"q": 3,
+			"r": 6
+		};
+		
+		var test_sorted = {
+			"x": 2,
+			"r": 6,
+			"q": 3,
+			"a": 4
+		};
+		
+		var test_array = [7, 2, 6, 3];
+		var test_array_sorted = [3, 6, 2, 7];
+		
+		deepEqual($_.util.reverse_key_sort(test_o), test_sorted, "Object sort");
+		deepEqual($_.util.object_values($_.util.reverse_key_sort(test_array)), test_array_sorted, "Array Sort");
+	});
+
+
 	
 }());

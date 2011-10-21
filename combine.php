@@ -29,27 +29,16 @@ if($dir = opendir($folder))
 //Define files that aren't modules
 $special_files = array(
 	'core.js',
-	'module_vars.js',
 );
 
 //Filter out special files
 $src_files = array_diff($files, $special_files);
 
-$syntax_start = array(
-	'//Function to maintain module scope',
-	'(function(){',
-	'',
-	'	"use strict";',
-);
-
 //Start with the core
 $new_file = file_get_contents($folder."/core.js") . "\n";
 
 //Add the opening of the function for the modules
-$new_file .= "\n// --------------------------------------------------------------------------\n\n".implode("\n", $syntax_start);
-
-//Add the module-global variables
-$new_file .= "\n\n".file_get_contents($folder."/module_vars.js")."\n";
+$new_file .= "\n// --------------------------------------------------------------------------\n\n";
 
 //Add the modules
 foreach($src_files as $f)
@@ -70,9 +59,6 @@ foreach($src_files as $f)
 	$new_file .= "\n\t// --------------------------------------------------------------------------\n\n".$module."\n";
 	
 }
-
-//Add the close of the module function
-$new_file .= "\n}());";
 
 //Output the full file
 file_put_contents("kis-custom.js", $new_file);
