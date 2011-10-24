@@ -149,7 +149,7 @@ functions:
 
 ### Util: Array and string manipulation functions ###
 
-** functions:**
+** functions: **
 
 * object_keys: Gets the name of the properties of an object
 
@@ -158,6 +158,18 @@ functions:
 * object_values: Gets the values of the top-level members of an object
 
 		$_.util.object_values(object);
+		
+* object_merge: Merges two objects' keys and values
+
+		$_.util.object_merge(object1, object2);
+		
+* array_combine: Creates an object with the keys of the first array, and the values of the second
+
+		$_.util.array_combine(keys, values);
+		
+* str_trans: Similar to the PHP function strtr, replaces string pairs in a GREEDY fashion
+
+		$_.util.str_trans(string, from, to); OR $_.util.str_trans(string, replace_pairs_object);
 		
 				
 	
