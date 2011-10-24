@@ -312,6 +312,17 @@
 	
 	});
 
-
+	test("String translate", function(){
+		var test_str = "chotto",
+			test_replace = {
+				cho: 'ちょ',
+				to: 'と'
+			},
+			test_res = "ちょtと",
+			$trans = {'hello' : 'hi', 'hi' : 'hello'};
+			
+		equal($_.util.str_trans(test_str, test_replace), test_res, "Correctly replaces substrings from replace pairs");
+		equal($_.util.str_trans("hi all, I said hello", $trans), 'hello all, I said hi', "Correctly replaces substrings from scalar pair");
+	});
 	
 }());
