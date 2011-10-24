@@ -192,6 +192,7 @@
 		},
 		str_replace: function(from, to, string)
 		{
+		
 		}
 	};
 
