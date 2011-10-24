@@ -8,13 +8,11 @@
 
 //The name of the source folder
 $folder = "src";
-$src_folder = "{$folder}/modules";
-$core_folder = "{$folder}/core";
 
 $files = array();
 
 //Get all the source files
-if($dir = opendir($src_folder))
+if($dir = opendir($folder))
 {
 	while(($file = readdir($dir)) !== FALSE)
 	{
@@ -28,20 +26,37 @@ if($dir = opendir($src_folder))
 	closedir($dir);
 }
 
-//Start with the core
-$new_file = file_get_contents($core_folder."/core.js") . "\n";
+//Define files that aren't modules
+$special_files = array(
+	'core.js',
+);
 
+//Filter out special files
+$src_files = array_diff($files, $special_files);
+
+//Start with the core
+$new_file = file_get_contents($folder."/core.js") . "\n";
+
+//Add the opening of the function for the modules
+$new_file .= "\n// --------------------------------------------------------------------------\n\n";
 
 //Add the modules
-foreach($files as $f)
+foreach($src_files as $f)
 {
-	$farray = file($src_folder."/".$f, FILE_IGNORE_NEW_LINES);
+	$farray = file($folder."/".$f, FILE_IGNORE_NEW_LINES);
 	
 	$flen = count($farray);
 	
+	//Indent each module 1 tab, for neatness
+	for($i=0;$i<$flen;$i++)
+	{
+		if($farray[$i] == ""){ continue; }
+		$farray[$i] = "\t".$farray[$i];
+	}
+	
 	$module = implode("\n", $farray);
 	
-	$new_file .= "\n// --------------------------------------------------------------------------\n\n".$module."\n";
+	$new_file .= "\n\t// --------------------------------------------------------------------------\n\n".$module."\n";
 	
 }
 
@@ -56,7 +71,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, 'output_info=compiled_code&output_format=te
 $output = curl_exec($ch);
 curl_close($ch);
 
-file_put_contents("kis-custom-min.js", $output);
+file_put_contents("kis-min.js", $output);
 
 
 //Display the output on-screen too
