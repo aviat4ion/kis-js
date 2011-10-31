@@ -21,23 +21,25 @@
 	 *
 	 * Simple DOM selector function
 	 */
-	$ = function (a)
+	$ = function (a, context)
 	{
-		var x;
+		var x, c;
+		
 		if (typeof a !== "string" || typeof a === "undefined"){ return a;}
+		
+		//Check for a context of a specific element, otherwise, just run on the document
+		c  = (typeof context === 'object' && context.nodeType === 1) 
+			? context 
+			: document;
 		
 		//Pick the quickest method for each kind of selector
 		if (a.match(/^#([\w\-]+$)/))
 		{
 			return document.getElementById(a.split('#')[1]);
 		}
-		else if (a.match(/^([\w\-]+)$/))
-		{
-			x = document.getElementsByTagName(a);
-		}
 		else
 		{
-			x = document.querySelectorAll(a);
+			x = c.querySelectorAll(a);
 		}
 		
 		//Return the single object if applicable
@@ -54,6 +56,7 @@
 		//Have documentElement be default selector, just in case
 		if(typeof s === "undefined")
 		{
+			//Defines a "global" selector for that instance
 			sel = (typeof $_.el !== "undefined") 
 				? $_.el
 				: document.documentElement;
@@ -157,7 +160,7 @@
 		}
 		
 		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
-	}
+	};
 
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;

@@ -21,23 +21,25 @@
 	 *
 	 * Simple DOM selector function
 	 */
-	$ = function (a)
+	$ = function (a, context)
 	{
-		var x;
+		var x, c;
+		
 		if (typeof a !== "string" || typeof a === "undefined"){ return a;}
+		
+		//Check for a context of a specific element, otherwise, just run on the document
+		c  = (typeof context === 'object' && context.nodeType === 1) 
+			? context 
+			: document;
 		
 		//Pick the quickest method for each kind of selector
 		if (a.match(/^#([\w\-]+$)/))
 		{
 			return document.getElementById(a.split('#')[1]);
 		}
-		else if (a.match(/^([\w\-]+)$/))
-		{
-			x = document.getElementsByTagName(a);
-		}
 		else
 		{
-			x = document.querySelectorAll(a);
+			x = c.querySelectorAll(a);
 		}
 		
 		//Return the single object if applicable
@@ -54,6 +56,7 @@
 		//Have documentElement be default selector, just in case
 		if(typeof s === "undefined")
 		{
+			//Defines a "global" selector for that instance
 			sel = (typeof $_.el !== "undefined") 
 				? $_.el
 				: document.documentElement;
@@ -157,7 +160,7 @@
 		}
 		
 		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
-	}
+	};
 
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
@@ -799,52 +802,53 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	"use strict";
 
-	var u = {
-		reverse_key_sort: function(o)
-		{
-			//Define some variables
-			var keys = [],
-				num_keys = 0,
-				new_o = {},
-				i;
+	var 
+	reverse_key_sort =  function(o)
+	{
+		//Define some variables
+		var keys = [],
+			num_keys = 0,
+			new_o = {},
+			i;
+	
+		//Extract the keys
+		keys = u.object_keys(o);
 		
-			//Extract the keys
-			keys = this.object_keys(o);
-			
-			//Sort the keys
-			keys.sort(function (b, a) {		
-				var aFloat = parseFloat(a),
-					bFloat = parseFloat(b),
-					aNumeric = aFloat + '' === a,
-					bNumeric = bFloat + '' === b;
-	            
-				if (aNumeric && bNumeric) 
-				{
-					return aFloat > bFloat ? 1 : aFloat < bFloat ? -1 : 0;
-				} 
-				else if (aNumeric && !bNumeric) 
-				{
-					return 1;
-				} 
-				else if (!aNumeric && bNumeric) 
-				{
-					return -1;
-				}
-				
-				return a > b ? 1 : a < b ? -1 : 0;
-			});
-			
-			//cache object/array size
-			num_keys = keys.length;
-			
-			//Recreate the object/array
-			for(i=0; i < num_keys; i++)
+		//Sort the keys
+		keys.sort(function (b, a) {		
+			var aFloat = parseFloat(a),
+				bFloat = parseFloat(b),
+				aNumeric = aFloat + '' === a,
+				bNumeric = bFloat + '' === b;
+            
+			if (aNumeric && bNumeric) 
 			{
-				new_o[keys[i]] = o[keys[i]];
+				return aFloat > bFloat ? 1 : aFloat < bFloat ? -1 : 0;
+			} 
+			else if (aNumeric && !bNumeric) 
+			{
+				return 1;
+			} 
+			else if (!aNumeric && bNumeric) 
+			{
+				return -1;
 			}
 			
-			return new_o;
-		},
+			return a > b ? 1 : a < b ? -1 : 0;
+		});
+		
+		//cache object/array size
+		num_keys = keys.length;
+		
+		//Recreate the object/array
+		for(i=0; i < num_keys; i++)
+		{
+			new_o[keys[i]] = o[keys[i]];
+		}
+		
+		return new_o;
+	},
+	u = {
 		object_keys: function(o)
 		{
 			var keys = [],
@@ -1003,7 +1007,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			{
 				// Sort the keys in descending order for better
 				// replacement functionality
-				from = this.reverse_key_sort(from);
+				from = reverse_key_sort(from);
 				
 				for(f in from)
 				{
@@ -1035,19 +1039,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 					stry = str.charAt(i+1);
 					for(j=0; j < from_len; j++)
 					{
-						/*if(from_len !== to_len)
+						if(strx == from.charAt(j))
 						{
-							//Double check matches when the strings are different lengths
-							
+							match = true;
+							break;
 						}
-						else
-						{*/
-							if(strx == from.charAt(j))
-							{
-								match = true;
-								break;
-							}
-						//}
 					}
 				}
 				else

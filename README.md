@@ -149,7 +149,7 @@ functions:
 
 ### Util: Array and string manipulation functions ###
 
-** functions: **
+**functions:**
 
 * object_keys: Gets the name of the properties of an object
 

@@ -1,5 +1,5 @@
 (function(){
-	//"use strict";
+	"use strict";
 	
 	//Selector test function
 	function $(a)
@@ -253,7 +253,7 @@
 		
 	});
 	
-	test("Reverse Key Sort", function(){
+	/*test("Reverse Key Sort", function(){
 		expect(2);
 	
 		var test_o = {
@@ -275,7 +275,7 @@
 		
 		deepEqual($_.util.reverse_key_sort(test_o), test_sorted, "Object sort");
 		deepEqual($_.util.object_values($_.util.reverse_key_sort(test_array)), test_array_sorted, "Array Sort");
-	});
+	});*/
 	
 	test("Object Merge", function(){
 		expect(2);

@@ -6,8 +6,6 @@
  * Copyright (c) 2011 John Resig, Jörn Zaefferer
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * or GPL (GPL-LICENSE.txt) licenses.
- * Pulled Live from Git Fri Oct 21 15:55:01 UTC 2011
- * Last Commit: ee156923cdb01820e35e6bb579d5cf6bf55736d4
  */
 
 (function(window) {
