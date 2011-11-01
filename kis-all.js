@@ -1091,6 +1091,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
  */
 (function (){
 
+	"use strict";
+
 	// Property name for expandos on DOM objects
 	var kis_expando = "KIS_0_3_0";
 
