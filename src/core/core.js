@@ -25,10 +25,10 @@
 	{
 		var x, c;
 		
-		if (typeof a !== "string" || typeof a === "undefined"){ return a;}
+		if (typeof a != "string" || typeof a === "undefined"){ return a;}
 		
 		//Check for a context of a specific element, otherwise, just run on the document
-		c  = (typeof context === 'object' && context.nodeType === 1) 
+		c  = (context != null && context.nodeType === 1) 
 			? context 
 			: document;
 		

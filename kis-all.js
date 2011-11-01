@@ -25,10 +25,10 @@
 	{
 		var x, c;
 		
-		if (typeof a !== "string" || typeof a === "undefined"){ return a;}
+		if (typeof a != "string" || typeof a === "undefined"){ return a;}
 		
 		//Check for a context of a specific element, otherwise, just run on the document
-		c  = (typeof context === 'object' && context.nodeType === 1) 
+		c  = (context != null && context.nodeType === 1) 
 			? context 
 			: document;
 		
@@ -1102,17 +1102,12 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	{
 		attach = function (sel, event, callback)
 		{
-			if (typeof sel.addEventListener !== "undefined")
-			{
-				sel.addEventListener(event, callback, false);
-			}
+			sel.removeEventListener(event, callback, false);
+			sel.addEventListener(event, callback, false);
 		};
 		remove = function (sel, event, callback)
 		{
-			if (typeof sel.removeEventListener !== "undefined")
-			{
-				sel.removeEventListener(event, callback, false);
-			}
+			sel.removeEventListener(event, callback, false);
 		};
 	}
 	//typeof function doesn't work in IE where attachEvent is available: brute force it
@@ -1123,7 +1118,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			function listener () {
 				// Internet Explorer fails to correctly set the 'this' object
 				// for event listeners, so we need to set it ourselves.
-				callback.apply(arguments);
+				callback.apply(arguments[0]);
 			}
 			
 			if (typeof sel.attachEvent !== "undefined")
@@ -1243,7 +1238,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			$_.each(function(e){
 				add_remove(e, event, callback, false);
 			});
-		},
+		}/*,
 		live: function (event, callback)
 		{
 			$_.each(function(e){
@@ -1255,7 +1250,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			$_.each(function(e){
 				attach_delegate(e, target, event, callback);
 			});
-		}
+		}*/
 	};
 
 	$_.ext('event', e);

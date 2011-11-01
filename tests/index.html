@@ -27,6 +27,20 @@
 		</section>
 		<script src="../kis-custom.js"></script>
 		<script src="qunit/qunit.js"></script>
-		<script src="./tests.js"></script>
+		<script type="text/javascript">
+		//Selector test function
+		function $(a)
+		{
+			var x = document.querySelectorAll(a);
+			
+			//Return the single object if applicable
+			return (x.length === 1) ? x[0] : x;
+		}
+		</script>
+		<script src="tests/core.js"></script>
+		<script src="tests/ajax.js"></script>
+		<script src="tests/event.js"></script>
+		<script src="tests/dom.js"></script>
+		<script src="tests/util.js"></script>
 	</body>
 </html>

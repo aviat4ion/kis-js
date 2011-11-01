@@ -5,6 +5,8 @@
  */
 (function (){
 
+	"use strict";
+
 	// Property name for expandos on DOM objects
 	var kis_expando = "KIS_0_3_0";
 
@@ -16,17 +18,12 @@
 	{
 		attach = function (sel, event, callback)
 		{
-			if (typeof sel.addEventListener !== "undefined")
-			{
-				sel.addEventListener(event, callback, false);
-			}
+			sel.removeEventListener(event, callback, false);
+			sel.addEventListener(event, callback, false);
 		};
 		remove = function (sel, event, callback)
 		{
-			if (typeof sel.removeEventListener !== "undefined")
-			{
-				sel.removeEventListener(event, callback, false);
-			}
+			sel.removeEventListener(event, callback, false);
 		};
 	}
 	//typeof function doesn't work in IE where attachEvent is available: brute force it
@@ -37,7 +34,7 @@
 			function listener () {
 				// Internet Explorer fails to correctly set the 'this' object
 				// for event listeners, so we need to set it ourselves.
-				callback.apply(arguments);
+				callback.apply(arguments[0]);
 			}
 			
 			if (typeof sel.attachEvent !== "undefined")
@@ -157,7 +154,7 @@
 			$_.each(function(e){
 				add_remove(e, event, callback, false);
 			});
-		},
+		}/*,
 		live: function (event, callback)
 		{
 			$_.each(function(e){
@@ -169,7 +166,7 @@
 			$_.each(function(e){
 				attach_delegate(e, target, event, callback);
 			});
-		}
+		}*/
 	};
 
 	$_.ext('event', e);
