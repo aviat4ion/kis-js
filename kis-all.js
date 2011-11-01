@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.3.0
+	Version		0.5.0-pre
  */
 (function (){
 
@@ -14,42 +14,18 @@
 		return;
 	}
 
-	var $_, $, dcopy, sel;
+	var $_, $, dcopy, sel, sel_string;
 	
-	/**
-	 * $
-	 *
-	 * Simple DOM selector function
-	 */
-	$ = function (a, context)
-	{
-		var x, c;
-		
-		if (typeof a != "string" || typeof a === "undefined"){ return a;}
-		
-		//Check for a context of a specific element, otherwise, just run on the document
-		c  = (context != null && context.nodeType === 1) 
-			? context 
-			: document;
-		
-		//Pick the quickest method for each kind of selector
-		if (a.match(/^#([\w\-]+$)/))
-		{
-			return document.getElementById(a.split('#')[1]);
-		}
-		else
-		{
-			x = c.querySelectorAll(a);
-		}
-		
-		//Return the single object if applicable
-		return (x.length === 1) ? x[0] : x;
-	};
 
 	/**
 	 * $_
 	 *
 	 * Constructor function
+	 *
+	 * @constuctor
+	 * @namespace
+	 * @param string selector
+	 * @return object
 	 */
 	$_ = function(s)
 	{
@@ -87,7 +63,48 @@
 	};
 	
 	/**
+	 * $
+	 *
+	 * Simple DOM selector function
+	 *
+	 * @memberOf $_
+	 * @param string selector
+	 * @param string context
+	 * @return object
+	 * @type object
+	 */
+	$ = function (a, context)
+	{
+		var x, c;
+		
+		if (typeof a != "string" || typeof a === "undefined"){ return a;}
+		
+		//Check for a context of a specific element, otherwise, just run on the document
+		c  = (context != null && context.nodeType === 1) 
+			? context 
+			: document;
+		
+		//Pick the quickest method for each kind of selector
+		if (a.match(/^#([\w\-]+$)/))
+		{
+			return document.getElementById(a.split('#')[1]);
+		}
+		else
+		{
+			x = c.querySelectorAll(a);
+		}
+		
+		//Return the single object if applicable
+		return (x.length === 1) ? x[0] : x;
+	};
+	
+	/**
 	 * Deep copy/prototypical constructor function
+	 *
+	 * @param object obj
+	 * @private
+	 * @return object
+	 * @type object
 	 */
 	dcopy = function(obj)
 	{
@@ -110,6 +127,9 @@
 			return;
 		}
 		
+		/**
+		 * @private
+		 */
 		F = function(){};
 		
 		F.prototype = obj;
@@ -118,14 +138,27 @@
 		
 	};
 	
-	//Function to add to $_ object, and get sel
+	/**
+	 * Adds the property `obj` to the $_ object, calling it `name`
+	 * 
+	 * @param string name
+	 * @param object obj
+	 * @return void
+	 */
 	$_.ext = function(name, obj)
 	{
 		obj.el = sel;
 		$_[name] = obj;
 	};
 	
-	//Selector iteration
+	/**
+	 * Iterates over a $_ object, applying a callback to each item
+	 *
+	 * @name $_.each
+	 * @function
+	 * @param function callback
+	 * @return void
+	 */
 	$_.ext('each', function (callback)
 	{
 		if(typeof sel.length !== "undefined" && sel !== window)
@@ -150,7 +183,13 @@
 		}
 	});
 	
-	//Type retriever
+	/**
+	 * Retrieves the type of the passed variable
+	 *
+	 * @param mixed obj
+	 * @return string
+	 * @type string
+	 */
 	$_.type = function(obj) 
 	{
 		if((function() {return obj && (obj !== this)}).call(obj))
@@ -179,6 +218,9 @@
 	 */
 	if(typeof String.prototype.trim === "undefined")
 	{
+		/**
+		 * @private
+		 */
 		String.prototype.trim = function(){
 			return this.replace(/^\s+|\s+$/g, "");
 		};
@@ -227,12 +269,18 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 			// Vendors: please allow content code to instantiate DOMExceptions
 			,
+			/**
+			 * @private
+			 */
 			DOMEx = function (type, message)
 			{
 				this.name = type;
 				this.code = DOMException[type];
 				this.message = message;
 			},
+			/**
+			 * @private
+			 */
 			checkTokenAndGetIndex = function (classList, token)
 			{
 				if (token === "")
@@ -245,6 +293,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				}
 				return arrIndexOf.call(classList, token);
 			},
+			/**
+			 * @private
+			 */
 			ClassList = function (elem)
 			{
 				var
@@ -262,6 +313,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				};
 			},
 			classListProto = ClassList[protoProp] = [],
+			/**
+			 * @private
+			 */
 			classListGetter = function ()
 			{
 				return new ClassList(this);
@@ -344,10 +398,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 // --------------------------------------------------------------------------
 
-/**
- * Dom manipulation object
- *
- */
 (function (){
 	var d, tag_reg, class_reg;
 	
@@ -476,23 +526,71 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	
 	// --------------------------------------------------------------------------
 
+	/**
+	 * DOM
+	 * 
+	 * Dom manipulation module
+	 * @namespace
+	 * @memberOf $_
+	 * @name dom
+	 */
 	d = {
+		/**
+		 * Adds a class to the element(s) specified by the current
+		 * selector
+		 * 
+		 * @name addClass
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string class
+		 * @return void
+		 */
 		addClass: function (c)
 		{
 			$_.each(function (e){
 				e.classList.add(c);
 			});
 		},
+		/**
+		 * Removes a class from the element(s) specified by the current
+		 * selector
+		 * 
+		 * @name removeClass
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string class
+		 * @return void
+		 */
 		removeClass: function (c)
 		{
 			$_.each(function (e){
 				e.classList.remove(c);
 			});
 		},
+		/**
+		 * Hides the element(s) specified by the current selector
+		 * 
+		 * @name hide
+		 * @memberOf $_.dom
+		 * @function
+		 * @return void
+		 */
 		hide: function ()
 		{
 			this.css('display', 'none');
 		},
+		/**
+		 * Shows the element(s) specified by the current selector. 
+		 * if type is specified, the element will have it's style
+		 * property set to "display:[your type]". If type is not
+		 * specified, the element is set to "display:block".
+		 * 
+		 * @name  show
+		 * @memberOf $_.dom
+		 * @function
+		 * @param [string] type
+		 * @return void
+		 */
 		show: function (type)
 		{
 			if (typeof type === "undefined")
@@ -502,6 +600,20 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 			this.css("display", type);
 		},
+		/**
+		 * Sets attributes on element(s) specified by the current 
+		 * selector, or, if name is not specified, returns the 
+		 * value of the attribute of the element specified by the
+		 * current selector.
+		 *
+		 * @name attr
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string name
+		 * @param string value
+		 * @return string
+		 * @type string
+		 */
 		attr: function (name, value)
 		{
 			var sel = this.el;
@@ -524,6 +636,19 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				return _attr(sel, name, value);
 			}
 		},
+		/**
+		 * Sets or retrieves the text content of the element
+		 * specified by the current selector. If a value is 
+		 * passed, it will set that value on the current element,
+		 * otherwise it will return the value of the current element
+		 *
+		 * @name text
+		 * @memberOf $_.util
+		 * @function
+		 * @param [string] value
+		 * @returns string
+		 * @type string
+		 */
 		text: function (value)
 		{
 			var oldValue, set, type, sel;
@@ -550,6 +675,21 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				return oldValue;
 			}
 		},
+		/**
+		 * Sets or retrieves a css property of the element
+		 * specified by the current selector. If a value is 
+		 * passed, it will set that value on the current element,
+		 * otherwise it will return the value of the css property
+		 * on the current element
+		 *
+		 * @name css
+		 * @memberOf $_.util
+		 * @function
+		 * @param string property
+		 * @param [string] value
+		 * @returns string
+		 * @type string
+		 */
 		css: function (prop, val)
 		{
 			//Return the current value if a value is not set
@@ -570,17 +710,42 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 // --------------------------------------------------------------------------
 
-/**
- * Store object
- *
- * Wrapper for localstorage data serialization
- */
 (function (){
+	"use strict";
+
+	/**
+	 * Wrapper for localstorage data serialization
+	 *
+	 * @name store
+	 * @namespace
+	 * @memberOf $_
+	 */
 	var store = {
+		/**
+		 * Retrieves and deserializes a value from localstorage, 
+		 * based on the specified key
+		 * 
+		 * @param string key
+		 * @name get
+		 * @memberOf $_.store
+		 * @function
+		 * @return object
+		 */
 		get: function (key)
 		{
 			return JSON.parse(localStorage.getItem(key));
 		},
+		/**
+		 * Puts a value into localstorage at the specified key,
+		 * and JSON-encodes the value if not a string
+		 *
+		 * @param string key
+		 * @param mixed value
+		 * @name set
+		 * @memberOf $_.store
+		 * @function
+		 * @return void
+		 */
 		set: function (key, value)
 		{
 			if (typeof value !== "string")
@@ -589,10 +754,28 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 			localStorage.setItem(key, value);
 		},
+		/**
+		 * Removes the specified item from localstorage
+		 * 
+		 * @param string key
+		 * @name remove
+		 * @memberOf $_.store
+		 * @function
+		 * @return void 
+		 */
 		remove: function (key)
 		{
 			localStorage.removeItem(key);
 		},
+		/**
+		 * Returns an array of all the values in localstorage
+		 * in their raw form
+		 * 
+		 * @name getAll
+		 * @member of $_.store
+		 * @function
+		 * @return object
+		 */
 		getAll: function ()
 		{
 			var i,
@@ -618,103 +801,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 // --------------------------------------------------------------------------
 
 /**
- * Qs
- *
- * Object for encoding and decoding querystrings and hashbang strings
- */
-(function (){
-
-	$_.hb = (history.pushState) ? false : true;
-
-	var qs = {
-		parse: function (hb)
-		{
-			hb = hb || $_.hb;
-			
-			var h, i, hString, pairs, pLen, data, y;
-
-			data = {};
-
-			if (hb === true)
-			{
-				h = location.hash.split('#!/');
-				hString = (h.length > 1) ? h[1] : '';
-			}
-			else if (hb === false || hb === undefined)
-			{
-				hString = window.location.search.substring(1);
-			}
-			else
-			{
-				return false;
-			}
-
-			pairs = hString.split('&');
-
-			pLen = pairs.length;
-
-			for (i = 0; i < pLen; i++)
-			{
-				y = pairs[i].split('=');
-
-				if (y.length < 2)
-				{
-					return data;
-				}
-
-				data[y[0]] = y[1];
-			}
-
-			return data;
-		},
-		set: function (key, value, hb)
-		{
-			hb = hb || $_.hb;
-			var pairs = this.parse(hb);
-
-			if (key !== undefined && value !== undefined)
-			{
-				pairs[key] = value;
-			}
-
-			var vars = [];
-
-			for (var x in pairs)
-			{
-				if (pairs.hasOwnProperty(x))
-				{
-					vars.push(x + '=' + pairs[x]);
-				}
-			}
-
-			var qs = vars.join('&');
-
-			if (hb === true)
-			{
-				qs = '!/' + qs;
-				location.hash = qs;
-			}
-
-			return qs;
-		},
-		get: function (key, hb)
-		{
-			hb = hb || $_.hb;
-			var pairs = this.parse(hb);
-			return (pairs[key]) ? pairs[key] : '';
-		}
-	};
-
-	$_.ext('qs', qs);
-
-}());
-
-// --------------------------------------------------------------------------
-
-/**
  * Ajax
  *
- * Object for making ajax requests
+ * Module for making ajax requests
  */
 (function (){
 
@@ -723,6 +812,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		{
 			if (typeof callback === "undefined")
 			{
+				/**
+				 * @private
+				 */
 				callback = function (){};
 			}
 
@@ -781,10 +873,32 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		}
 	};
 
+	/**
+	 * Sends a GET type ajax request
+	 * 
+	 * @name get
+	 * @function
+	 * @memberOf $_
+	 * @param string url
+	 * @param object data
+	 * @param function callback
+	 * @return void
+	 */
 	$_.ext('get', function (url, data, callback){
 		ajax._do(url, data, callback, false);
 	});
-
+	
+	/**
+	 * Sends a POST type ajax request
+	 * 
+	 * @name post
+	 * @function
+	 * @memberOf $_
+	 * @param string url
+	 * @param object data
+	 * @param function callback
+	 * @return void
+	 */
 	$_.ext('post', function (url, data, callback){
 		ajax._do(url, data, callback, true);
 	});
@@ -848,7 +962,25 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		
 		return new_o;
 	},
+	
+	/**
+	 * String and object manipulation utilities
+	 *	
+	 * @namespace
+	 * @name util
+	 * @memberOf $_
+	 */
 	u = {
+		/**
+		 * Retrieve the keys, or member names of an object
+		 * 
+		 * @name object_keys
+		 * @memberOf $_.util
+		 * @function
+		 * @param object
+		 * @return array
+		 * @type array
+		 */
 		object_keys: function(o)
 		{
 			var keys = [],
@@ -864,6 +996,17 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			
 			return keys;
 		},
+		/**
+		 * Retrieves the values of an object, and returns
+		 * them as an array
+		 *
+		 * @name object_values
+		 * @memberOf $_.util
+		 * @function
+		 * @param object
+		 * @return array
+		 * @type array
+		 */
 		object_values: function(o)
 		{
 			var vals = [],
@@ -876,6 +1019,20 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			
 			return vals;
 		},
+		/**
+		 * Creates an object, with the property names of the first array, 
+		 * and the values of the second. If objects are passed, the values 
+		 * of the object are used. If the arrays or objects passed are 
+		 * not the same size, the function will return false.
+		 * 
+		 * @name array_combine
+		 * @memberOf $_.util
+		 * @function
+		 * @param array/object keys
+		 * @param array/object vals
+		 * @return object
+		 * @type object
+		 */
 		array_combine: function(keys, vals)
 		{
 			var new_object = {},
@@ -909,6 +1066,20 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			
 			return new_object;
 		},
+		/**
+		 * Combines two or more objects/arrays. If the keys are numeric, the outputted
+		 * object will have re-indexed keys. If a key/value pair exists in both objects,
+		 * indentical values will be droped, but if a key exists with a different value, 
+		 * with the same key, the value in the second array will replace the value in the
+		 * first
+		 * 
+		 * @name object_merge
+		 * @memberOf $_.util
+		 * @function
+		 * @param object [as many as you wish to combine]
+		 * @type object
+		 * @return object
+		 */
 		object_merge: function()
 		{
 			var args = Array.prototype.slice.call(arguments),
@@ -982,6 +1153,21 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			
 			return new_obj;
 		},
+		/**
+		 * Replaces sections of strings in a greedy fashion, 
+		 * starting with the longest replace pairs first. Accepts
+		 * one replace pair as two parameters, or an object, with
+		 * from => to replacements as key/value pairs
+		 *
+		 * @name str_trans
+		 * @memberOf $_.util
+		 * @function
+		 * @param string input_string
+		 * @param mixed
+		 * @param [string] to
+		 * @return string
+		 * @type string
+		 */
 		str_trans: function(str, from, to)
 		{
 			var froms = [],
@@ -1085,7 +1271,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 // --------------------------------------------------------------------------
 
 /**
- * Event object
+ * Event
  *
  * Event api wrapper
  */
@@ -1094,28 +1280,43 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	"use strict";
 
 	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_3_0";
+	var kis_expando = "KIS_0_5_0";
 
-	var attach, remove, add_remove, e, attach_delegate, attach_live;
+	var _attach, _remove, _add_remove, e, _attach_delegate;
 
-	// Define the proper attach and remove functions
+	// Define the proper _attach and _remove functions
 	// based on browser support
 	if(typeof document.addEventListener !== "undefined")
 	{
-		attach = function (sel, event, callback)
+		/**
+		 * @private
+		 */
+		_attach = function (sel, event, callback)
 		{
-			sel.removeEventListener(event, callback, false);
-			sel.addEventListener(event, callback, false);
+			if(typeof sel.addEventListener !== "undefined")
+			{
+				//Duplicated events are dropped, per the specification
+				sel.addEventListener(event, callback, false);
+			}
 		};
-		remove = function (sel, event, callback)
+		/**
+		 * @private
+		 */
+		_remove = function (sel, event, callback)
 		{
-			sel.removeEventListener(event, callback, false);
+			if(typeof sel.removeEventListener !== "undefined")
+			{
+				sel.removeEventListener(event, callback, false);
+			}
 		};
 	}
-	//typeof function doesn't work in IE where attachEvent is available: brute force it
+	//typeof function doesn't work in IE where _attachEvent is available: brute force it
 	else if(typeof document.attachEvent !== "undefined") 
 	{
-		attach = function (sel, event, callback)
+		/**
+		 * @private
+		 */
+		_attach = function (sel, event, callback)
 		{
 			function listener () {
 				// Internet Explorer fails to correctly set the 'this' object
@@ -1125,10 +1326,10 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			
 			if (typeof sel.attachEvent !== "undefined")
 			{
-				remove(event, callback); // Make sure we don't have duplicate listeners
+				_remove(event, callback); // Make sure we don't have duplicate listeners
 				
 				sel.attachEvent("on" + event, listener);
-				// Store our listener so we can remove it later
+				// Store our listener so we can _remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
 				expando.listeners = expando.listeners || {};
 				expando.listeners[event] = expando.listeners[event] || [];
@@ -1139,10 +1340,13 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 			else
 			{
-				console.log("Failed to attach event:"+event+" on "+sel);
+				console.log("Failed to _attach event:"+event+" on "+sel);
 			}
 		};
-		remove = function (sel, event, callback)
+		/**
+		 * @private
+		 */
+		_remove = function (sel, event, callback)
 		{
 			if(typeof sel.detachEvent !== "undefined")
 			{
@@ -1169,8 +1373,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 		};
 	}
-
-	add_remove = function (sel, event, callback, add)
+	
+	_add_remove = function (sel, event, callback, add)
 	{
 		var i, len;
 		
@@ -1190,7 +1394,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 			for (i = 0; i < len; i++)
 			{
-				add_remove(sel, event[i], callback, add);
+				_add_remove(sel, event[i], callback, add);
 			}
 
 			return;
@@ -1199,60 +1403,124 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		
 		if(add === true)
 		{
-			attach(sel, event, callback);
+			_attach(sel, event, callback);
 		}
 		else
 		{
-			remove(sel, event, callback);
+			_remove(sel, event, callback);
 		}
 	};
-	
-	attach_delegate = function(sel, target, event, callback)
+
+	_attach_delegate = function(sel, target, event, callback)
 	{
-	
-		//Attach the listener to the parent object
-		add_remove(sel, event, function(e){
+		//_attach the listener to the parent object
+		_add_remove(target, event, function(e){
 		
+			var i, t;
+			
 			//Get the live version of the target selector
-			sel = $_.$(sel);
-		
-		
-			//todo: fire target callback when event bubbles from target
+			t = $_.$(target);
+			
+			console.log(t);
+			
+			//Check each element to see if it matches the target
+			for(i in t)
+			{
+				if(t.hasOwnProperty(i))
+				{
+					//Fire target callback when event bubbles from target
+					if(e.target == i)
+					{
+						//Trigger the event callback
+						callback.call(i, e);
+						
+						//Stop event propegation
+						e.stopPropagation();
+					}
+				}
+			}
+			
+			
 		}, true);
-	};
-	
-	attach_live = function(target, event, callback)
-	{
-		attach_delegate(document.documentElement, target, event, callback);
 	};
 	
 	// --------------------------------------------------------------------------
 
+	/**
+	 * @namespace
+	 * @name event
+	 * @memberOf $_
+	 */
 	e = {
+		/**
+		 * Adds an event that returns a callback when triggered on the selected
+		 * event and selector
+		 * 
+		 * @memberOf $_.event
+		 * @name add
+		 * @function
+		 * @example Eg. $_("#selector").event.add("click", do_something());
+		 * @param string event
+		 * @param function callback
+		 * @return void
+		 */
 		add: function (event, callback)
 		{
 			$_.each(function(e){
-				add_remove(e, event, callback, true);
+				_add_remove(e, event, callback, true);
 			});
 		},
+		/**
+		 * Removes an event bound the the specified selector, event type, and callback
+		 *
+		 * @memberOf $_.event
+		 * @name remove
+		 * @function
+		 * @example Eg. $_("#selector").event.remove("click", do_something());
+		 * @param string event
+		 * @param string callback
+		 * @return void
+		 */
 		remove: function (event, callback)
 		{
 			$_.each(function(e){
-				add_remove(e, event, callback, false);
-			});
-		}/*,
-		live: function (event, callback)
-		{
-			$_.each(function(e){
-				attach_live(e, event, callback);
+				_add_remove(e, event, callback, false);
 			});
 		},
+		/** 
+		 * Binds a persistent, delegated event
+		 * 
+		 * @memberOf $_.event
+		 * @name live
+		 * @function
+		 * @example Eg. $_.event.live(".button", "click", do_something());
+		 * @param string target
+		 * @param string event
+		 * @param function callback
+		 * @return void
+		 */
+		live: function (target, event, callback)
+		{
+			_attach_delegate(document.documentElement, target, event, callback);
+		},
+		/** 
+		 * Binds an event to a parent object
+		 *
+		 * @memberOf $_.event
+		 * @name delegate
+		 * @function
+		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
+		 * @param string target
+		 * @param string event_type
+		 * @parma function callback
+		 * @return void
+		 */
 		delegate: function(target, event, callback)
 		{
 			$_.each(function(e){
-				attach_delegate(e, target, event, callback);
+				_attach_delegate(e, target, event, callback);
 			});
-		}*/
+		}
 	};
 
 	$_.ext('event', e);

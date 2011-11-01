@@ -62,21 +62,6 @@ functions:
 
 	    $_.post(url, data_object, callback);
 			
-### QS: querystring parsing and serialization for hashbang strings, and pushState urls ###
-	
-**functions:**
-	
-* Parse:
-
-	    $_.qs.parse(hb);
-
-* Set: This function will set the hash url if browser doesn't have history.pushState
-
-	    $_.qs.set(key, value);
-
-* Get: Retrieves the value of the key in the url string
-
-	    $_.qs.get(key);
 			    
 ### Store: localstorage wrapper with automatic data serialization ###
 

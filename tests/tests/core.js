@@ -53,9 +53,9 @@
 	
 	test("Sub-modules", function(){
 		expect(4);
-		ok($_.qs, "Query String module");
 		ok($_().event, "Event module");
 		ok($_.store, "Local Storage module");
 		ok($_().dom, "Dom manipulation module");
+		ok($_.util, "Utilities module");
 	});
 }());

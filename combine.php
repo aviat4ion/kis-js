@@ -9,7 +9,6 @@
 //The name of the source folder
 $folder = "src";
 $src_folder = "{$folder}/modules";
-$core_folder = "{$folder}/core";
 
 $files = array();
 
@@ -29,7 +28,7 @@ if($dir = opendir($src_folder))
 }
 
 //Start with the core
-$new_file = file_get_contents($core_folder."/core.js") . "\n";
+$new_file = file_get_contents("{$folder}/core.js") . "\n";
 
 
 //Add the modules

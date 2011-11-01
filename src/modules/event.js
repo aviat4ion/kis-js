@@ -1,5 +1,5 @@
 /**
- * Event object
+ * Event
  *
  * Event api wrapper
  */
@@ -8,28 +8,43 @@
 	"use strict";
 
 	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_3_0";
+	var kis_expando = "KIS_0_5_0";
 
-	var attach, remove, add_remove, e, attach_delegate, attach_live;
+	var _attach, _remove, _add_remove, e, _attach_delegate;
 
-	// Define the proper attach and remove functions
+	// Define the proper _attach and _remove functions
 	// based on browser support
 	if(typeof document.addEventListener !== "undefined")
 	{
-		attach = function (sel, event, callback)
+		/**
+		 * @private
+		 */
+		_attach = function (sel, event, callback)
 		{
-			sel.removeEventListener(event, callback, false);
-			sel.addEventListener(event, callback, false);
+			if(typeof sel.addEventListener !== "undefined")
+			{
+				//Duplicated events are dropped, per the specification
+				sel.addEventListener(event, callback, false);
+			}
 		};
-		remove = function (sel, event, callback)
+		/**
+		 * @private
+		 */
+		_remove = function (sel, event, callback)
 		{
-			sel.removeEventListener(event, callback, false);
+			if(typeof sel.removeEventListener !== "undefined")
+			{
+				sel.removeEventListener(event, callback, false);
+			}
 		};
 	}
-	//typeof function doesn't work in IE where attachEvent is available: brute force it
+	//typeof function doesn't work in IE where _attachEvent is available: brute force it
 	else if(typeof document.attachEvent !== "undefined") 
 	{
-		attach = function (sel, event, callback)
+		/**
+		 * @private
+		 */
+		_attach = function (sel, event, callback)
 		{
 			function listener () {
 				// Internet Explorer fails to correctly set the 'this' object
@@ -39,10 +54,10 @@
 			
 			if (typeof sel.attachEvent !== "undefined")
 			{
-				remove(event, callback); // Make sure we don't have duplicate listeners
+				_remove(event, callback); // Make sure we don't have duplicate listeners
 				
 				sel.attachEvent("on" + event, listener);
-				// Store our listener so we can remove it later
+				// Store our listener so we can _remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
 				expando.listeners = expando.listeners || {};
 				expando.listeners[event] = expando.listeners[event] || [];
@@ -53,10 +68,13 @@
 			}
 			else
 			{
-				console.log("Failed to attach event:"+event+" on "+sel);
+				console.log("Failed to _attach event:"+event+" on "+sel);
 			}
 		};
-		remove = function (sel, event, callback)
+		/**
+		 * @private
+		 */
+		_remove = function (sel, event, callback)
 		{
 			if(typeof sel.detachEvent !== "undefined")
 			{
@@ -83,8 +101,8 @@
 			}
 		};
 	}
-
-	add_remove = function (sel, event, callback, add)
+	
+	_add_remove = function (sel, event, callback, add)
 	{
 		var i, len;
 		
@@ -104,7 +122,7 @@
 
 			for (i = 0; i < len; i++)
 			{
-				add_remove(sel, event[i], callback, add);
+				_add_remove(sel, event[i], callback, add);
 			}
 
 			return;
@@ -113,60 +131,124 @@
 		
 		if(add === true)
 		{
-			attach(sel, event, callback);
+			_attach(sel, event, callback);
 		}
 		else
 		{
-			remove(sel, event, callback);
+			_remove(sel, event, callback);
 		}
 	};
-	
-	attach_delegate = function(sel, target, event, callback)
+
+	_attach_delegate = function(sel, target, event, callback)
 	{
-	
-		//Attach the listener to the parent object
-		add_remove(sel, event, function(e){
+		//_attach the listener to the parent object
+		_add_remove(target, event, function(e){
 		
+			var i, t;
+			
 			//Get the live version of the target selector
-			sel = $_.$(sel);
-		
-		
-			//todo: fire target callback when event bubbles from target
+			t = $_.$(target);
+			
+			console.log(t);
+			
+			//Check each element to see if it matches the target
+			for(i in t)
+			{
+				if(t.hasOwnProperty(i))
+				{
+					//Fire target callback when event bubbles from target
+					if(e.target == i)
+					{
+						//Trigger the event callback
+						callback.call(i, e);
+						
+						//Stop event propegation
+						e.stopPropagation();
+					}
+				}
+			}
+			
+			
 		}, true);
-	};
-	
-	attach_live = function(target, event, callback)
-	{
-		attach_delegate(document.documentElement, target, event, callback);
 	};
 	
 	// --------------------------------------------------------------------------
 
+	/**
+	 * @namespace
+	 * @name event
+	 * @memberOf $_
+	 */
 	e = {
+		/**
+		 * Adds an event that returns a callback when triggered on the selected
+		 * event and selector
+		 * 
+		 * @memberOf $_.event
+		 * @name add
+		 * @function
+		 * @example Eg. $_("#selector").event.add("click", do_something());
+		 * @param string event
+		 * @param function callback
+		 * @return void
+		 */
 		add: function (event, callback)
 		{
 			$_.each(function(e){
-				add_remove(e, event, callback, true);
+				_add_remove(e, event, callback, true);
 			});
 		},
+		/**
+		 * Removes an event bound the the specified selector, event type, and callback
+		 *
+		 * @memberOf $_.event
+		 * @name remove
+		 * @function
+		 * @example Eg. $_("#selector").event.remove("click", do_something());
+		 * @param string event
+		 * @param string callback
+		 * @return void
+		 */
 		remove: function (event, callback)
 		{
 			$_.each(function(e){
-				add_remove(e, event, callback, false);
-			});
-		}/*,
-		live: function (event, callback)
-		{
-			$_.each(function(e){
-				attach_live(e, event, callback);
+				_add_remove(e, event, callback, false);
 			});
 		},
+		/** 
+		 * Binds a persistent, delegated event
+		 * 
+		 * @memberOf $_.event
+		 * @name live
+		 * @function
+		 * @example Eg. $_.event.live(".button", "click", do_something());
+		 * @param string target
+		 * @param string event
+		 * @param function callback
+		 * @return void
+		 */
+		live: function (target, event, callback)
+		{
+			_attach_delegate(document.documentElement, target, event, callback);
+		},
+		/** 
+		 * Binds an event to a parent object
+		 *
+		 * @memberOf $_.event
+		 * @name delegate
+		 * @function
+		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
+		 * @param string target
+		 * @param string event_type
+		 * @parma function callback
+		 * @return void
+		 */
 		delegate: function(target, event, callback)
 		{
 			$_.each(function(e){
-				attach_delegate(e, target, event, callback);
+				_attach_delegate(e, target, event, callback);
 			});
-		}*/
+		}
 	};
 
 	$_.ext('event', e);

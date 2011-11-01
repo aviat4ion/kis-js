@@ -1,7 +1,7 @@
 /**
  * Ajax
  *
- * Object for making ajax requests
+ * Module for making ajax requests
  */
 (function (){
 
@@ -10,6 +10,9 @@
 		{
 			if (typeof callback === "undefined")
 			{
+				/**
+				 * @private
+				 */
 				callback = function (){};
 			}
 
@@ -68,10 +71,32 @@
 		}
 	};
 
+	/**
+	 * Sends a GET type ajax request
+	 * 
+	 * @name get
+	 * @function
+	 * @memberOf $_
+	 * @param string url
+	 * @param object data
+	 * @param function callback
+	 * @return void
+	 */
 	$_.ext('get', function (url, data, callback){
 		ajax._do(url, data, callback, false);
 	});
-
+	
+	/**
+	 * Sends a POST type ajax request
+	 * 
+	 * @name post
+	 * @function
+	 * @memberOf $_
+	 * @param string url
+	 * @param object data
+	 * @param function callback
+	 * @return void
+	 */
 	$_.ext('post', function (url, data, callback){
 		ajax._do(url, data, callback, true);
 	});

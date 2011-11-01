@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.3.0
+	Version		0.5.0-pre
  */
 (function (){
 
@@ -14,42 +14,18 @@
 		return;
 	}
 
-	var $_, $, dcopy, sel;
+	var $_, $, dcopy, sel, sel_string;
 	
-	/**
-	 * $
-	 *
-	 * Simple DOM selector function
-	 */
-	$ = function (a, context)
-	{
-		var x, c;
-		
-		if (typeof a != "string" || typeof a === "undefined"){ return a;}
-		
-		//Check for a context of a specific element, otherwise, just run on the document
-		c  = (context != null && context.nodeType === 1) 
-			? context 
-			: document;
-		
-		//Pick the quickest method for each kind of selector
-		if (a.match(/^#([\w\-]+$)/))
-		{
-			return document.getElementById(a.split('#')[1]);
-		}
-		else
-		{
-			x = c.querySelectorAll(a);
-		}
-		
-		//Return the single object if applicable
-		return (x.length === 1) ? x[0] : x;
-	};
 
 	/**
 	 * $_
 	 *
 	 * Constructor function
+	 *
+	 * @constuctor
+	 * @namespace
+	 * @param string selector
+	 * @return object
 	 */
 	$_ = function(s)
 	{
@@ -87,7 +63,48 @@
 	};
 	
 	/**
+	 * $
+	 *
+	 * Simple DOM selector function
+	 *
+	 * @memberOf $_
+	 * @param string selector
+	 * @param string context
+	 * @return object
+	 * @type object
+	 */
+	$ = function (a, context)
+	{
+		var x, c;
+		
+		if (typeof a != "string" || typeof a === "undefined"){ return a;}
+		
+		//Check for a context of a specific element, otherwise, just run on the document
+		c  = (context != null && context.nodeType === 1) 
+			? context 
+			: document;
+		
+		//Pick the quickest method for each kind of selector
+		if (a.match(/^#([\w\-]+$)/))
+		{
+			return document.getElementById(a.split('#')[1]);
+		}
+		else
+		{
+			x = c.querySelectorAll(a);
+		}
+		
+		//Return the single object if applicable
+		return (x.length === 1) ? x[0] : x;
+	};
+	
+	/**
 	 * Deep copy/prototypical constructor function
+	 *
+	 * @param object obj
+	 * @private
+	 * @return object
+	 * @type object
 	 */
 	dcopy = function(obj)
 	{
@@ -110,6 +127,9 @@
 			return;
 		}
 		
+		/**
+		 * @private
+		 */
 		F = function(){};
 		
 		F.prototype = obj;
@@ -118,14 +138,27 @@
 		
 	};
 	
-	//Function to add to $_ object, and get sel
+	/**
+	 * Adds the property `obj` to the $_ object, calling it `name`
+	 * 
+	 * @param string name
+	 * @param object obj
+	 * @return void
+	 */
 	$_.ext = function(name, obj)
 	{
 		obj.el = sel;
 		$_[name] = obj;
 	};
 	
-	//Selector iteration
+	/**
+	 * Iterates over a $_ object, applying a callback to each item
+	 *
+	 * @name $_.each
+	 * @function
+	 * @param function callback
+	 * @return void
+	 */
 	$_.ext('each', function (callback)
 	{
 		if(typeof sel.length !== "undefined" && sel !== window)
@@ -150,7 +183,13 @@
 		}
 	});
 	
-	//Type retriever
+	/**
+	 * Retrieves the type of the passed variable
+	 *
+	 * @param mixed obj
+	 * @return string
+	 * @type string
+	 */
 	$_.type = function(obj) 
 	{
 		if((function() {return obj && (obj !== this)}).call(obj))
@@ -179,6 +218,9 @@
 	 */
 	if(typeof String.prototype.trim === "undefined")
 	{
+		/**
+		 * @private
+		 */
 		String.prototype.trim = function(){
 			return this.replace(/^\s+|\s+$/g, "");
 		};

@@ -37,12 +37,18 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 			// Vendors: please allow content code to instantiate DOMExceptions
 			,
+			/**
+			 * @private
+			 */
 			DOMEx = function (type, message)
 			{
 				this.name = type;
 				this.code = DOMException[type];
 				this.message = message;
 			},
+			/**
+			 * @private
+			 */
 			checkTokenAndGetIndex = function (classList, token)
 			{
 				if (token === "")
@@ -55,6 +61,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				}
 				return arrIndexOf.call(classList, token);
 			},
+			/**
+			 * @private
+			 */
 			ClassList = function (elem)
 			{
 				var
@@ -72,6 +81,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				};
 			},
 			classListProto = ClassList[protoProp] = [],
+			/**
+			 * @private
+			 */
 			classListGetter = function ()
 			{
 				return new ClassList(this);
@@ -154,10 +166,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 // --------------------------------------------------------------------------
 
-/**
- * Dom manipulation object
- *
- */
 (function (){
 	var d, tag_reg, class_reg;
 	
@@ -286,23 +294,71 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	
 	// --------------------------------------------------------------------------
 
+	/**
+	 * DOM
+	 * 
+	 * Dom manipulation module
+	 * @namespace
+	 * @memberOf $_
+	 * @name dom
+	 */
 	d = {
+		/**
+		 * Adds a class to the element(s) specified by the current
+		 * selector
+		 * 
+		 * @name addClass
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string class
+		 * @return void
+		 */
 		addClass: function (c)
 		{
 			$_.each(function (e){
 				e.classList.add(c);
 			});
 		},
+		/**
+		 * Removes a class from the element(s) specified by the current
+		 * selector
+		 * 
+		 * @name removeClass
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string class
+		 * @return void
+		 */
 		removeClass: function (c)
 		{
 			$_.each(function (e){
 				e.classList.remove(c);
 			});
 		},
+		/**
+		 * Hides the element(s) specified by the current selector
+		 * 
+		 * @name hide
+		 * @memberOf $_.dom
+		 * @function
+		 * @return void
+		 */
 		hide: function ()
 		{
 			this.css('display', 'none');
 		},
+		/**
+		 * Shows the element(s) specified by the current selector. 
+		 * if type is specified, the element will have it's style
+		 * property set to "display:[your type]". If type is not
+		 * specified, the element is set to "display:block".
+		 * 
+		 * @name  show
+		 * @memberOf $_.dom
+		 * @function
+		 * @param [string] type
+		 * @return void
+		 */
 		show: function (type)
 		{
 			if (typeof type === "undefined")
@@ -312,6 +368,20 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 			this.css("display", type);
 		},
+		/**
+		 * Sets attributes on element(s) specified by the current 
+		 * selector, or, if name is not specified, returns the 
+		 * value of the attribute of the element specified by the
+		 * current selector.
+		 *
+		 * @name attr
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string name
+		 * @param string value
+		 * @return string
+		 * @type string
+		 */
 		attr: function (name, value)
 		{
 			var sel = this.el;
@@ -334,6 +404,19 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				return _attr(sel, name, value);
 			}
 		},
+		/**
+		 * Sets or retrieves the text content of the element
+		 * specified by the current selector. If a value is 
+		 * passed, it will set that value on the current element,
+		 * otherwise it will return the value of the current element
+		 *
+		 * @name text
+		 * @memberOf $_.util
+		 * @function
+		 * @param [string] value
+		 * @returns string
+		 * @type string
+		 */
 		text: function (value)
 		{
 			var oldValue, set, type, sel;
@@ -360,6 +443,21 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				return oldValue;
 			}
 		},
+		/**
+		 * Sets or retrieves a css property of the element
+		 * specified by the current selector. If a value is 
+		 * passed, it will set that value on the current element,
+		 * otherwise it will return the value of the css property
+		 * on the current element
+		 *
+		 * @name css
+		 * @memberOf $_.util
+		 * @function
+		 * @param string property
+		 * @param [string] value
+		 * @returns string
+		 * @type string
+		 */
 		css: function (prop, val)
 		{
 			//Return the current value if a value is not set

@@ -54,7 +54,25 @@
 		
 		return new_o;
 	},
+	
+	/**
+	 * String and object manipulation utilities
+	 *	
+	 * @namespace
+	 * @name util
+	 * @memberOf $_
+	 */
 	u = {
+		/**
+		 * Retrieve the keys, or member names of an object
+		 * 
+		 * @name object_keys
+		 * @memberOf $_.util
+		 * @function
+		 * @param object
+		 * @return array
+		 * @type array
+		 */
 		object_keys: function(o)
 		{
 			var keys = [],
@@ -70,6 +88,17 @@
 			
 			return keys;
 		},
+		/**
+		 * Retrieves the values of an object, and returns
+		 * them as an array
+		 *
+		 * @name object_values
+		 * @memberOf $_.util
+		 * @function
+		 * @param object
+		 * @return array
+		 * @type array
+		 */
 		object_values: function(o)
 		{
 			var vals = [],
@@ -82,6 +111,20 @@
 			
 			return vals;
 		},
+		/**
+		 * Creates an object, with the property names of the first array, 
+		 * and the values of the second. If objects are passed, the values 
+		 * of the object are used. If the arrays or objects passed are 
+		 * not the same size, the function will return false.
+		 * 
+		 * @name array_combine
+		 * @memberOf $_.util
+		 * @function
+		 * @param array/object keys
+		 * @param array/object vals
+		 * @return object
+		 * @type object
+		 */
 		array_combine: function(keys, vals)
 		{
 			var new_object = {},
@@ -115,6 +158,20 @@
 			
 			return new_object;
 		},
+		/**
+		 * Combines two or more objects/arrays. If the keys are numeric, the outputted
+		 * object will have re-indexed keys. If a key/value pair exists in both objects,
+		 * indentical values will be droped, but if a key exists with a different value, 
+		 * with the same key, the value in the second array will replace the value in the
+		 * first
+		 * 
+		 * @name object_merge
+		 * @memberOf $_.util
+		 * @function
+		 * @param object [as many as you wish to combine]
+		 * @type object
+		 * @return object
+		 */
 		object_merge: function()
 		{
 			var args = Array.prototype.slice.call(arguments),
@@ -188,6 +245,21 @@
 			
 			return new_obj;
 		},
+		/**
+		 * Replaces sections of strings in a greedy fashion, 
+		 * starting with the longest replace pairs first. Accepts
+		 * one replace pair as two parameters, or an object, with
+		 * from => to replacements as key/value pairs
+		 *
+		 * @name str_trans
+		 * @memberOf $_.util
+		 * @function
+		 * @param string input_string
+		 * @param mixed
+		 * @param [string] to
+		 * @return string
+		 * @type string
+		 */
 		str_trans: function(str, from, to)
 		{
 			var froms = [],
