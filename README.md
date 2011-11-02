@@ -95,6 +95,14 @@ functions:
 * Remove
 
 	    $_(selector).event.remove(event, callback);
+		
+* Live: (for elements that are dynamically added and removed)
+
+		$_.event.live(selector, event, callback);
+		
+* Delegate:
+
+		$_(selector).delegate(target, event, callback);
 			    
 ### DOM: Dom manipulation module ###
 
