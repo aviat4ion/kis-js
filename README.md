@@ -26,11 +26,11 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 			
 * each: For applying changes to every item matched by a selector
 
-		 $_(selector).dom.each(callback);
+		 $_(selector).each(callback);
 		 	
 	Example : 
         
-        $_(".foo").dom.each(function(e){
+        $_(".foo").each(function(e){
 			$_(e).dom.text(value);
 		}):
 				  
