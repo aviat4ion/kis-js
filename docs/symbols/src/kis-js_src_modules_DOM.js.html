@@ -258,7 +258,7 @@
 <span class='line'>251</span> 		 * otherwise it will return the value of the current element
 <span class='line'>252</span> 		 *
 <span class='line'>253</span> 		 * @name text
-<span class='line'>254</span> 		 * @memberOf $_.util
+<span class='line'>254</span> 		 * @memberOf $_.dom
 <span class='line'>255</span> 		 * @function
 <span class='line'>256</span> 		 * @param [string] value
 <span class='line'>257</span> 		 * @returns string
@@ -298,7 +298,7 @@
 <span class='line'>291</span> 		 * on the current element
 <span class='line'>292</span> 		 *
 <span class='line'>293</span> 		 * @name css
-<span class='line'>294</span> 		 * @memberOf $_.util
+<span class='line'>294</span> 		 * @memberOf $_.dom
 <span class='line'>295</span> 		 * @function
 <span class='line'>296</span> 		 * @param string property
 <span class='line'>297</span> 		 * @param [string] value
@@ -316,10 +316,31 @@
 <span class='line'>309</span> 			</span><span class="NAME">$_.each</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>310</span> </span><span class="WHIT">				</span><span class="NAME">_css</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">prop</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">val</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>311</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>312</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>313</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>314</span> 
-<span class='line'>315</span> </span><span class="WHIT">	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'dom'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">d</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>316</span> </span><span class="WHIT">	
-<span class='line'>317</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>318</span> </span></pre></body></html>
+<span class='line'>312</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>313</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>314</span> 		 * Sets or gets the innerHTML propery of the element(s) passed
+<span class='line'>315</span> 		 *
+<span class='line'>316</span> 		 * @name html
+<span class='line'>317</span> 		 * @memberOf $_.dom
+<span class='line'>318</span> 		 * @function
+<span class='line'>319</span> 		 * @param string htm
+<span class='line'>320</span> 		 * @return string
+<span class='line'>321</span> 		 * @type string
+<span class='line'>322</span> 		 */</span><span class="WHIT">
+<span class='line'>323</span> </span><span class="WHIT">		</span><span class="NAME">html</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">htm</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>324</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>325</span> </span><span class="WHIT">			
+<span class='line'>326</span> 			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>327</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>328</span> </span><span class="WHIT">				</span><span class="NAME">this.el.innerHTML</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>329</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>330</span> </span><span class="WHIT">			
+<span class='line'>331</span> 			</span><span class="COMM">//If the parameter is undefined, just return the current value</span><span class="WHIT">
+<span class='line'>332</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.el.innerHTML</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>333</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>334</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>335</span> 
+<span class='line'>336</span> </span><span class="WHIT">	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'dom'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">d</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>337</span> </span><span class="WHIT">	
+<span class='line'>338</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>339</span> </span></pre></body></html>

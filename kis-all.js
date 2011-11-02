@@ -8,13 +8,18 @@
 
 	"use strict";
 
-	//Browser requirements check
-	if (!document.querySelectorAll)
+	// Most functions rely on a string selector
+	// which returns html elements. This requires
+	// document.querySelectorAll or a custom
+	// selector engine. I choose to just use the
+	// browser feature, since it is present in
+	// IE 8+, and all other major browsers
+	if (typeof document.querySelector === "undefined")
 	{
 		return;
 	}
 
-	var $_, $, dcopy, sel, sel_string;
+	var $_, $, dcopy, sel;
 	
 
 	/**
@@ -174,12 +179,12 @@
 			for (var x = 0; x < len; x++)
 			{
 				selx = (sel.item(x)) ? sel.item(x) : sel[x];
-				callback(selx);
+				callback.call(selx, selx);
 			}
 		}
 		else
 		{
-			callback(sel);
+			callback.call(sel, sel);
 		}
 	});
 	
@@ -191,13 +196,14 @@
 	 * @type string
 	 */
 	$_.type = function(obj) 
-	{
+	{	
 		if((function() {return obj && (obj !== this)}).call(obj))
 		{
 			//fallback on 'typeof' for truthy primitive values
 			return (typeof obj).toLowerCase();
 		}
 		
+		//Strip x from [object x] and return 
 		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
 	};
 
@@ -662,7 +668,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * otherwise it will return the value of the current element
 		 *
 		 * @name text
-		 * @memberOf $_.util
+		 * @memberOf $_.dom
 		 * @function
 		 * @param [string] value
 		 * @returns string
@@ -702,7 +708,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * on the current element
 		 *
 		 * @name css
-		 * @memberOf $_.util
+		 * @memberOf $_.dom
 		 * @function
 		 * @param string property
 		 * @param [string] value
@@ -720,6 +726,27 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			$_.each(function (e){
 				_css(e, prop, val);
 			});
+		},
+		/**
+		 * Sets or gets the innerHTML propery of the element(s) passed
+		 *
+		 * @name html
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string htm
+		 * @return string
+		 * @type string
+		 */
+		html: function(htm)
+		{
+			
+			if(typeof htm !== "undefined")
+			{
+				this.el.innerHTML = htm;
+			}
+			
+			//If the parameter is undefined, just return the current value
+			return this.el.innerHTML;
 		}
 	};
 
@@ -827,10 +854,19 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 (function (){
 
 	"use strict";
+	
+	// Don't bother even defining the object if the XMLHttpRequest isn't available
+	if(typeof window.XMLHttpRequest === "undefined")
+	{
+		return;
+	}
 
 	var ajax = {
 		_do: function (url, data, callback, isPost)
 		{
+			var type, 
+				request = new XMLHttpRequest();
+		
 			if (typeof callback === "undefined")
 			{
 				/**
@@ -839,11 +875,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				callback = function (){};
 			}
 
-			var request = (typeof window.XMLHttpRequest !== "undefined") 
-				? new XMLHttpRequest() 
-				: false;
-
-			var type = (isPost) ? "POST" : "GET";
+			type = (isPost) ? "POST" : "GET";
 
 			url += (type === "GET") ? "?"+this._serialize(data) : '';
 			
@@ -869,9 +901,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		_serialize: function (data)
 		{
-			var pairs = [];
+			var name,
+				value,
+				pairs = [];
 
-			for (var name in data)
+			for (name in data)
 			{
 				if (!data.hasOwnProperty(name))
 				{
@@ -882,7 +916,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 					continue;
 				}
 
-				var value = data[name].toString();
+				value = data[name].toString();
 
 				name = encodeURIComponent(name);
 				value = encodeURIComponent(value);

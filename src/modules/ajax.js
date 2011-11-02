@@ -6,10 +6,19 @@
 (function (){
 
 	"use strict";
+	
+	// Don't bother even defining the object if the XMLHttpRequest isn't available
+	if(typeof window.XMLHttpRequest === "undefined")
+	{
+		return;
+	}
 
 	var ajax = {
 		_do: function (url, data, callback, isPost)
 		{
+			var type, 
+				request = new XMLHttpRequest();
+		
 			if (typeof callback === "undefined")
 			{
 				/**
@@ -18,11 +27,7 @@
 				callback = function (){};
 			}
 
-			var request = (typeof window.XMLHttpRequest !== "undefined") 
-				? new XMLHttpRequest() 
-				: false;
-
-			var type = (isPost) ? "POST" : "GET";
+			type = (isPost) ? "POST" : "GET";
 
 			url += (type === "GET") ? "?"+this._serialize(data) : '';
 			
@@ -48,9 +53,11 @@
 		},
 		_serialize: function (data)
 		{
-			var pairs = [];
+			var name,
+				value,
+				pairs = [];
 
-			for (var name in data)
+			for (name in data)
 			{
 				if (!data.hasOwnProperty(name))
 				{
@@ -61,7 +68,7 @@
 					continue;
 				}
 
-				var value = data[name].toString();
+				value = data[name].toString();
 
 				name = encodeURIComponent(name);
 				value = encodeURIComponent(value);

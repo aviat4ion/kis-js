@@ -4,6 +4,13 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 		<link rel="stylesheet" href="qunit/qunit.css" type="text/css" />
 		<title>Kis-js test app</title>
+		<!--[if IE 8]>
+		<script type="text/javascript">
+		var HTML5 = "article,aside,audio,canvas,details,figcaption,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,summary,time,video".split(",");
+for (var i = 0, tagName; tagName = HTML5[i]; i++) document.createElement(tagName);
+
+		</script>
+		<![endif]-->
 	</head>
 	<body>
 		<h1 id="qunit-header">Kis-js Test Suite</h1>
@@ -25,7 +32,7 @@
 				<div class="nephew"></div>
 			</aside>
 		</section>
-		<script src="../kis-custom.js"></script>
+		<script src="../kis-min.js"></script>
 		<script src="qunit/qunit.js"></script>
 		<script type="text/javascript">
 		//Selector test function

@@ -25,7 +25,7 @@
 	test("Show/Hide", function(){
 		expect(3);
 	
-		var $test = $_("#classChild .nephew");
+		var $test = $_(".nephew");
 		var ele = $test.el;
 		
 		$test.dom.hide();
@@ -44,7 +44,7 @@
 		expect(3);
 	
 		var $test = $_("article#r14");
-		var ele = $test.el;
+		var ele = $_("article#r14").el;
 		var text = (typeof ele.innerText !== "undefined") ? ele.innerText : ele.textContent;
 		
 		equal($test.el, $("article#r14"), "Selector property is correct");
@@ -74,6 +74,15 @@
 		$test.dom.css("display", "block");
 		equal(ele.style.display, "block", "Setting CSS");
 		equal($test.dom.css("display"), "block", "Getting CSS");
+	});
+	
+	test("html", function(){
+		expect(2);
+	
+		var test_html = '<a href="mailto:tim@timshomepage.net">Send Tim an email</a>';
+		
+		equal($_('#r14').dom.html().trim(), "This is important text!".trim(), "Gets html");
+		equal($_('#r14').dom.html(test_html), test_html, "Sets html");
 	});
 	
 }());

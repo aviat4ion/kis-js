@@ -8,13 +8,18 @@
 
 	"use strict";
 
-	//Browser requirements check
-	if (!document.querySelectorAll)
+	// Most functions rely on a string selector
+	// which returns html elements. This requires
+	// document.querySelectorAll or a custom
+	// selector engine. I choose to just use the
+	// browser feature, since it is present in
+	// IE 8+, and all other major browsers
+	if (typeof document.querySelector === "undefined")
 	{
 		return;
 	}
 
-	var $_, $, dcopy, sel, sel_string;
+	var $_, $, dcopy, sel;
 	
 
 	/**
@@ -174,12 +179,12 @@
 			for (var x = 0; x < len; x++)
 			{
 				selx = (sel.item(x)) ? sel.item(x) : sel[x];
-				callback(selx);
+				callback.call(selx, selx);
 			}
 		}
 		else
 		{
-			callback(sel);
+			callback.call(sel, sel);
 		}
 	});
 	
@@ -191,13 +196,14 @@
 	 * @type string
 	 */
 	$_.type = function(obj) 
-	{
+	{	
 		if((function() {return obj && (obj !== this)}).call(obj))
 		{
 			//fallback on 'typeof' for truthy primitive values
 			return (typeof obj).toLowerCase();
 		}
 		
+		//Strip x from [object x] and return 
 		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
 	};
 

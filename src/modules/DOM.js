@@ -251,7 +251,7 @@
 		 * otherwise it will return the value of the current element
 		 *
 		 * @name text
-		 * @memberOf $_.util
+		 * @memberOf $_.dom
 		 * @function
 		 * @param [string] value
 		 * @returns string
@@ -291,7 +291,7 @@
 		 * on the current element
 		 *
 		 * @name css
-		 * @memberOf $_.util
+		 * @memberOf $_.dom
 		 * @function
 		 * @param string property
 		 * @param [string] value
@@ -309,6 +309,27 @@
 			$_.each(function (e){
 				_css(e, prop, val);
 			});
+		},
+		/**
+		 * Sets or gets the innerHTML propery of the element(s) passed
+		 *
+		 * @name html
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string htm
+		 * @return string
+		 * @type string
+		 */
+		html: function(htm)
+		{
+			
+			if(typeof htm !== "undefined")
+			{
+				this.el.innerHTML = htm;
+			}
+			
+			//If the parameter is undefined, just return the current value
+			return this.el.innerHTML;
 		}
 	};
 

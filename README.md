@@ -139,6 +139,11 @@ functions:
 
 		Set: $_(selector).dom.css(property, value);
 		Get: $_(selector).dom.css(property);
+		
+* html: Sets or gets html inside the selected element
+
+		Set: $_(selector).dom.html(html_string);
+		Get: $_(selector).dom.html();
 
 ### Util: Array and string manipulation functions ###
 
