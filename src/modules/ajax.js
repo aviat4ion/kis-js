@@ -5,6 +5,8 @@
  */
 (function (){
 
+	"use strict";
+
 	var ajax = {
 		_do: function (url, data, callback, isPost)
 		{

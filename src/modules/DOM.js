@@ -167,6 +167,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 // --------------------------------------------------------------------------
 
 (function (){
+
+	"use strict";
+
 	var d, tag_reg, class_reg;
 	
 	tag_reg = /^([\w\-]+)$/;

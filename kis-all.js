@@ -399,6 +399,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 // --------------------------------------------------------------------------
 
 (function (){
+
+	"use strict";
+
 	var d, tag_reg, class_reg;
 	
 	tag_reg = /^([\w\-]+)$/;
@@ -806,6 +809,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
  * Module for making ajax requests
  */
 (function (){
+
+	"use strict";
 
 	var ajax = {
 		_do: function (url, data, callback, isPost)
@@ -1310,7 +1315,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 		};
 	}
-	//typeof function doesn't work in IE where _attachEvent is available: brute force it
+	//typeof function doesn't work in IE where attachEvent is available: brute force it
 	else if(typeof document.attachEvent !== "undefined") 
 	{
 		/**
@@ -1329,7 +1334,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				_remove(event, callback); // Make sure we don't have duplicate listeners
 				
 				sel.attachEvent("on" + event, listener);
-				// Store our listener so we can _remove it later
+				// Store our listener so we can remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
 				expando.listeners = expando.listeners || {};
 				expando.listeners[event] = expando.listeners[event] || [];
@@ -1414,35 +1419,32 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	_attach_delegate = function(sel, target, event, callback)
 	{
 		//_attach the listener to the parent object
-		_add_remove(target, event, function(e){
+		_add_remove(sel, event, function(e){
 		
-			var i, t;
+			var elem, t;
 			
 			//Get the live version of the target selector
 			t = $_.$(target);
 			
-			console.log(t);
-			
 			//Check each element to see if it matches the target
-			for(i in t)
+			for(elem in t)
 			{
-				if(t.hasOwnProperty(i))
+				//Fire target callback when event bubbles from target
+				if(e.target == t[elem])
 				{
-					//Fire target callback when event bubbles from target
-					if(e.target == i)
-					{
-						//Trigger the event callback
-						callback.call(i, e);
-						
-						//Stop event propegation
-						e.stopPropagation();
-					}
+					//Trigger the event callback
+					callback.call(t[elem], e);
+					
+					//Stop event propegation
+					e.stopPropagation();
 				}
 			}
 			
 			
 		}, true);
 	};
+	
+	
 	
 	// --------------------------------------------------------------------------
 
