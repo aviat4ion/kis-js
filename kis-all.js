@@ -205,31 +205,41 @@
 	$_ = window.$_ = window.$_ || $_;
 	$_.$ = $;
 	
-	//console.log polyfill
-	if(typeof window.console === "undefined")
-	{
-		window.console = {
-			log:function(){}
-		};
-	}
-	
-	/**
-	 * String trim function polyfill
-	 */
-	if(typeof String.prototype.trim === "undefined")
-	{
-		/**
-		 * @private
-		 */
-		String.prototype.trim = function(){
-			return this.replace(/^\s+|\s+$/g, "");
-		};
-	}
-	
 }());
 
 // --------------------------------------------------------------------------
 
+/**
+ * A module of various browser polyfills
+ * @file polyfill.js
+ */
+ 
+// Console.log polyfill for IE 8 stupidity
+if(typeof window.console === "undefined")
+{
+	window.console = {
+		log:function(){}
+	};
+}
+
+// --------------------------------------------------------------------------
+
+/**
+ * String trim function polyfill
+ */
+if(typeof String.prototype.trim === "undefined")
+{
+	/**
+	 * @private
+	 */
+	String.prototype.trim = function(){
+		return this.replace(/^\s+|\s+$/g, "");
+	};
+}
+
+// --------------------------------------------------------------------------
+
+//This is used so IE 8 can use the classList api
 /*
  * classList.js: Cross-browser full element.classList implementation.
  * 2011-06-15
@@ -396,8 +406,14 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	}(self));
 }
 
+
 // --------------------------------------------------------------------------
 
+/**
+ * DOM
+ * 
+ * Dom manipulation module
+ */
 (function (){
 
 	"use strict";

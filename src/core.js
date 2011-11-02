@@ -205,25 +205,4 @@
 	$_ = window.$_ = window.$_ || $_;
 	$_.$ = $;
 	
-	//console.log polyfill
-	if(typeof window.console === "undefined")
-	{
-		window.console = {
-			log:function(){}
-		};
-	}
-	
-	/**
-	 * String trim function polyfill
-	 */
-	if(typeof String.prototype.trim === "undefined")
-	{
-		/**
-		 * @private
-		 */
-		String.prototype.trim = function(){
-			return this.replace(/^\s+|\s+$/g, "");
-		};
-	}
-	
 }());

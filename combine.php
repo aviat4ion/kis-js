@@ -30,6 +30,10 @@ if($dir = opendir($src_folder))
 //Start with the core
 $new_file = file_get_contents("{$folder}/core.js") . "\n";
 
+//Add polyfills
+$new_file .= "\n// --------------------------------------------------------------------------\n\n"; 
+$new_file .= file_get_contents("{$folder}/polyfill.js") . "\n";
+
 
 //Add the modules
 foreach($files as $f)
