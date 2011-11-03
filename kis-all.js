@@ -68,13 +68,11 @@
 	};
 	
 	/**
-	 * $
-	 *
 	 * Simple DOM selector function
 	 *
 	 * @memberOf $_
 	 * @param string selector
-	 * @param string context
+	 * @param object context
 	 * @return object
 	 * @type object
 	 */
@@ -148,7 +146,6 @@
 	 * 
 	 * @param string name
 	 * @param object obj
-	 * @return void
 	 */
 	$_.ext = function(name, obj)
 	{
@@ -162,7 +159,6 @@
 	 * @name $_.each
 	 * @function
 	 * @param function callback
-	 * @return void
 	 */
 	$_.ext('each', function (callback)
 	{
@@ -219,199 +215,203 @@
  * A module of various browser polyfills
  * @file polyfill.js
  */
+(function(){
+
+	"use strict";
  
-// Console.log polyfill for IE 8 stupidity
-if(typeof window.console === "undefined")
-{
-	window.console = {
-		log:function(){}
-	};
-}
-
-// --------------------------------------------------------------------------
-
-/**
- * String trim function polyfill
- */
-if(typeof String.prototype.trim === "undefined")
-{
-	/**
-	 * @private
-	 */
-	String.prototype.trim = function(){
-		return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
-	};
-}
-
-// --------------------------------------------------------------------------
-
-//This is used so IE 8 can use the classList api
-/*
- * classList.js: Cross-browser full element.classList implementation.
- * 2011-06-15
- *
- * By Eli Grey, http://eligrey.com
- * Public Domain.
- * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
- */
-
-if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
-{
-	(function (view){
+	// Console.log polyfill for IE 8 stupidity
+	if(typeof window.console === "undefined")
+	{
+		window.console = {
+			log:function(){}
+		};
+	}
 	
-		var classListProp = "classList",
-			protoProp = "prototype",
-			elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
-			objCtr = Object,
-			strTrim = String[protoProp].trim ||
-			function ()
-			{
-				return this.replace(/^\s+|\s+$/g, "");
-			},
-			arrIndexOf = Array[protoProp].indexOf ||
-			function (item)
-			{
-				var
-				i = 0,
-					len = this.length;
-				for (; i < len; i++)
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * String trim function polyfill
+	 */
+	if(typeof String.prototype.trim === "undefined")
+	{
+		/**
+		 * @private
+		 */
+		String.prototype.trim = function()
+		{
+			return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
+		};
+	}
+	
+	// --------------------------------------------------------------------------
+	
+	//This is used so IE 8 can use the classList api
+	/*
+	 * classList.js: Cross-browser full element.classList implementation.
+	 * 2011-06-15
+	 *
+	 * By Eli Grey, http://eligrey.com
+	 * Public Domain.
+	 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+	 */
+	
+	if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
+	{
+		(function (view){
+		
+			var classListProp = "classList",
+				protoProp = "prototype",
+				elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
+				objCtr = Object,
+				strTrim = String[protoProp].trim ||
+				function ()
 				{
-					if (i in this && this[i] === item)
-					{
-						return i;
-					}
-				}
-				return -1;
-			}
-			// Vendors: please allow content code to instantiate DOMExceptions
-			,
-			/**
-			 * @private
-			 */
-			DOMEx = function (type, message)
-			{
-				this.name = type;
-				this.code = DOMException[type];
-				this.message = message;
-			},
-			/**
-			 * @private
-			 */
-			checkTokenAndGetIndex = function (classList, token)
-			{
-				if (token === "")
+					return this.replace(/^\s+|\s+$/g, "");
+				},
+				arrIndexOf = Array[protoProp].indexOf ||
+				function (item)
 				{
-					throw new DOMEx("SYNTAX_ERR", "An invalid or illegal string was specified");
-				}
-				if (/\s/.test(token))
-				{
-					throw new DOMEx("INVALID_CHARACTER_ERR", "String contains an invalid character");
-				}
-				return arrIndexOf.call(classList, token);
-			},
-			/**
-			 * @private
-			 */
-			ClassList = function (elem)
-			{
-				var
-				trimmedClasses = strTrim.call(elem.className),
-					classes = trimmedClasses ? trimmedClasses.split(/\s+/) : [],
+					var
 					i = 0,
-					len = classes.length;
-				for (; i < len; i++)
-				{
-					this.push(classes[i]);
+						len = this.length;
+					for (; i < len; i++)
+					{
+						if (i in this && this[i] === item)
+						{
+							return i;
+						}
+					}
+					return -1;
 				}
-				this._updateClassName = function ()
+				// Vendors: please allow content code to instantiate DOMExceptions
+				,
+				/**
+				 * @private
+				 */
+				DOMEx = function (type, message)
 				{
-					elem.className = this.toString();
+					this.name = type;
+					this.code = DOMException[type];
+					this.message = message;
+				},
+				/**
+				 * @private
+				 */
+				checkTokenAndGetIndex = function (classList, token)
+				{
+					if (token === "")
+					{
+						throw new DOMEx("SYNTAX_ERR", "An invalid or illegal string was specified");
+					}
+					if (/\s/.test(token))
+					{
+						throw new DOMEx("INVALID_CHARACTER_ERR", "String contains an invalid character");
+					}
+					return arrIndexOf.call(classList, token);
+				},
+				/**
+				 * @private
+				 */
+				ClassList = function (elem)
+				{
+					var
+					trimmedClasses = strTrim.call(elem.className),
+						classes = trimmedClasses ? trimmedClasses.split(/\s+/) : [],
+						i = 0,
+						len = classes.length;
+					for (; i < len; i++)
+					{
+						this.push(classes[i]);
+					}
+					this._updateClassName = function ()
+					{
+						elem.className = this.toString();
+					};
+				},
+				classListProto = ClassList[protoProp] = [],
+				/**
+				 * @private
+				 */
+				classListGetter = function ()
+				{
+					return new ClassList(this);
 				};
-			},
-			classListProto = ClassList[protoProp] = [],
-			/**
-			 * @private
-			 */
-			classListGetter = function ()
+			// Most DOMException implementations don't allow calling DOMException's toString()
+			// on non-DOMExceptions. Error's toString() is sufficient here.
+			DOMEx[protoProp] = Error[protoProp];
+			classListProto.item = function (i)
 			{
-				return new ClassList(this);
+				return this[i] || null;
 			};
-		// Most DOMException implementations don't allow calling DOMException's toString()
-		// on non-DOMExceptions. Error's toString() is sufficient here.
-		DOMEx[protoProp] = Error[protoProp];
-		classListProto.item = function (i)
-		{
-			return this[i] || null;
-		};
-		classListProto.contains = function (token)
-		{
-			token += "";
-			return checkTokenAndGetIndex(this, token) !== -1;
-		};
-		classListProto.add = function (token)
-		{
-			token += "";
-			if (checkTokenAndGetIndex(this, token) === -1)
+			classListProto.contains = function (token)
 			{
-				this.push(token);
-				this._updateClassName();
-			}
-		};
-		classListProto.remove = function (token)
-		{
-			token += "";
-			var index = checkTokenAndGetIndex(this, token);
-			if (index !== -1)
-			{
-				this.splice(index, 1);
-				this._updateClassName();
-			}
-		};
-		classListProto.toggle = function (token)
-		{
-			token += "";
-			if (checkTokenAndGetIndex(this, token) === -1)
-			{
-				this.add(token);
-			}
-			else
-			{
-				this.remove(token);
-			}
-		};
-		classListProto.toString = function ()
-		{
-			return this.join(" ");
-		};
-
-		if (objCtr.defineProperty)
-		{
-			var classListPropDesc = {
-				get: classListGetter,
-				enumerable: true,
-				configurable: true
+				token += "";
+				return checkTokenAndGetIndex(this, token) !== -1;
 			};
-			try
+			classListProto.add = function (token)
 			{
-				objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
-			}
-			catch (ex)
-			{ // IE 8 doesn't support enumerable:true
-				if (ex.number === -0x7FF5EC54)
+				token += "";
+				if (checkTokenAndGetIndex(this, token) === -1)
 				{
-					classListPropDesc.enumerable = false;
+					this.push(token);
+					this._updateClassName();
+				}
+			};
+			classListProto.remove = function (token)
+			{
+				token += "";
+				var index = checkTokenAndGetIndex(this, token);
+				if (index !== -1)
+				{
+					this.splice(index, 1);
+					this._updateClassName();
+				}
+			};
+			classListProto.toggle = function (token)
+			{
+				token += "";
+				if (checkTokenAndGetIndex(this, token) === -1)
+				{
+					this.add(token);
+				}
+				else
+				{
+					this.remove(token);
+				}
+			};
+			classListProto.toString = function ()
+			{
+				return this.join(" ");
+			};
+	
+			if (objCtr.defineProperty)
+			{
+				var classListPropDesc = {
+					get: classListGetter,
+					enumerable: true,
+					configurable: true
+				};
+				try
+				{
 					objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
 				}
+				catch (ex)
+				{ // IE 8 doesn't support enumerable:true
+					if (ex.number === -0x7FF5EC54)
+					{
+						classListPropDesc.enumerable = false;
+						objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
+					}
+				}
 			}
-		}
-		else if (objCtr[protoProp].__defineGetter__)
-		{
-			elemCtrProto.__defineGetter__(classListProp, classListGetter);
-		}
-
-	}(self));
-}
-
+			else if (objCtr[protoProp].__defineGetter__)
+			{
+				elemCtrProto.__defineGetter__(classListProp, classListGetter);
+			}
+	
+		}(self));
+	}
+}());
 
 // --------------------------------------------------------------------------
 
@@ -424,11 +424,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	"use strict";
 
-	var d, tag_reg, class_reg;
-	
-	tag_reg = /^([\w\-]+)$/;
-	class_reg = /\.([\w\-]+)$/;
-	
+	var d;
 	
 	//Private function for getting/setting attributes
 	function _attr(sel, name, value)
@@ -568,7 +564,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @memberOf $_.dom
 		 * @function
 		 * @param string class
-		 * @return void
 		 */
 		addClass: function (c)
 		{
@@ -584,7 +579,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @memberOf $_.dom
 		 * @function
 		 * @param string class
-		 * @return void
 		 */
 		removeClass: function (c)
 		{
@@ -598,7 +592,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @name hide
 		 * @memberOf $_.dom
 		 * @function
-		 * @return void
 		 */
 		hide: function ()
 		{
@@ -614,7 +607,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @memberOf $_.dom
 		 * @function
 		 * @param [string] type
-		 * @return void
 		 */
 		show: function (type)
 		{
@@ -635,7 +627,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @memberOf $_.dom
 		 * @function
 		 * @param string name
-		 * @param string value
+		 * @param [string] value
 		 * @return string
 		 * @type string
 		 */
@@ -671,7 +663,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @memberOf $_.dom
 		 * @function
 		 * @param [string] value
-		 * @returns string
+		 * @return string
 		 * @type string
 		 */
 		text: function (value)
@@ -712,7 +704,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @function
 		 * @param string property
 		 * @param [string] value
-		 * @returns string
+		 * @return string
 		 * @type string
 		 */
 		css: function (prop, val)
@@ -733,7 +725,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @name html
 		 * @memberOf $_.dom
 		 * @function
-		 * @param string htm
+		 * @param [string] htm
 		 * @return string
 		 * @type string
 		 */
@@ -770,7 +762,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		s = sessionStorage;
 
 	/**
-	 * Wrapper for localstorage / sessionstorage data serialization
+	 * Wrapper for localstorage / sessionstorage data serialization.
+	 * Each method has a boolean parameter, that when set as true switches the method
+	 * to use sessionStorage rather than the default localStorage.
 	 *
 	 * @name store
 	 * @namespace
@@ -827,22 +821,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			(sess) ? s.removeItem(key) : l.removeItem(key);
 		},
 		/**
-		 * Removes all values from the same domain storage
-		 *
-		 * @param bool session
-		 * @name clear
-		 * @memberOf $_.store
-		 * @function
-		 */
-		clear: function(sess)
-		{
-			(sess) ? s.clear() : l.clear();
-		},
-		/**
 		 * Returns an object of all the raw values in storage
 		 * 
+		 * @param bool session
 		 * @name getAll
-		 * @member of $_.store
+		 * @memberOf $_.store
 		 * @function
 		 * @return object
 		 * @type object
@@ -867,6 +850,18 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 
 			return data;
+		},
+		/**
+		 * Removes all values from the same domain storage
+		 *
+		 * @param bool session
+		 * @name clear
+		 * @memberOf $_.store
+		 * @function
+		 */
+		clear: function(sess)
+		{
+			(sess) ? s.clear() : l.clear();
 		}
 	};
 
@@ -966,7 +961,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	 * @param string url
 	 * @param object data
 	 * @param function callback
-	 * @return void
 	 */
 	$_.ext('get', function (url, data, callback){
 		ajax._do(url, data, callback, false);
@@ -981,7 +975,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	 * @param string url
 	 * @param object data
 	 * @param function callback
-	 * @return void
 	 */
 	$_.ext('post', function (url, data, callback){
 		ajax._do(url, data, callback, true);
@@ -1247,8 +1240,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @memberOf $_.util
 		 * @function
 		 * @param string input_string
-		 * @param mixed
-		 * @param [string] to
+		 * @param mixed from (string)/replace pairs (object)
+		 * @param [string]
 		 * @return string
 		 * @type string
 		 */
@@ -1402,7 +1395,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 */
 		_attach = function (sel, event, callback)
 		{
-			function listener () {
+			function _listener () {
 				// Internet Explorer fails to correctly set the 'this' object
 				// for event listeners, so we need to set it ourselves.
 				callback.apply(arguments[0]);
@@ -1412,14 +1405,14 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			{
 				_remove(event, callback); // Make sure we don't have duplicate listeners
 				
-				sel.attachEvent("on" + event, listener);
-				// Store our listener so we can remove it later
+				sel.attachEvent("on" + event, _listener);
+				// Store our _listener so we can remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
 				expando.listeners = expando.listeners || {};
 				expando.listeners[event] = expando.listeners[event] || [];
 				expando.listeners[event].push({
 					callback: callback,
-					listener: listener
+					_listener: _listener
 				});
 			}
 			else
@@ -1444,7 +1437,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 					{
 						if (listeners[i].callback === callback)
 						{
-							sel.detachEvent("on" + event, listeners[i].listener);
+							sel.detachEvent("on" + event, listeners[i]._listener);
 							listeners.splice(i, 1);
 							if(listeners.length === 0)
 							{
@@ -1497,7 +1490,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	_attach_delegate = function(sel, target, event, callback)
 	{
-		//_attach the listener to the parent object
+		//_attach the _listener to the parent object
 		_add_remove(sel, event, function(e){
 		
 			var elem, t;
@@ -1528,6 +1521,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Event Listener module
+	 *
 	 * @namespace
 	 * @name event
 	 * @memberOf $_
@@ -1543,7 +1538,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @example Eg. $_("#selector").event.add("click", do_something());
 		 * @param string event
 		 * @param function callback
-		 * @return void
 		 */
 		add: function (event, callback)
 		{
@@ -1560,7 +1554,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @example Eg. $_("#selector").event.remove("click", do_something());
 		 * @param string event
 		 * @param string callback
-		 * @return void
 		 */
 		remove: function (event, callback)
 		{
@@ -1569,8 +1562,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			});
 		},
 		/** 
-		 * Binds a persistent, delegated event
-		 * 
+		 * Binds a persistent event to the document
+		 *
 		 * @memberOf $_.event
 		 * @name live
 		 * @function
@@ -1578,7 +1571,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @param string target
 		 * @param string event
 		 * @param function callback
-		 * @return void
 		 */
 		live: function (target, event, callback)
 		{
@@ -1593,8 +1585,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
 		 * @param string target
 		 * @param string event_type
-		 * @parma function callback
-		 * @return void
+		 * @param function callback
 		 */
 		delegate: function(target, event, callback)
 		{

@@ -255,8 +255,8 @@
 		 * @memberOf $_.util
 		 * @function
 		 * @param string input_string
-		 * @param mixed
-		 * @param [string] to
+		 * @param mixed from (string)/replace pairs (object)
+		 * @param [string]
 		 * @return string
 		 * @type string
 		 */

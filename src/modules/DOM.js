@@ -7,11 +7,7 @@
 
 	"use strict";
 
-	var d, tag_reg, class_reg;
-	
-	tag_reg = /^([\w\-]+)$/;
-	class_reg = /\.([\w\-]+)$/;
-	
+	var d;
 	
 	//Private function for getting/setting attributes
 	function _attr(sel, name, value)
@@ -151,7 +147,6 @@
 		 * @memberOf $_.dom
 		 * @function
 		 * @param string class
-		 * @return void
 		 */
 		addClass: function (c)
 		{
@@ -167,7 +162,6 @@
 		 * @memberOf $_.dom
 		 * @function
 		 * @param string class
-		 * @return void
 		 */
 		removeClass: function (c)
 		{
@@ -181,7 +175,6 @@
 		 * @name hide
 		 * @memberOf $_.dom
 		 * @function
-		 * @return void
 		 */
 		hide: function ()
 		{
@@ -197,7 +190,6 @@
 		 * @memberOf $_.dom
 		 * @function
 		 * @param [string] type
-		 * @return void
 		 */
 		show: function (type)
 		{
@@ -218,7 +210,7 @@
 		 * @memberOf $_.dom
 		 * @function
 		 * @param string name
-		 * @param string value
+		 * @param [string] value
 		 * @return string
 		 * @type string
 		 */
@@ -254,7 +246,7 @@
 		 * @memberOf $_.dom
 		 * @function
 		 * @param [string] value
-		 * @returns string
+		 * @return string
 		 * @type string
 		 */
 		text: function (value)
@@ -295,7 +287,7 @@
 		 * @function
 		 * @param string property
 		 * @param [string] value
-		 * @returns string
+		 * @return string
 		 * @type string
 		 */
 		css: function (prop, val)
@@ -316,7 +308,7 @@
 		 * @name html
 		 * @memberOf $_.dom
 		 * @function
-		 * @param string htm
+		 * @param [string] htm
 		 * @return string
 		 * @type string
 		 */

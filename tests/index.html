@@ -52,38 +52,42 @@ for (var i = 0, tagName; tagName = HTML5[i]; i++) document.createElement(tagName
 			
 			for(n in o1)
 			{
-				if(o1.hasOwnProperty(n))
-				{			
-					if($_.type(o1[n]) === "object")
+		
+				if($_.type(o1[n]) === "object")
+				{
+					if($_.type(o2[n]) !== "object")
 					{
-						flag = is_clone(o1[n], o2[n]);
+						flag = false;
+						break;
 					}
-					else
+				}
+				else
+				{
+					if(o1[n] !== o2[n])
 					{
-						if(o1[n] !== o2[n])
-						{
-							flag = false;
-							break;
-						}
+						flag = false;
+						break;
 					}
 				}
 			}
 			
 			for(n in o2)
 			{
-				if(o2.hasOwnProperty(n))
-				{			
-					if($_.type(o1[n]) === "object")
+		
+				if($_.type(o1[n]) === "object")
+				{
+					if($_.type(o2[n]) !== "object")
 					{
-						flag = is_clone(o1[n], o2[n]);
+						flag = false;
+						break;
 					}
-					else
+				}
+				else
+				{
+					if(o2[n] !== o1[n])
 					{
-						if(o2[n] !== o1[n])
-						{
-							flag = false;
-							break;
-						}
+						flag = false;
+						break;
 					}
 				}
 			}

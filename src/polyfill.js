@@ -2,195 +2,200 @@
  * A module of various browser polyfills
  * @file polyfill.js
  */
+(function(){
+
+	"use strict";
  
-// Console.log polyfill for IE 8 stupidity
-if(typeof window.console === "undefined")
-{
-	window.console = {
-		log:function(){}
-	};
-}
-
-// --------------------------------------------------------------------------
-
-/**
- * String trim function polyfill
- */
-if(typeof String.prototype.trim === "undefined")
-{
-	/**
-	 * @private
-	 */
-	String.prototype.trim = function(){
-		return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
-	};
-}
-
-// --------------------------------------------------------------------------
-
-//This is used so IE 8 can use the classList api
-/*
- * classList.js: Cross-browser full element.classList implementation.
- * 2011-06-15
- *
- * By Eli Grey, http://eligrey.com
- * Public Domain.
- * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
- */
-
-if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
-{
-	(function (view){
+	// Console.log polyfill for IE 8 stupidity
+	if(typeof window.console === "undefined")
+	{
+		window.console = {
+			log:function(){}
+		};
+	}
 	
-		var classListProp = "classList",
-			protoProp = "prototype",
-			elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
-			objCtr = Object,
-			strTrim = String[protoProp].trim ||
-			function ()
-			{
-				return this.replace(/^\s+|\s+$/g, "");
-			},
-			arrIndexOf = Array[protoProp].indexOf ||
-			function (item)
-			{
-				var
-				i = 0,
-					len = this.length;
-				for (; i < len; i++)
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * String trim function polyfill
+	 */
+	if(typeof String.prototype.trim === "undefined")
+	{
+		/**
+		 * @private
+		 */
+		String.prototype.trim = function()
+		{
+			return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
+		};
+	}
+	
+	// --------------------------------------------------------------------------
+	
+	//This is used so IE 8 can use the classList api
+	/*
+	 * classList.js: Cross-browser full element.classList implementation.
+	 * 2011-06-15
+	 *
+	 * By Eli Grey, http://eligrey.com
+	 * Public Domain.
+	 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+	 */
+	
+	if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
+	{
+		(function (view){
+		
+			var classListProp = "classList",
+				protoProp = "prototype",
+				elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
+				objCtr = Object,
+				strTrim = String[protoProp].trim ||
+				function ()
 				{
-					if (i in this && this[i] === item)
-					{
-						return i;
-					}
-				}
-				return -1;
-			}
-			// Vendors: please allow content code to instantiate DOMExceptions
-			,
-			/**
-			 * @private
-			 */
-			DOMEx = function (type, message)
-			{
-				this.name = type;
-				this.code = DOMException[type];
-				this.message = message;
-			},
-			/**
-			 * @private
-			 */
-			checkTokenAndGetIndex = function (classList, token)
-			{
-				if (token === "")
+					return this.replace(/^\s+|\s+$/g, "");
+				},
+				arrIndexOf = Array[protoProp].indexOf ||
+				function (item)
 				{
-					throw new DOMEx("SYNTAX_ERR", "An invalid or illegal string was specified");
-				}
-				if (/\s/.test(token))
-				{
-					throw new DOMEx("INVALID_CHARACTER_ERR", "String contains an invalid character");
-				}
-				return arrIndexOf.call(classList, token);
-			},
-			/**
-			 * @private
-			 */
-			ClassList = function (elem)
-			{
-				var
-				trimmedClasses = strTrim.call(elem.className),
-					classes = trimmedClasses ? trimmedClasses.split(/\s+/) : [],
+					var
 					i = 0,
-					len = classes.length;
-				for (; i < len; i++)
-				{
-					this.push(classes[i]);
+						len = this.length;
+					for (; i < len; i++)
+					{
+						if (i in this && this[i] === item)
+						{
+							return i;
+						}
+					}
+					return -1;
 				}
-				this._updateClassName = function ()
+				// Vendors: please allow content code to instantiate DOMExceptions
+				,
+				/**
+				 * @private
+				 */
+				DOMEx = function (type, message)
 				{
-					elem.className = this.toString();
+					this.name = type;
+					this.code = DOMException[type];
+					this.message = message;
+				},
+				/**
+				 * @private
+				 */
+				checkTokenAndGetIndex = function (classList, token)
+				{
+					if (token === "")
+					{
+						throw new DOMEx("SYNTAX_ERR", "An invalid or illegal string was specified");
+					}
+					if (/\s/.test(token))
+					{
+						throw new DOMEx("INVALID_CHARACTER_ERR", "String contains an invalid character");
+					}
+					return arrIndexOf.call(classList, token);
+				},
+				/**
+				 * @private
+				 */
+				ClassList = function (elem)
+				{
+					var
+					trimmedClasses = strTrim.call(elem.className),
+						classes = trimmedClasses ? trimmedClasses.split(/\s+/) : [],
+						i = 0,
+						len = classes.length;
+					for (; i < len; i++)
+					{
+						this.push(classes[i]);
+					}
+					this._updateClassName = function ()
+					{
+						elem.className = this.toString();
+					};
+				},
+				classListProto = ClassList[protoProp] = [],
+				/**
+				 * @private
+				 */
+				classListGetter = function ()
+				{
+					return new ClassList(this);
 				};
-			},
-			classListProto = ClassList[protoProp] = [],
-			/**
-			 * @private
-			 */
-			classListGetter = function ()
+			// Most DOMException implementations don't allow calling DOMException's toString()
+			// on non-DOMExceptions. Error's toString() is sufficient here.
+			DOMEx[protoProp] = Error[protoProp];
+			classListProto.item = function (i)
 			{
-				return new ClassList(this);
+				return this[i] || null;
 			};
-		// Most DOMException implementations don't allow calling DOMException's toString()
-		// on non-DOMExceptions. Error's toString() is sufficient here.
-		DOMEx[protoProp] = Error[protoProp];
-		classListProto.item = function (i)
-		{
-			return this[i] || null;
-		};
-		classListProto.contains = function (token)
-		{
-			token += "";
-			return checkTokenAndGetIndex(this, token) !== -1;
-		};
-		classListProto.add = function (token)
-		{
-			token += "";
-			if (checkTokenAndGetIndex(this, token) === -1)
+			classListProto.contains = function (token)
 			{
-				this.push(token);
-				this._updateClassName();
-			}
-		};
-		classListProto.remove = function (token)
-		{
-			token += "";
-			var index = checkTokenAndGetIndex(this, token);
-			if (index !== -1)
-			{
-				this.splice(index, 1);
-				this._updateClassName();
-			}
-		};
-		classListProto.toggle = function (token)
-		{
-			token += "";
-			if (checkTokenAndGetIndex(this, token) === -1)
-			{
-				this.add(token);
-			}
-			else
-			{
-				this.remove(token);
-			}
-		};
-		classListProto.toString = function ()
-		{
-			return this.join(" ");
-		};
-
-		if (objCtr.defineProperty)
-		{
-			var classListPropDesc = {
-				get: classListGetter,
-				enumerable: true,
-				configurable: true
+				token += "";
+				return checkTokenAndGetIndex(this, token) !== -1;
 			};
-			try
+			classListProto.add = function (token)
 			{
-				objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
-			}
-			catch (ex)
-			{ // IE 8 doesn't support enumerable:true
-				if (ex.number === -0x7FF5EC54)
+				token += "";
+				if (checkTokenAndGetIndex(this, token) === -1)
 				{
-					classListPropDesc.enumerable = false;
+					this.push(token);
+					this._updateClassName();
+				}
+			};
+			classListProto.remove = function (token)
+			{
+				token += "";
+				var index = checkTokenAndGetIndex(this, token);
+				if (index !== -1)
+				{
+					this.splice(index, 1);
+					this._updateClassName();
+				}
+			};
+			classListProto.toggle = function (token)
+			{
+				token += "";
+				if (checkTokenAndGetIndex(this, token) === -1)
+				{
+					this.add(token);
+				}
+				else
+				{
+					this.remove(token);
+				}
+			};
+			classListProto.toString = function ()
+			{
+				return this.join(" ");
+			};
+	
+			if (objCtr.defineProperty)
+			{
+				var classListPropDesc = {
+					get: classListGetter,
+					enumerable: true,
+					configurable: true
+				};
+				try
+				{
 					objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
 				}
+				catch (ex)
+				{ // IE 8 doesn't support enumerable:true
+					if (ex.number === -0x7FF5EC54)
+					{
+						classListPropDesc.enumerable = false;
+						objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
+					}
+				}
 			}
-		}
-		else if (objCtr[protoProp].__defineGetter__)
-		{
-			elemCtrProto.__defineGetter__(classListProp, classListGetter);
-		}
-
-	}(self));
-}
+			else if (objCtr[protoProp].__defineGetter__)
+			{
+				elemCtrProto.__defineGetter__(classListProp, classListGetter);
+			}
+	
+		}(self));
+	}
+}());

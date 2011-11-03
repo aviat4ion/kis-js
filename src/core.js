@@ -68,13 +68,11 @@
 	};
 	
 	/**
-	 * $
-	 *
 	 * Simple DOM selector function
 	 *
 	 * @memberOf $_
 	 * @param string selector
-	 * @param string context
+	 * @param object context
 	 * @return object
 	 * @type object
 	 */
@@ -148,7 +146,6 @@
 	 * 
 	 * @param string name
 	 * @param object obj
-	 * @return void
 	 */
 	$_.ext = function(name, obj)
 	{
@@ -162,7 +159,6 @@
 	 * @name $_.each
 	 * @function
 	 * @param function callback
-	 * @return void
 	 */
 	$_.ext('each', function (callback)
 	{

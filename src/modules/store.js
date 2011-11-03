@@ -12,7 +12,9 @@
 		s = sessionStorage;
 
 	/**
-	 * Wrapper for localstorage / sessionstorage data serialization
+	 * Wrapper for localstorage / sessionstorage data serialization.
+	 * Each method has a boolean parameter, that when set as true switches the method
+	 * to use sessionStorage rather than the default localStorage.
 	 *
 	 * @name store
 	 * @namespace
@@ -69,22 +71,11 @@
 			(sess) ? s.removeItem(key) : l.removeItem(key);
 		},
 		/**
-		 * Removes all values from the same domain storage
-		 *
-		 * @param bool session
-		 * @name clear
-		 * @memberOf $_.store
-		 * @function
-		 */
-		clear: function(sess)
-		{
-			(sess) ? s.clear() : l.clear();
-		},
-		/**
 		 * Returns an object of all the raw values in storage
 		 * 
+		 * @param bool session
 		 * @name getAll
-		 * @member of $_.store
+		 * @memberOf $_.store
 		 * @function
 		 * @return object
 		 * @type object
@@ -109,6 +100,18 @@
 			}
 
 			return data;
+		},
+		/**
+		 * Removes all values from the same domain storage
+		 *
+		 * @param bool session
+		 * @name clear
+		 * @memberOf $_.store
+		 * @function
+		 */
+		clear: function(sess)
+		{
+			(sess) ? s.clear() : l.clear();
 		}
 	};
 

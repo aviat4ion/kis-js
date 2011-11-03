@@ -89,7 +89,6 @@
 	 * @param string url
 	 * @param object data
 	 * @param function callback
-	 * @return void
 	 */
 	$_.ext('get', function (url, data, callback){
 		ajax._do(url, data, callback, false);
@@ -104,7 +103,6 @@
 	 * @param string url
 	 * @param object data
 	 * @param function callback
-	 * @return void
 	 */
 	$_.ext('post', function (url, data, callback){
 		ajax._do(url, data, callback, true);

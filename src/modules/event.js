@@ -46,7 +46,7 @@
 		 */
 		_attach = function (sel, event, callback)
 		{
-			function listener () {
+			function _listener () {
 				// Internet Explorer fails to correctly set the 'this' object
 				// for event listeners, so we need to set it ourselves.
 				callback.apply(arguments[0]);
@@ -56,14 +56,14 @@
 			{
 				_remove(event, callback); // Make sure we don't have duplicate listeners
 				
-				sel.attachEvent("on" + event, listener);
-				// Store our listener so we can remove it later
+				sel.attachEvent("on" + event, _listener);
+				// Store our _listener so we can remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
 				expando.listeners = expando.listeners || {};
 				expando.listeners[event] = expando.listeners[event] || [];
 				expando.listeners[event].push({
 					callback: callback,
-					listener: listener
+					_listener: _listener
 				});
 			}
 			else
@@ -88,7 +88,7 @@
 					{
 						if (listeners[i].callback === callback)
 						{
-							sel.detachEvent("on" + event, listeners[i].listener);
+							sel.detachEvent("on" + event, listeners[i]._listener);
 							listeners.splice(i, 1);
 							if(listeners.length === 0)
 							{
@@ -141,7 +141,7 @@
 
 	_attach_delegate = function(sel, target, event, callback)
 	{
-		//_attach the listener to the parent object
+		//_attach the _listener to the parent object
 		_add_remove(sel, event, function(e){
 		
 			var elem, t;
@@ -172,6 +172,8 @@
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Event Listener module
+	 *
 	 * @namespace
 	 * @name event
 	 * @memberOf $_
@@ -187,7 +189,6 @@
 		 * @example Eg. $_("#selector").event.add("click", do_something());
 		 * @param string event
 		 * @param function callback
-		 * @return void
 		 */
 		add: function (event, callback)
 		{
@@ -204,7 +205,6 @@
 		 * @example Eg. $_("#selector").event.remove("click", do_something());
 		 * @param string event
 		 * @param string callback
-		 * @return void
 		 */
 		remove: function (event, callback)
 		{
@@ -213,8 +213,8 @@
 			});
 		},
 		/** 
-		 * Binds a persistent, delegated event
-		 * 
+		 * Binds a persistent event to the document
+		 *
 		 * @memberOf $_.event
 		 * @name live
 		 * @function
@@ -222,7 +222,6 @@
 		 * @param string target
 		 * @param string event
 		 * @param function callback
-		 * @return void
 		 */
 		live: function (target, event, callback)
 		{
@@ -237,8 +236,7 @@
 		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
 		 * @param string target
 		 * @param string event_type
-		 * @parma function callback
-		 * @return void
+		 * @param function callback
 		 */
 		delegate: function(target, event, callback)
 		{
