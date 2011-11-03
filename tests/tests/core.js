@@ -5,11 +5,13 @@
 	module("core");
 	
 	test("Basic requirements", function(){
-		expect(6);
+		expect(8);
 		ok(document.querySelectorAll, "querySelectorAll");
 		ok(document.getElementById, "getElementById");
 		ok(document.getElementsByTagName, "getElementsByTagName");
 		ok(String.prototype.trim, "String.trim()");
+		ok(JSON.parse, "JSON.parse()");
+		ok(JSON.stringify, "JSON.stringify()");
 		strictEqual(typeof $_, "function", "Global var");
 		strictEqual(typeof $_(), "object");
 	});
@@ -36,8 +38,8 @@
 		
 		$_.ext('test', {});
 		strictEqual(typeof o.test, "object", "Extend function adds to $_");
-		strictEqual(o.test.el, $_("ol").el, "Extend function adds selector to passed object");
-		strictEqual(o.test.el, o.el, "Selector is the same on parent and child object");
+		strictEqual(is_clone(o.test.el, $_("ol").el), true, "Extend function adds selector to passed object");
+		strictEqual(is_clone(o.test.el, o.el), true, "Selector is the same on parent and child object");
 		
 		o = null;
 	});

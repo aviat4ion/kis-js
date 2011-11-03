@@ -79,10 +79,14 @@
 	test("html", function(){
 		expect(2);
 	
-		var test_html = '<a href="mailto:tim@timshomepage.net">Send Tim an email</a>';
+		var orig_html = "This is important text!";
+		var test_html = '<a href="mailto:tim@timshomepage.net">send tim an email</a>';
 		
-		equal($_('#r14').dom.html().trim(), "This is important text!".trim(), "Gets html");
-		equal($_('#r14').dom.html(test_html), test_html, "Sets html");
+		document.getElementById('r14').innerHTML = orig_html;
+		
+		
+		equal($_('#r14').dom.html().trim(), "This is important text!", "Gets html");
+		equal($_('#r14').dom.html(test_html).toLowerCase(), test_html, "Sets html");
 	});
 	
 }());

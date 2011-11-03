@@ -239,7 +239,7 @@ if(typeof String.prototype.trim === "undefined")
 	 * @private
 	 */
 	String.prototype.trim = function(){
-		return this.replace(/^\s+|\s+$/g, "");
+		return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
 	};
 }
 
@@ -758,28 +758,42 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 (function (){
 	"use strict";
+	
+	//No support for localstorage? Bail out early
+	if(typeof localStorage === "undefined" || typeof JSON === "undefined")
+	{
+		return;
+	}
+	
+	//Shortcuts for wrapper
+	var l = localStorage,
+		s = sessionStorage;
 
 	/**
-	 * Wrapper for localstorage data serialization
+	 * Wrapper for localstorage / sessionstorage data serialization
 	 *
 	 * @name store
 	 * @namespace
 	 * @memberOf $_
 	 */
-	var store = {
+	var store = {		
 		/**
 		 * Retrieves and deserializes a value from localstorage, 
 		 * based on the specified key
 		 * 
 		 * @param string key
+		 * @param bool session
 		 * @name get
 		 * @memberOf $_.store
 		 * @function
 		 * @return object
+		 * @type object
 		 */
-		get: function (key)
+		get: function (key, sess)
 		{
-			return JSON.parse(localStorage.getItem(key));
+			var val = (sess) ? s.getItem(key) : l.getItem(key);
+		
+			return JSON.parse(val);
 		},
 		/**
 		 * Puts a value into localstorage at the specified key,
@@ -787,54 +801,69 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 *
 		 * @param string key
 		 * @param mixed value
+		 * @param bool session
 		 * @name set
 		 * @memberOf $_.store
 		 * @function
-		 * @return void
 		 */
-		set: function (key, value)
+		set: function (key, value, sess)
 		{
-			if (typeof value !== "string")
-			{
-				value = JSON.stringify(value);
-			}
-			localStorage.setItem(key, value);
+			// Localstorage generally only accepts strings
+			value = JSON.stringify(value);			
+			
+			(sess) ? s.setItem(key, value) : l.setItem(key, value);
 		},
 		/**
-		 * Removes the specified item from localstorage
+		 * Removes the specified item from storage
 		 * 
 		 * @param string key
+		 * @param bool session
 		 * @name remove
 		 * @memberOf $_.store
 		 * @function
-		 * @return void 
 		 */
-		remove: function (key)
+		remove: function (key, sess)
 		{
-			localStorage.removeItem(key);
+			(sess) ? s.removeItem(key) : l.removeItem(key);
 		},
 		/**
-		 * Returns an array of all the values in localstorage
-		 * in their raw form
+		 * Removes all values from the same domain storage
+		 *
+		 * @param bool session
+		 * @name clear
+		 * @memberOf $_.store
+		 * @function
+		 */
+		clear: function(sess)
+		{
+			(sess) ? s.clear() : l.clear();
+		},
+		/**
+		 * Returns an object of all the raw values in storage
 		 * 
 		 * @name getAll
 		 * @member of $_.store
 		 * @function
 		 * @return object
+		 * @type object
 		 */
-		getAll: function ()
+		getAll: function (sess)
 		{
 			var i,
 				len,
-				data;
-			len = localStorage.length;
-			data = {};
+				data = {},
+				k,
+				o;
+			
+			//Reference to session/localstorage
+			o = (sess) ? l : s;
+				
+			len = o.length;
 
 			for (i = 0; i < len; i++)
 			{
-				var name = localStorage.key(i);
-				var value = localStorage.getItem(name);
-				data[name] = value;
+				k = o.key(i);
+				data[k] = o.getItem(k);
 			}
 
 			return data;

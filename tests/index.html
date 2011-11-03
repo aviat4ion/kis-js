@@ -32,7 +32,7 @@ for (var i = 0, tagName; tagName = HTML5[i]; i++) document.createElement(tagName
 				<div class="nephew"></div>
 			</aside>
 		</section>
-		<script src="../kis-min.js"></script>
+		<script src="../kis-custom.js"></script>
 		<script src="qunit/qunit.js"></script>
 		<script type="text/javascript">
 		//Selector test function
@@ -43,11 +43,59 @@ for (var i = 0, tagName; tagName = HTML5[i]; i++) document.createElement(tagName
 			//Return the single object if applicable
 			return (x.length === 1) ? x[0] : x;
 		}
+		
+		//Object equivalence function
+		function is_clone(o1, o2)
+		{
+			var n, 
+				flag=true;
+			
+			for(n in o1)
+			{
+				if(o1.hasOwnProperty(n))
+				{			
+					if($_.type(o1[n]) === "object")
+					{
+						flag = is_clone(o1[n], o2[n]);
+					}
+					else
+					{
+						if(o1[n] !== o2[n])
+						{
+							flag = false;
+							break;
+						}
+					}
+				}
+			}
+			
+			for(n in o2)
+			{
+				if(o2.hasOwnProperty(n))
+				{			
+					if($_.type(o1[n]) === "object")
+					{
+						flag = is_clone(o1[n], o2[n]);
+					}
+					else
+					{
+						if(o2[n] !== o1[n])
+						{
+							flag = false;
+							break;
+						}
+					}
+				}
+			}
+			
+			return flag;
+		}
 		</script>
 		<script src="tests/core.js"></script>
 		<script src="tests/ajax.js"></script>
 		<script src="tests/event.js"></script>
 		<script src="tests/dom.js"></script>
+		<script src="tests/store.js"></script>
 		<script src="tests/util.js"></script>
 	</body>
 </html>

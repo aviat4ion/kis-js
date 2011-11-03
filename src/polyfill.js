@@ -22,7 +22,7 @@ if(typeof String.prototype.trim === "undefined")
 	 * @private
 	 */
 	String.prototype.trim = function(){
-		return this.replace(/^\s+|\s+$/g, "");
+		return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
 	};
 }
 
