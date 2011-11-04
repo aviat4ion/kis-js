@@ -151,108 +151,113 @@
 <span class='line'>144</span> </span><span class="WHIT">		</span><span class="COMM">//_attach the _listener to the parent object</span><span class="WHIT">
 <span class='line'>145</span> </span><span class="WHIT">		</span><span class="NAME">_add_remove</span><span class="PUNC">(</span><span class="NAME">sel</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>146</span> </span><span class="WHIT">		
-<span class='line'>147</span> 			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">elem</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>147</span> 			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">elem</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">tar</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>148</span> </span><span class="WHIT">			
-<span class='line'>149</span> 			</span><span class="COMM">//Get the live version of the target selector</span><span class="WHIT">
-<span class='line'>150</span> </span><span class="WHIT">			</span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">$_.$</span><span class="PUNC">(</span><span class="NAME">target</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>149</span> 			</span><span class="COMM">//IE 8 doesn't have event bound to element</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">			</span><span class="NAME">e</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">e</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">window.event</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>151</span> </span><span class="WHIT">			
-<span class='line'>152</span> 			</span><span class="COMM">//Check each element to see if it matches the target</span><span class="WHIT">
-<span class='line'>153</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="NAME">elem</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>154</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>155</span> </span><span class="WHIT">				</span><span class="COMM">//Fire target callback when event bubbles from target</span><span class="WHIT">
-<span class='line'>156</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">e.target</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">[</span><span class="NAME">elem</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>157</span> </span><span class="WHIT">				</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>158</span> </span><span class="WHIT">					</span><span class="COMM">//Trigger the event callback</span><span class="WHIT">
-<span class='line'>159</span> </span><span class="WHIT">					</span><span class="NAME">callback.call</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">[</span><span class="NAME">elem</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>160</span> </span><span class="WHIT">					
-<span class='line'>161</span> 					</span><span class="COMM">//Stop event propegation</span><span class="WHIT">
-<span class='line'>162</span> </span><span class="WHIT">					</span><span class="NAME">e.stopPropagation</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>163</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>164</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>165</span> </span><span class="WHIT">			
-<span class='line'>166</span> 			
-<span class='line'>167</span> 		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>168</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>169</span> </span><span class="WHIT">	
-<span class='line'>170</span> 	
-<span class='line'>171</span> 	
-<span class='line'>172</span> 	</span><span class="COMM">// --------------------------------------------------------------------------</span><span class="WHIT">
-<span class='line'>173</span> 
-<span class='line'>174</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>175</span> 	 * Event Listener module
-<span class='line'>176</span> 	 *
-<span class='line'>177</span> 	 * @namespace
-<span class='line'>178</span> 	 * @name event
-<span class='line'>179</span> 	 * @memberOf $_
-<span class='line'>180</span> 	 */</span><span class="WHIT">
-<span class='line'>181</span> </span><span class="WHIT">	</span><span class="NAME">e</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>182</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>183</span> 		 * Adds an event that returns a callback when triggered on the selected
-<span class='line'>184</span> 		 * event and selector
-<span class='line'>185</span> 		 * 
-<span class='line'>186</span> 		 * @memberOf $_.event
-<span class='line'>187</span> 		 * @name add
-<span class='line'>188</span> 		 * @function
-<span class='line'>189</span> 		 * @example Eg. $_("#selector").event.add("click", do_something());
-<span class='line'>190</span> 		 * @param string event
-<span class='line'>191</span> 		 * @param function callback
-<span class='line'>192</span> 		 */</span><span class="WHIT">
-<span class='line'>193</span> </span><span class="WHIT">		</span><span class="NAME">add</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>194</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>195</span> </span><span class="WHIT">			</span><span class="NAME">$_.each</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>196</span> </span><span class="WHIT">				</span><span class="NAME">_add_remove</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>197</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>198</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>199</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>200</span> 		 * Removes an event bound the the specified selector, event type, and callback
-<span class='line'>201</span> 		 *
-<span class='line'>202</span> 		 * @memberOf $_.event
-<span class='line'>203</span> 		 * @name remove
-<span class='line'>204</span> 		 * @function
-<span class='line'>205</span> 		 * @example Eg. $_("#selector").event.remove("click", do_something());
-<span class='line'>206</span> 		 * @param string event
-<span class='line'>207</span> 		 * @param string callback
-<span class='line'>208</span> 		 */</span><span class="WHIT">
-<span class='line'>209</span> </span><span class="WHIT">		</span><span class="NAME">remove</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>210</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>211</span> </span><span class="WHIT">			</span><span class="NAME">$_.each</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>212</span> </span><span class="WHIT">				</span><span class="NAME">_add_remove</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>213</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>214</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>215</span> </span><span class="WHIT">		</span><span class="COMM">/** 
-<span class='line'>216</span> 		 * Binds a persistent event to the document
-<span class='line'>217</span> 		 *
-<span class='line'>218</span> 		 * @memberOf $_.event
-<span class='line'>219</span> 		 * @name live
-<span class='line'>220</span> 		 * @function
-<span class='line'>221</span> 		 * @example Eg. $_.event.live(".button", "click", do_something());
-<span class='line'>222</span> 		 * @param string target
-<span class='line'>223</span> 		 * @param string event
-<span class='line'>224</span> 		 * @param function callback
-<span class='line'>225</span> 		 */</span><span class="WHIT">
-<span class='line'>226</span> </span><span class="WHIT">		</span><span class="NAME">live</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">target</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>227</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>228</span> </span><span class="WHIT">			</span><span class="NAME">_attach_delegate</span><span class="PUNC">(</span><span class="NAME">document.documentElement</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">target</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>229</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>230</span> </span><span class="WHIT">		</span><span class="COMM">/** 
-<span class='line'>231</span> 		 * Binds an event to a parent object
-<span class='line'>232</span> 		 *
-<span class='line'>233</span> 		 * @memberOf $_.event
-<span class='line'>234</span> 		 * @name delegate
-<span class='line'>235</span> 		 * @function
-<span class='line'>236</span> 		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
-<span class='line'>237</span> 		 * @param string target
-<span class='line'>238</span> 		 * @param string event_type
-<span class='line'>239</span> 		 * @param function callback
-<span class='line'>240</span> 		 */</span><span class="WHIT">
-<span class='line'>241</span> </span><span class="WHIT">		</span><span class="NAME">delegate</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">target</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>242</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>243</span> </span><span class="WHIT">			</span><span class="NAME">$_.each</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>244</span> </span><span class="WHIT">				</span><span class="NAME">_attach_delegate</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">target</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>245</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>246</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>247</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>248</span> 
-<span class='line'>249</span> </span><span class="WHIT">	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'event'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>250</span> 
-<span class='line'>251</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>
+<span class='line'>152</span> 			</span><span class="COMM">//Get the live version of the target selector</span><span class="WHIT">
+<span class='line'>153</span> </span><span class="WHIT">			</span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">$_.$</span><span class="PUNC">(</span><span class="NAME">target</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>154</span> </span><span class="WHIT">			
+<span class='line'>155</span> 			</span><span class="COMM">//Check each element to see if it matches the target</span><span class="WHIT">
+<span class='line'>156</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="NAME">elem</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>158</span> </span><span class="WHIT">				</span><span class="COMM">//IE 8 doesn't have target in the event object</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="WHIT">				</span><span class="NAME">tar</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">e.target</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">e.srcElement</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>160</span> </span><span class="WHIT">			
+<span class='line'>161</span> 				</span><span class="COMM">//Fire target callback when event bubbles from target</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">tar</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">[</span><span class="NAME">elem</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>163</span> </span><span class="WHIT">				</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>164</span> </span><span class="WHIT">					</span><span class="COMM">//Trigger the event callback</span><span class="WHIT">
+<span class='line'>165</span> </span><span class="WHIT">					</span><span class="NAME">callback.call</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">[</span><span class="NAME">elem</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="WHIT">					
+<span class='line'>167</span> 					</span><span class="COMM">//Stop event propegation</span><span class="WHIT">
+<span class='line'>168</span> </span><span class="WHIT">					</span><span class="NAME">e.stopPropagation</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>169</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>170</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>171</span> </span><span class="WHIT">			
+<span class='line'>172</span> 		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>173</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>174</span> </span><span class="WHIT">	
+<span class='line'>175</span> 	
+<span class='line'>176</span> 	
+<span class='line'>177</span> 	</span><span class="COMM">// --------------------------------------------------------------------------</span><span class="WHIT">
+<span class='line'>178</span> 
+<span class='line'>179</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>180</span> 	 * Event Listener module
+<span class='line'>181</span> 	 *
+<span class='line'>182</span> 	 * @namespace
+<span class='line'>183</span> 	 * @name event
+<span class='line'>184</span> 	 * @memberOf $_
+<span class='line'>185</span> 	 */</span><span class="WHIT">
+<span class='line'>186</span> </span><span class="WHIT">	</span><span class="NAME">e</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>187</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>188</span> 		 * Adds an event that returns a callback when triggered on the selected
+<span class='line'>189</span> 		 * event and selector
+<span class='line'>190</span> 		 * 
+<span class='line'>191</span> 		 * @memberOf $_.event
+<span class='line'>192</span> 		 * @name add
+<span class='line'>193</span> 		 * @function
+<span class='line'>194</span> 		 * @example Eg. $_("#selector").event.add("click", do_something());
+<span class='line'>195</span> 		 * @param string event
+<span class='line'>196</span> 		 * @param function callback
+<span class='line'>197</span> 		 */</span><span class="WHIT">
+<span class='line'>198</span> </span><span class="WHIT">		</span><span class="NAME">add</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>199</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>200</span> </span><span class="WHIT">			</span><span class="NAME">$_.each</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>201</span> </span><span class="WHIT">				</span><span class="NAME">_add_remove</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>202</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>203</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>204</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>205</span> 		 * Removes an event bound the the specified selector, event type, and callback
+<span class='line'>206</span> 		 *
+<span class='line'>207</span> 		 * @memberOf $_.event
+<span class='line'>208</span> 		 * @name remove
+<span class='line'>209</span> 		 * @function
+<span class='line'>210</span> 		 * @example Eg. $_("#selector").event.remove("click", do_something());
+<span class='line'>211</span> 		 * @param string event
+<span class='line'>212</span> 		 * @param string callback
+<span class='line'>213</span> 		 */</span><span class="WHIT">
+<span class='line'>214</span> </span><span class="WHIT">		</span><span class="NAME">remove</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>215</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>216</span> </span><span class="WHIT">			</span><span class="NAME">$_.each</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>217</span> </span><span class="WHIT">				</span><span class="NAME">_add_remove</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>218</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>219</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>220</span> </span><span class="WHIT">		</span><span class="COMM">/** 
+<span class='line'>221</span> 		 * Binds a persistent event to the document
+<span class='line'>222</span> 		 *
+<span class='line'>223</span> 		 * @memberOf $_.event
+<span class='line'>224</span> 		 * @name live
+<span class='line'>225</span> 		 * @function
+<span class='line'>226</span> 		 * @example Eg. $_.event.live(".button", "click", do_something());
+<span class='line'>227</span> 		 * @param string target
+<span class='line'>228</span> 		 * @param string event
+<span class='line'>229</span> 		 * @param function callback
+<span class='line'>230</span> 		 */</span><span class="WHIT">
+<span class='line'>231</span> </span><span class="WHIT">		</span><span class="NAME">live</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">target</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>232</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>233</span> </span><span class="WHIT">			</span><span class="NAME">_attach_delegate</span><span class="PUNC">(</span><span class="NAME">document.documentElement</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">target</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>234</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>235</span> </span><span class="WHIT">		</span><span class="COMM">/** 
+<span class='line'>236</span> 		 * Binds an event to a parent object
+<span class='line'>237</span> 		 *
+<span class='line'>238</span> 		 * @memberOf $_.event
+<span class='line'>239</span> 		 * @name delegate
+<span class='line'>240</span> 		 * @function
+<span class='line'>241</span> 		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
+<span class='line'>242</span> 		 * @param string target
+<span class='line'>243</span> 		 * @param string event_type
+<span class='line'>244</span> 		 * @param function callback
+<span class='line'>245</span> 		 */</span><span class="WHIT">
+<span class='line'>246</span> </span><span class="WHIT">		</span><span class="NAME">delegate</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">target</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>247</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>248</span> </span><span class="WHIT">			</span><span class="NAME">$_.each</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>249</span> </span><span class="WHIT">				</span><span class="NAME">_attach_delegate</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">target</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>250</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>251</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>252</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>253</span> 
+<span class='line'>254</span> </span><span class="WHIT">	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'event'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>255</span> 
+<span class='line'>256</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

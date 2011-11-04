@@ -144,7 +144,10 @@
 		//_attach the _listener to the parent object
 		_add_remove(sel, event, function(e){
 		
-			var elem, t;
+			var elem, t, tar;
+			
+			//IE 8 doesn't have event bound to element
+			e = e || window.event;
 			
 			//Get the live version of the target selector
 			t = $_.$(target);
@@ -152,8 +155,11 @@
 			//Check each element to see if it matches the target
 			for(elem in t)
 			{
+				//IE 8 doesn't have target in the event object
+				tar = e.target || e.srcElement;
+			
 				//Fire target callback when event bubbles from target
-				if(e.target == t[elem])
+				if(tar == t[elem])
 				{
 					//Trigger the event callback
 					callback.call(t[elem], e);
@@ -162,7 +168,6 @@
 					e.stopPropagation();
 				}
 			}
-			
 			
 		}, true);
 	};
