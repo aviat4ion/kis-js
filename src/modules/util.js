@@ -43,10 +43,10 @@
 			return a > b ? 1 : a < b ? -1 : 0;
 		});
 		
-		//cache object/array size
+		// cache object/array size
 		num_keys = keys.length;
 		
-		//Recreate the object/array
+		// Recreate the object/array
 		for(i=0; i < num_keys; i++)
 		{
 			new_o[keys[i]] = o[keys[i]];
@@ -131,7 +131,7 @@
 				num_keys,
 				i = 0;
 				
-			//Extract the keys or values if needed
+			// Extract the keys or values if needed
 			if($_.type(keys) !== "array")
 			{
 				keys = this.object_values(keys);
@@ -141,7 +141,7 @@
 				vals = this.object_values(vals);
 			}
 			
-			//cache the number of keys
+			// cache the number of keys
 			num_keys = keys.length;
 			
 			if(num_keys !== vals.length)
@@ -150,7 +150,7 @@
 				return false;
 			}
 			
-			//Create and return the new object
+			// Create and return the new object
 			for(i = 0; i < num_keys; i++)
 			{
 				new_object[keys[i]] = vals[i];
@@ -184,7 +184,7 @@
 				x,
 				is_array = true;
 				
-			//Check for an array in the arguments
+			// Check for an array in the arguments
 			for(i=0; i < arg_len; i++)
 			{
 				if($_.type(args[i]) !== "array")
@@ -194,21 +194,21 @@
 				}
 			}
 			
-			//If all the arguments are javascript arrays
+			// If all the arguments are javascript arrays
 			if(is_array)
 			{
 				new_obj = [];
-				//Let javascript do all the work!
+				// Let javascript do all the work!
 				for(i=0; i< arg_len; i++)
 				{
 					new_obj = new_obj.contact(args[i]);
 				}
 				
-				//Return early
+				// Return early
 				return new_obj;
 			}
 			
-			//No, there's at least one object
+			// No, there's at least one object
 			for(i=0, x=0; i < arg_len; i++)
 			{
 				arg = args[i];
@@ -353,6 +353,7 @@
 			return new_str;
 				
 		}
+		
 	};
 
 	//Add it to the $_ object

@@ -411,6 +411,25 @@
 	
 		}(self));
 	}
+	
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * event.preventDefault/e.stopPropagation polyfill
+	 * @private
+	 */
+	 if(typeof Event.preventDefault === "undefined" && typeof window.event !== "undefined")
+	 {
+	 	Event.prototype.preventDefault = function() 
+	 	{
+	 		window.event.stop();
+	 	},
+	 	Event.prototype.stopPropagation = function()
+	 	{
+	 		window.event.returnValue = false;
+	 	}
+	 }
+	
 }());
 
 // --------------------------------------------------------------------------
@@ -1028,10 +1047,10 @@
 			return a > b ? 1 : a < b ? -1 : 0;
 		});
 		
-		//cache object/array size
+		// cache object/array size
 		num_keys = keys.length;
 		
-		//Recreate the object/array
+		// Recreate the object/array
 		for(i=0; i < num_keys; i++)
 		{
 			new_o[keys[i]] = o[keys[i]];
@@ -1116,7 +1135,7 @@
 				num_keys,
 				i = 0;
 				
-			//Extract the keys or values if needed
+			// Extract the keys or values if needed
 			if($_.type(keys) !== "array")
 			{
 				keys = this.object_values(keys);
@@ -1126,7 +1145,7 @@
 				vals = this.object_values(vals);
 			}
 			
-			//cache the number of keys
+			// cache the number of keys
 			num_keys = keys.length;
 			
 			if(num_keys !== vals.length)
@@ -1135,7 +1154,7 @@
 				return false;
 			}
 			
-			//Create and return the new object
+			// Create and return the new object
 			for(i = 0; i < num_keys; i++)
 			{
 				new_object[keys[i]] = vals[i];
@@ -1169,7 +1188,7 @@
 				x,
 				is_array = true;
 				
-			//Check for an array in the arguments
+			// Check for an array in the arguments
 			for(i=0; i < arg_len; i++)
 			{
 				if($_.type(args[i]) !== "array")
@@ -1179,21 +1198,21 @@
 				}
 			}
 			
-			//If all the arguments are javascript arrays
+			// If all the arguments are javascript arrays
 			if(is_array)
 			{
 				new_obj = [];
-				//Let javascript do all the work!
+				// Let javascript do all the work!
 				for(i=0; i< arg_len; i++)
 				{
 					new_obj = new_obj.contact(args[i]);
 				}
 				
-				//Return early
+				// Return early
 				return new_obj;
 			}
 			
-			//No, there's at least one object
+			// No, there's at least one object
 			for(i=0, x=0; i < arg_len; i++)
 			{
 				arg = args[i];
@@ -1338,6 +1357,7 @@
 			return new_str;
 				
 		}
+		
 	};
 
 	//Add it to the $_ object
@@ -1372,7 +1392,7 @@
 		{
 			if(typeof sel.addEventListener !== "undefined")
 			{
-				//Duplicated events are dropped, per the specification
+				// Duplicated events are dropped, per the specification
 				sel.addEventListener(event, callback, false);
 			}
 		};
@@ -1387,7 +1407,7 @@
 			}
 		};
 	}
-	//typeof function doesn't work in IE where attachEvent is available: brute force it
+	// typeof function doesn't work in IE where attachEvent is available: brute force it
 	else if(typeof document.attachEvent !== "undefined") 
 	{
 		/**
@@ -1462,7 +1482,7 @@
 			return false;
 		}
 
-		//Multiple events? Run recursively!
+		// Multiple events? Run recursively!
 		if (!event.match(/^([\w\-]+)$/))
 		{
 			event = event.split(" ");
@@ -1490,30 +1510,30 @@
 
 	_attach_delegate = function(sel, target, event, callback)
 	{
-		//_attach the _listener to the parent object
+		// attach the listener to the parent object
 		_add_remove(sel, event, function(e){
 		
 			var elem, t, tar;
 			
-			//IE 8 doesn't have event bound to element
+			// IE 8 doesn't have event bound to element
 			e = e || window.event;
 			
-			//Get the live version of the target selector
+			// Get the live version of the target selector
 			t = $_.$(target);
 			
-			//Check each element to see if it matches the target
+			// Check each element to see if it matches the target
 			for(elem in t)
 			{
-				//IE 8 doesn't have target in the event object
+				// IE 8 doesn't have target in the event object
 				tar = e.target || e.srcElement;
 			
-				//Fire target callback when event bubbles from target
+				// Fire target callback when event bubbles from target
 				if(tar == t[elem])
 				{
-					//Trigger the event callback
+					// Trigger the event callback
 					callback.call(t[elem], e);
 					
-					//Stop event propegation
+					// Stop event propegation
 					e.stopPropagation();
 				}
 			}
@@ -1592,7 +1612,7 @@
 		 * @param string event_type
 		 * @param function callback
 		 */
-		delegate: function(target, event, callback)
+		delegate: function (target, event, callback)
 		{
 			$_.each(function(e){
 				_attach_delegate(e, target, event, callback);

@@ -50,10 +50,10 @@
 <span class='line'> 43</span> 			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">a</span><span class="WHIT"> </span><span class="PUNC">></span><span class="WHIT"> </span><span class="NAME">b</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">a</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">b</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 44</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 45</span> </span><span class="WHIT">		
-<span class='line'> 46</span> 		</span><span class="COMM">//cache object/array size</span><span class="WHIT">
+<span class='line'> 46</span> 		</span><span class="COMM">// cache object/array size</span><span class="WHIT">
 <span class='line'> 47</span> </span><span class="WHIT">		</span><span class="NAME">num_keys</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">keys.length</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 48</span> </span><span class="WHIT">		
-<span class='line'> 49</span> 		</span><span class="COMM">//Recreate the object/array</span><span class="WHIT">
+<span class='line'> 49</span> 		</span><span class="COMM">// Recreate the object/array</span><span class="WHIT">
 <span class='line'> 50</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">num_keys</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'> 51</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 52</span> </span><span class="WHIT">			</span><span class="NAME">new_o</span><span class="PUNC">[</span><span class="NAME">keys</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">o</span><span class="PUNC">[</span><span class="NAME">keys</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
@@ -138,7 +138,7 @@
 <span class='line'>131</span> </span><span class="WHIT">				</span><span class="NAME">num_keys</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'>132</span> </span><span class="WHIT">				</span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>133</span> </span><span class="WHIT">				
-<span class='line'>134</span> 			</span><span class="COMM">//Extract the keys or values if needed</span><span class="WHIT">
+<span class='line'>134</span> 			</span><span class="COMM">// Extract the keys or values if needed</span><span class="WHIT">
 <span class='line'>135</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">$_.type</span><span class="PUNC">(</span><span class="NAME">keys</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"array"</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>136</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>137</span> </span><span class="WHIT">				</span><span class="NAME">keys</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.object_values</span><span class="PUNC">(</span><span class="NAME">keys</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
@@ -148,7 +148,7 @@
 <span class='line'>141</span> </span><span class="WHIT">				</span><span class="NAME">vals</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.object_values</span><span class="PUNC">(</span><span class="NAME">vals</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>142</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>143</span> </span><span class="WHIT">			
-<span class='line'>144</span> 			</span><span class="COMM">//cache the number of keys</span><span class="WHIT">
+<span class='line'>144</span> 			</span><span class="COMM">// cache the number of keys</span><span class="WHIT">
 <span class='line'>145</span> </span><span class="WHIT">			</span><span class="NAME">num_keys</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">keys.length</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>146</span> </span><span class="WHIT">			
 <span class='line'>147</span> 			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">num_keys</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">vals.length</span><span class="PUNC">)</span><span class="WHIT">
@@ -157,7 +157,7 @@
 <span class='line'>150</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>151</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>152</span> </span><span class="WHIT">			
-<span class='line'>153</span> 			</span><span class="COMM">//Create and return the new object</span><span class="WHIT">
+<span class='line'>153</span> 			</span><span class="COMM">// Create and return the new object</span><span class="WHIT">
 <span class='line'>154</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">num_keys</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>155</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>156</span> </span><span class="WHIT">				</span><span class="NAME">new_object</span><span class="PUNC">[</span><span class="NAME">keys</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">vals</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
@@ -191,7 +191,7 @@
 <span class='line'>184</span> </span><span class="WHIT">				</span><span class="NAME">x</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'>185</span> </span><span class="WHIT">				</span><span class="NAME">is_array</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>186</span> </span><span class="WHIT">				
-<span class='line'>187</span> 			</span><span class="COMM">//Check for an array in the arguments</span><span class="WHIT">
+<span class='line'>187</span> 			</span><span class="COMM">// Check for an array in the arguments</span><span class="WHIT">
 <span class='line'>188</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">arg_len</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>189</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>190</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">$_.type</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"array"</span><span class="PUNC">)</span><span class="WHIT">
@@ -201,21 +201,21 @@
 <span class='line'>194</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>195</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>196</span> </span><span class="WHIT">			
-<span class='line'>197</span> 			</span><span class="COMM">//If all the arguments are javascript arrays</span><span class="WHIT">
+<span class='line'>197</span> 			</span><span class="COMM">// If all the arguments are javascript arrays</span><span class="WHIT">
 <span class='line'>198</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">is_array</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>199</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>200</span> </span><span class="WHIT">				</span><span class="NAME">new_obj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>201</span> </span><span class="WHIT">				</span><span class="COMM">//Let javascript do all the work!</span><span class="WHIT">
+<span class='line'>201</span> </span><span class="WHIT">				</span><span class="COMM">// Let javascript do all the work!</span><span class="WHIT">
 <span class='line'>202</span> </span><span class="WHIT">				</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">arg_len</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>203</span> </span><span class="WHIT">				</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>204</span> </span><span class="WHIT">					</span><span class="NAME">new_obj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">new_obj.contact</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>205</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>206</span> </span><span class="WHIT">				
-<span class='line'>207</span> 				</span><span class="COMM">//Return early</span><span class="WHIT">
+<span class='line'>207</span> 				</span><span class="COMM">// Return early</span><span class="WHIT">
 <span class='line'>208</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">new_obj</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>209</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>210</span> </span><span class="WHIT">			
-<span class='line'>211</span> 			</span><span class="COMM">//No, there's at least one object</span><span class="WHIT">
+<span class='line'>211</span> 			</span><span class="COMM">// No, there's at least one object</span><span class="WHIT">
 <span class='line'>212</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">x</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">arg_len</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>213</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>214</span> </span><span class="WHIT">				</span><span class="NAME">arg</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
@@ -360,10 +360,11 @@
 <span class='line'>353</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">new_str</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>354</span> </span><span class="WHIT">				
 <span class='line'>355</span> 		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>356</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>357</span> 
-<span class='line'>358</span> </span><span class="WHIT">	</span><span class="COMM">//Add it to the $_ object</span><span class="WHIT">
-<span class='line'>359</span> </span><span class="WHIT">	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'util'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">u</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>360</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>361</span> 
-<span class='line'>362</span> </span></pre></body></html>
+<span class='line'>356</span> </span><span class="WHIT">		
+<span class='line'>357</span> 	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>358</span> 
+<span class='line'>359</span> </span><span class="WHIT">	</span><span class="COMM">//Add it to the $_ object</span><span class="WHIT">
+<span class='line'>360</span> </span><span class="WHIT">	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'util'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">u</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>361</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>362</span> 
+<span class='line'>363</span> </span></pre></body></html>
