@@ -52,7 +52,7 @@ for (var i = 0, tagName; tagName = HTML5[i]; i++) document.createElement(tagName
 			
 			for(n in o1)
 			{
-		
+				//Do a shallow compare -- first level only
 				if($_.type(o1[n]) === "object")
 				{
 					if($_.type(o2[n]) !== "object")
@@ -73,7 +73,7 @@ for (var i = 0, tagName; tagName = HTML5[i]; i++) document.createElement(tagName
 			
 			for(n in o2)
 			{
-		
+				//Do a shallow compare -- first level only
 				if($_.type(o1[n]) === "object")
 				{
 					if($_.type(o2[n]) !== "object")

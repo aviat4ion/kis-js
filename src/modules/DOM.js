@@ -9,7 +9,7 @@
 
 	var d;
 	
-	//Private function for getting/setting attributes
+	//Private function for getting/setting attributes/properties
 	function _attr(sel, name, value)
 	{
 		var oldVal, doAttr;
