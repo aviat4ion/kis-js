@@ -767,6 +767,11 @@
 
 // --------------------------------------------------------------------------
 
+/**
+ * Store 
+ * 
+ * Wrapper for local / sessionstorage
+ */
 (function (){
 	"use strict";
 	
