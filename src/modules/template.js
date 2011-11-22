@@ -69,6 +69,8 @@
 		{
 			var tmp = _t[name],
 				pairs = [],
+				pair_reg = /\{([A-Z0-9_\-]+)\}(.*)\{\/\1\}/gim,
+				var_reg = /\{([A-Z0-9_\-]+)\}/gim,
 				pseudos = [], 
 				num_pairs = 0,
 				num_pseudos = 0,
@@ -93,7 +95,7 @@
 			tmp = tmp.replace(/\}\s+</gim, "}<");
 			
 			//Match all the looped sections of content
-			pairs = tmp.match(/\{([A-Z0-9_\-]+)\}(.*)\{\/\1\}/gim);
+			pairs = tmp.match(pair_reg);
 			
 			if(pairs != null)
 			{
@@ -118,13 +120,13 @@
 						data_len = rep_data.length;
 						
 						//Get rid of the loop tags
-						pairs[i] = pairs[i].replace(/\{([A-Z0-9_\-]+)\}(.*)\{\/\1\}/gim, "$2");
+						pairs[i] = pairs[i].replace(pair_reg, "$2");
 						
 						//Replace psudovariables with data
 						for(j=0;j<data_len;j++)
 						{
 							//Is there a better way to do this, rather than an inline function?
-							tmp_data += pairs[i].replace(/\{([A-Z0-9 _\-]+)\}/gi, function(_, varName){
+							tmp_data += pairs[i].replace(var_reg, function(_, varName){
 								return (rep_data[j][varName]) ? rep_data[j][varName] : ""; 
 							});
 						}
@@ -136,7 +138,7 @@
 			}
 			
 			//Replace all the rest of the psudeovariables
-			pseudos = tmp.match(/\{([A-Z0-9_\-]+)\}/gim);
+			pseudos = tmp.match(var_reg);
 			
 			if(pseudos != null)
 			{

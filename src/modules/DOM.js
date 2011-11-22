@@ -303,6 +303,31 @@
 			});
 		},
 		/**
+		 * Adds to the innerHTML of the current element, after the last child.
+		 * 
+		 * @example $_("ul").dom.append("&lt;li&gt;&lt;/li&gt;") adds an li element to the end of the selected ul element
+		 * @name append
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string htm
+		 */
+		append: function(htm)
+		{
+			this.el.insertAdjacentHTML('beforeend', htm);
+		},
+		/**
+		 * Adds to the innerHTML of the selected element, before the current children
+		 * 
+		 * @name prepend
+		 * @memberOf $_.dom
+		 * @function
+		 * @param string htm
+		 */
+		 prepend: function(htm)
+		 {
+		 	this.el.insertAdjacentHTML('afterbegin', htm);
+		 },
+		/**
 		 * Sets or gets the innerHTML propery of the element(s) passed
 		 *
 		 * @name html
