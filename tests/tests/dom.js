@@ -89,4 +89,32 @@
 		equal($_('#r14').dom.html(test_html).toLowerCase(), test_html, "Sets html");
 	});
 	
+	test("append", function(){
+	
+		expect(1);
+	
+		//Remove the text from this element…so we can add to it
+		$_("#r14").dom.html("<ul><li>Test</li></ul>");
+		
+		var html = "<ul><li>Test</li><li>This is a test item</li></ul>";
+		
+		$_("#r14 ul").dom.append('<li>This is a test item</li>');
+		
+		equal($('#r14').innerHTML, html, "Append adds a child to the end of the selected element");
+	});
+	
+	test("prepend", function(){
+	
+		expect(1);
+		
+		var html = '<ul><li>Test2</li><li>Test</li><li>This is a test item</li></ul>';
+		
+		$_("#r14 ul").dom.prepend('<li>Test2</li>');
+		
+		equal($('#r14').innerHTML, html, "Prepend adds a child to the beginning of the selected element");
+		
+		//Clean up the html
+		$_("#r14").dom.html("");
+	});
+	
 }());

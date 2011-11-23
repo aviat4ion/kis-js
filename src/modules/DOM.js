@@ -313,7 +313,14 @@
 		 */
 		append: function(htm)
 		{
-			this.el.insertAdjacentHTML('beforeend', htm);
+			if(typeof document.insertAdjacentHTML !== "undefined")
+			{
+				this.el.insertAdjacentHTML('beforeend', htm);
+			}
+			else
+			{
+				this.el.innerHTML += htm;
+			}
 		},
 		/**
 		 * Adds to the innerHTML of the selected element, before the current children
@@ -325,7 +332,14 @@
 		 */
 		 prepend: function(htm)
 		 {
-		 	this.el.insertAdjacentHTML('afterbegin', htm);
+		 	if(typeof document.insertAdjacentHTML !== "undefined")
+		 	{
+		 		this.el.insertAdjacentHTML('afterbegin', htm);
+		 	}
+		 	else
+		 	{
+		 		this.el.innerHTML = htm + this.el.innerHTML;
+		 	}
 		 },
 		/**
 		 * Sets or gets the innerHTML propery of the element(s) passed
