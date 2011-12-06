@@ -10,6 +10,9 @@
 $folder = "src";
 $src_folder = "{$folder}/modules";
 
+//The divider added between the contents of merged files
+$divider = "\n// --------------------------------------------------------------------------\n\n";
+
 $files = array();
 
 //Get all the source files
@@ -31,7 +34,7 @@ if($dir = opendir($src_folder))
 $new_file = file_get_contents("{$folder}/core.js") . "\n";
 
 //Add polyfills
-$new_file .= "\n// --------------------------------------------------------------------------\n\n"; 
+$new_file .= $divider; 
 $new_file .= file_get_contents("{$folder}/polyfill.js") . "\n";
 
 
@@ -44,7 +47,7 @@ foreach($files as $f)
 	
 	$module = implode("\n", $farray);
 	
-	$new_file .= "\n// --------------------------------------------------------------------------\n\n".$module."\n";
+	$new_file .= $divider.$module."\n";
 	
 }
 
