@@ -418,17 +418,17 @@
 	 * event.preventDefault/e.stopPropagation polyfill
 	 * @private
 	 */
-	 if(typeof Event.preventDefault === "undefined" && typeof window.event !== "undefined")
-	 {
-	 	Event.prototype.preventDefault = function() 
-	 	{
-	 		window.event.stop();
-	 	},
-	 	Event.prototype.stopPropagation = function()
-	 	{
-	 		window.event.returnValue = false;
-	 	}
-	 }
+	if(typeof Event.preventDefault === "undefined" && typeof window.event !== "undefined")
+	{
+		Event.prototype.preventDefault = function() 
+		{
+			window.event.stop();
+		},
+		Event.prototype.stopPropagation = function()
+		{
+			window.event.returnValue = false;
+		}
+	}
 	
 }());
 
@@ -1074,7 +1074,7 @@
 				bFloat = parseFloat(b),
 				aNumeric = aFloat + '' === a,
 				bNumeric = bFloat + '' === b;
-            
+
 			if (aNumeric && bNumeric) 
 			{
 				return aFloat > bFloat ? 1 : aFloat < bFloat ? -1 : 0;

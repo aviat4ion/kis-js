@@ -26,7 +26,7 @@
 				bFloat = parseFloat(b),
 				aNumeric = aFloat + '' === a,
 				bNumeric = bFloat + '' === b;
-            
+
 			if (aNumeric && bNumeric) 
 			{
 				return aFloat > bFloat ? 1 : aFloat < bFloat ? -1 : 0;
