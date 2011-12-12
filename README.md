@@ -51,7 +51,15 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 
 Have a look at the /docs folder included with the library for documentation on the included modules. The development version of the documentation is avaliable at 
 
-[[http://dev.timshomepage.net/github/kis-js/docs/]](http://dev.timshomepage.net/github/kis-js/docs/)
+[http://dev.timshomepage.net/github/kis-js/docs/](http://dev.timshomepage.net/github/kis-js/docs/)
+
+#### Lite Versions ####
+
+There are two lite versions:
+
+	1. Lite - Includes only the ajax and events modules
+	2. Lite-dom - Includes ajax, events, and dom modules
+	
 
 		
 				
