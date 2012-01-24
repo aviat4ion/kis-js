@@ -51,7 +51,7 @@ Browser support: IE8+, Latest versions of Firefox, Chrome, Safari, Opera
 
 Have a look at the /docs folder included with the library for documentation on the included modules. The development version of the documentation is avaliable at 
 
-[http://dev.timshomepage.net/github/kis-js/docs/](http://dev.timshomepage.net/github/kis-js/docs/)
+[http://github.timshomepage.net/kis-js/docs/](http://github.timshomepage.net/kis-js/docs/)
 
 #### Lite Versions ####
 
