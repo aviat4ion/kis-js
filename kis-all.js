@@ -805,6 +805,446 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 // --------------------------------------------------------------------------
 
 /**
+ * Ajax
+ *
+ * Module for making ajax requests
+ */
+(function (){
+
+	"use strict";
+	
+	// Don't bother even defining the object if the XMLHttpRequest isn't available
+	if(typeof window.XMLHttpRequest === "undefined")
+	{
+		return;
+	}
+
+	var ajax = {
+		_do: function (url, data, callback, isPost)
+		{
+			var type, 
+				request = new XMLHttpRequest();
+		
+			if (typeof callback === "undefined")
+			{
+				/**
+				 * @private
+				 */
+				callback = function (){};
+			}
+
+			type = (isPost) ? "POST" : "GET";
+
+			url += (type === "GET") ? "?"+this._serialize(data) : '';
+			
+			request.open(type, url);
+
+			request.onreadystatechange = function ()
+			{
+				if (request.readyState === 4)
+				{
+					callback(request.responseText);
+				}
+			};
+
+			if (type === "POST")
+			{
+				request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				request.send(this._serialize(data));
+			}
+			else
+			{
+				request.send(null);
+			}
+		},
+		_serialize: function (data)
+		{
+			var name,
+				value,
+				pairs = [];
+
+			for (name in data)
+			{
+				if (!data.hasOwnProperty(name))
+				{
+					continue;
+				}
+				if (typeof data[name] === "function")
+				{
+					continue;
+				}
+
+				value = data[name].toString();
+
+				name = encodeURIComponent(name);
+				value = encodeURIComponent(value);
+
+				pairs.push(name + "=" + value);
+			}
+
+			return pairs.join("&");
+		}
+	};
+
+	/**
+	 * Sends a GET type ajax request
+	 * 
+	 * @name get
+	 * @function
+	 * @memberOf $_
+	 * @param string url
+	 * @param object data
+	 * @param function callback
+	 */
+	$_.ext('get', function (url, data, callback){
+		ajax._do(url, data, callback, false);
+	});
+	
+	/**
+	 * Sends a POST type ajax request
+	 * 
+	 * @name post
+	 * @function
+	 * @memberOf $_
+	 * @param string url
+	 * @param object data
+	 * @param function callback
+	 */
+	$_.ext('post', function (url, data, callback){
+		ajax._do(url, data, callback, true);
+	});
+}());
+
+// --------------------------------------------------------------------------
+
+/**
+ * Event
+ *
+ * Event api wrapper
+ */
+(function (){
+
+	"use strict";
+
+	// Property name for expandos on DOM objects
+	var kis_expando = "KIS_0_5_0";
+
+	var _attach, _remove, _add_remove, e, _attach_delegate;
+
+	// Define the proper _attach and _remove functions
+	// based on browser support
+	if(typeof document.addEventListener !== "undefined")
+	{
+		/**
+		 * @private
+		 */
+		_attach = function (sel, event, callback)
+		{
+			if(typeof sel.addEventListener !== "undefined")
+			{
+				// Duplicated events are dropped, per the specification
+				sel.addEventListener(event, callback, false);
+			}
+		};
+		/**
+		 * @private
+		 */
+		_remove = function (sel, event, callback)
+		{
+			if(typeof sel.removeEventListener !== "undefined")
+			{
+				sel.removeEventListener(event, callback, false);
+			}
+		};
+	}
+	// typeof function doesn't work in IE where attachEvent is available: brute force it
+	else if(typeof document.attachEvent !== "undefined") 
+	{
+		/**
+		 * @private
+		 */
+		_attach = function (sel, event, callback)
+		{
+			function _listener () {
+				// Internet Explorer fails to correctly set the 'this' object
+				// for event listeners, so we need to set it ourselves.
+				callback.apply(arguments[0]);
+			}
+			
+			if (typeof sel.attachEvent !== "undefined")
+			{
+				_remove(event, callback); // Make sure we don't have duplicate listeners
+				
+				sel.attachEvent("on" + event, _listener);
+				// Store our _listener so we can remove it later
+				var expando = sel[kis_expando] = sel[kis_expando] || {};
+				expando.listeners = expando.listeners || {};
+				expando.listeners[event] = expando.listeners[event] || [];
+				expando.listeners[event].push({
+					callback: callback,
+					_listener: _listener
+				});
+			}
+			else
+			{
+				console.log("Failed to _attach event:"+event+" on "+sel);
+			}
+		};
+		/**
+		 * @private
+		 */
+		_remove = function (sel, event, callback)
+		{
+			if(typeof sel.detachEvent !== "undefined")
+			{
+				var expando = sel[kis_expando];
+				if (expando && expando.listeners
+						&& expando.listeners[event])
+				{
+					var listeners = expando.listeners[event];
+					var len = listeners.length;
+					for (var i=0; i<len; i++)
+					{
+						if (listeners[i].callback === callback)
+						{
+							sel.detachEvent("on" + event, listeners[i]._listener);
+							listeners.splice(i, 1);
+							if(listeners.length === 0)
+							{
+								delete expando.listeners[event];
+							}
+							return;
+						}
+					}
+				}
+			}
+		};
+	}
+	
+	_add_remove = function (sel, event, callback, add)
+	{
+		var i, len;
+		
+		if(typeof sel === "undefined")
+		{
+			console.log(arguments);
+			console.log(event);
+			return false;
+		}
+
+		// Multiple events? Run recursively!
+		if (!event.match(/^([\w\-]+)$/))
+		{
+			event = event.split(" ");
+			
+			len = event.length;
+
+			for (i = 0; i < len; i++)
+			{
+				_add_remove(sel, event[i], callback, add);
+			}
+
+			return;
+		}
+
+		
+		if(add === true)
+		{
+			_attach(sel, event, callback);
+		}
+		else
+		{
+			_remove(sel, event, callback);
+		}
+	};
+
+	_attach_delegate = function(sel, target, event, callback)
+	{
+		// attach the listener to the parent object
+		_add_remove(sel, event, function(e){
+		
+			var elem, t, tar;
+			
+			// IE 8 doesn't have event bound to element
+			e = e || window.event;
+			
+			// Get the live version of the target selector
+			t = $_.$(target);
+			
+			// Check each element to see if it matches the target
+			for(elem in t)
+			{
+				// IE 8 doesn't have target in the event object
+				tar = e.target || e.srcElement;
+			
+				// Fire target callback when event bubbles from target
+				if(tar == t[elem])
+				{
+					// Trigger the event callback
+					callback.call(t[elem], e);
+					
+					// Stop event propegation
+					e.stopPropagation();
+				}
+			}
+			
+		}, true);
+	};
+	
+	
+	
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Event Listener module
+	 *
+	 * @namespace
+	 * @name event
+	 * @memberOf $_
+	 */
+	e = {
+		/**
+		 * Adds an event that returns a callback when triggered on the selected
+		 * event and selector
+		 * 
+		 * @memberOf $_.event
+		 * @name add
+		 * @function
+		 * @example Eg. $_("#selector").event.add("click", do_something());
+		 * @param string event
+		 * @param function callback
+		 */
+		add: function (event, callback)
+		{
+			$_.each(function(e){
+				_add_remove(e, event, callback, true);
+			});
+		},
+		/**
+		 * Removes an event bound the the specified selector, event type, and callback
+		 *
+		 * @memberOf $_.event
+		 * @name remove
+		 * @function
+		 * @example Eg. $_("#selector").event.remove("click", do_something());
+		 * @param string event
+		 * @param string callback
+		 */
+		remove: function (event, callback)
+		{
+			$_.each(function(e){
+				_add_remove(e, event, callback, false);
+			});
+		},
+		/** 
+		 * Binds a persistent event to the document
+		 *
+		 * @memberOf $_.event
+		 * @name live
+		 * @function
+		 * @example Eg. $_.event.live(".button", "click", do_something());
+		 * @param string target
+		 * @param string event
+		 * @param function callback
+		 */
+		live: function (target, event, callback)
+		{
+			_attach_delegate(document.documentElement, target, event, callback);
+		},
+		/** 
+		 * Binds an event to a parent object
+		 *
+		 * @memberOf $_.event
+		 * @name delegate
+		 * @function
+		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
+		 * @param string target
+		 * @param string event_type
+		 * @param function callback
+		 */
+		delegate: function (target, event, callback)
+		{
+			$_.each(function(e){
+				_attach_delegate(e, target, event, callback);
+			});
+		}
+	};
+
+	$_.ext('event', e);
+
+}());
+
+// --------------------------------------------------------------------------
+
+/**
+ * Module for simplifying Indexed DB access
+ */
+(function() {
+	"use strict";
+	
+	var db = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB,
+		indexedDB = {};
+
+	/**
+	 * Module for simplifying Indexed DB access
+	 *
+	 * @namespace
+	 * @name indexedDB
+	 * @memberOf $_
+	 */
+	indexedDB = {
+		current_db: null,
+		/**
+		 * Connects to an indexedDB database
+		 *
+		 * @memberOf $_.indexedDB
+		 * @name connect
+		 * @function
+		 * @param string dbname
+		 * @param [int] version
+		 * @param [function] onupgradeneeded
+		 */
+		connect: function(dbname, version, onupgradeneeded)
+		{
+			var request = {};
+		
+			version = version || 0;
+			
+			// Ask for permission to use db
+			request = db.open(dbname, version);
+			
+			// Assign onupgradeneeded callback
+			if(typeof onupgradeneeded !== "undefined")
+			{
+				request.onupgradeneeded = onupgradeneeded;
+			}
+			
+			/**
+			 * @private
+			 */	
+			request.onerror = function(event)
+			{
+				console.log("IndexedDB disallowed.");
+			};
+			
+			/**
+			 * @private
+			 */
+			request.onsuccess = function(event)
+			{
+				// Connect to the specified db
+				indexedDB.current_db = request.result;
+			};
+		}
+	};
+	
+	$_.ext('indexedDB', indexedDB);
+	
+}());
+
+// --------------------------------------------------------------------------
+
+/**
  * Store 
  * 
  * Wrapper for local / sessionstorage
@@ -931,182 +1371,241 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 // --------------------------------------------------------------------------
 
-/**
- * Ajax
- *
- * Module for making ajax requests
+/** 
+ * Template module for simple javascript templating
  */
-(function (){
-
+(function(){
 	"use strict";
 	
-	// Don't bother even defining the object if the XMLHttpRequest isn't available
-	if(typeof window.XMLHttpRequest === "undefined")
+	//This module relies on some others for simplicity
+	//so, if they aren't there, don't initialize the module
+	if($_.ajax === "undefined")
 	{
 		return;
 	}
-
-	var ajax = {
-		_do: function (url, data, callback, isPost)
-		{
-			var type, 
-				request = new XMLHttpRequest();
-		
-			if (typeof callback === "undefined")
-			{
-				/**
-				 * @private
-				 */
-				callback = function (){};
-			}
-
-			type = (isPost) ? "POST" : "GET";
-
-			url += (type === "GET") ? "?"+this._serialize(data) : '';
-			
-			request.open(type, url);
-
-			request.onreadystatechange = function ()
-			{
-				if (request.readyState === 4)
-				{
-					callback(request.responseText);
-				}
-			};
-
-			if (type === "POST")
-			{
-				request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-				request.send(this._serialize(data));
-			}
-			else
-			{
-				request.send(null);
-			}
-		},
-		_serialize: function (data)
-		{
-			var name,
-				value,
-				pairs = [];
-
-			for (name in data)
-			{
-				if (!data.hasOwnProperty(name))
-				{
-					continue;
-				}
-				if (typeof data[name] === "function")
-				{
-					continue;
-				}
-
-				value = data[name].toString();
-
-				name = encodeURIComponent(name);
-				value = encodeURIComponent(value);
-
-				pairs.push(name + "=" + value);
-			}
-
-			return pairs.join("&");
-		}
-	};
-
+	
+	var t, _t, _p;
+	
+	
+	//Private object to store retrieved templates
+	_t = {};
+	
+	//Private object to store parsed templates
+	_p = {};
+	
+	
 	/**
-	 * Sends a GET type ajax request
+	 * Module for html templating. Requires ajax module.
 	 * 
-	 * @name get
-	 * @function
-	 * @memberOf $_
-	 * @param string url
-	 * @param object data
-	 * @param function callback
-	 */
-	$_.ext('get', function (url, data, callback){
-		ajax._do(url, data, callback, false);
-	});
-	
-	/**
-	 * Sends a POST type ajax request
-	 * 
-	 * @name post
-	 * @function
-	 * @memberOf $_
-	 * @param string url
-	 * @param object data
-	 * @param function callback
-	 */
-	$_.ext('post', function (url, data, callback){
-		ajax._do(url, data, callback, true);
-	});
-}());
-
-// --------------------------------------------------------------------------
-
-/**
- * Module for simplifying Indexed DB access
- */
-(function() {
-	"use strict";
-	
-	var db = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB,
-		request = null;
-		indexedDB = {};
-	
-	/**
-	 * @private
-	 */	
-	request.onerror = function(event)
-	{
-		console.log("IndexedDB disallowed.");
-	};
-	
-	/**
-	 * @private
-	 */
-	request.onsuccess = function(event)
-	{
-		// Connect to the specified db
-		indexedDB.current_db = request.result;
-	};
-
-	/**
-	 * Module for simplifying Indexed DB access
-	 *
+	 * @name template
 	 * @namespace
-	 * @name indexedDB
 	 * @memberOf $_
 	 */
-	indexedDB = {
-		current_db: null,
+	t = {
 		/**
-		 * Connects to an indexedDB database
-		 *
-		 * @memberOf $_.indexedDB
-		 * @name connect
+		 * Retrieves a template
+		 * 
+		 * @memberOf $_.template
+		 * @name get
+		 * @param string name
+		 * @return string
 		 * @function
-		 * @param string dbname
-		 * @param [int] version
-		 * @param [function] onupgradeneeded
+		 * @type string
 		 */
-		connect: function(dbname, version, onupgradeneeded)
+		get: function(name)
 		{
-			version = version || 0;
+			var res;
+
+			res = this.el.innerHTML;
 			
-			if(typeof onupgradeneeded !== "undefined")
+			if(res === "")
 			{
-				request.onupgradeneeded = onupgradeneeded;
+				console.log("Template is empty or cannot be found");
+				return;
 			}
+			
+			_t[name] = res;
+			return res;
+		},
+		/**
+		 * Formats a template
+		 * 
+		 * @memberOf $_.template
+		 * @name parse
+		 * @param string template_name
+		 * @param object replace_data
+		 * @return string
+		 * @function
+		 * @type string
+		 */
+		parse: function(name, data)
+		{
+			var tmp = _t[name],
+				pairs = [],
+				pair_reg = /\{([A-Z0-9_\-]+)\}(.*)\{\/\1\}/gim,
+				var_reg = /\{([A-Z0-9_\-]+)\}/gim,
+				pseudos = [], 
+				num_pairs = 0,
+				num_pseudos = 0,
+				i = 0,
+				j = 0,
+				var_name = '',
+				rep_data = {},
+				tmp_data = '',
+				data_len,
+				frag,
+				frag_section,
+				emptys,
+				x;
+				
+			tmp = String(tmp);
 		
-			// Ask for permission to use db
-			this.current_db = db.open(dbname, version);
+			//Remove newlines and tabs from template because
+			//those whitespace characters are extra bandwidth
+			tmp = tmp.replace(/\s+/gim, " ");
+			tmp = tmp.replace(/>\s+</gim, "><");
+			tmp = tmp.replace(/>\s+\{/gim, ">{");
+			tmp = tmp.replace(/\}\s+</gim, "}<");
+			
+			//Match all the looped sections of content
+			pairs = tmp.match(pair_reg);
+			
+			if(pairs != null)
+			{
+				num_pairs = pairs.length;
+				
+				//Go through the template, and match the pairs
+				for(i=0;i<num_pairs;i++)
+				{
+					//Put the loop in a placeholder
+					tmp = tmp.replace(pairs[i], "{"+i+"}");
+					
+					//Create a place to store looped data
+					tmp_data = "";
+					
+					//The replace variable is the name of the tag
+					var_name = String(pairs[i]).match(/^\{([A-Z0-9_\-]+)\}/i);
+					rep_data = data[var_name[1]];
+					
+					//Make sure there are loops
+					if(rep_data.length > 0)
+					{
+						data_len = rep_data.length;
+						
+						//Get rid of the loop tags
+						pairs[i] = pairs[i].replace(pair_reg, "$2");
+						
+						//Replace psudovariables with data
+						for(j=0;j<data_len;j++)
+						{
+							//Is there a better way to do this, rather than an inline function?
+							tmp_data += pairs[i].replace(var_reg, function(_, varName){
+								return (rep_data[j][varName]) ? rep_data[j][varName] : ""; 
+							});
+						}
+					}
+					
+					//Replace the looped content
+					tmp = tmp.replace("{"+i+"}", tmp_data);
+				}
+			}
+			
+			//Replace all the rest of the psudeovariables
+			pseudos = tmp.match(var_reg);
+			
+			if(pseudos != null)
+			{
+				num_pseudos = pseudos.length;
+			
+				for(i=0;i<num_pseudos;i++)
+				{
+					//Remove the {} from the pseudos
+					var_name = pseudos[i].replace('{', '');
+					var_name = var_name.replace('}', '');
+					
+					//Replace each pseudovariable with the value of the object
+					//property of the same name
+					tmp = tmp.replace(pseudos[i], data[var_name]);
+				}
+			}
+			
+			//Create an empty fragement
+			frag = document.createDocumentFragment();
+			
+			//Insert the html
+			frag.appendChild(document.createElement('section'));
+			frag_section = frag.querySelectorAll('section')[0];
+			frag_section.innerHTML = tmp;
+			
+			//Remove bad elements in the fragment, should be faster than being done live
+			emptys = frag_section.querySelectorAll('[src=""], [href=""]');
+			
+			for(x in emptys)
+			{
+				if(emptys[x].parentNode)
+				{
+					emptys[x].parentNode.removeChild(emptys[x]);
+				}
+			}
+			
+			//Save the parsed template in an object for later retrieval
+			_p[name] = tmp;
+			
+			return tmp;
+		},
+		/** 
+		 * Inserts the formatted template into the page. If the url and data parameters
+		 * are passed, it will retrieve a template file from the same domain, parse, 
+		 * and insert the template into the page. 
+		 *
+		 * @memberOf $_.template
+		 * @name apply
+		 * @function
+		 * @param string parsed_template/template_name
+		 * @param [string] url
+		 * @param [object] data
+		 */
+		apply: function(name, url, data)
+		{
+			//If the parsed template is supplied, just apply it to the passed selector
+			if(typeof url === "undefined" && typeof data === "undefined")
+			{
+				//If the "name" variable is in the _p object, set that
+				if(typeof _p[name] !== "undefined")
+				{
+					this.el.innerHTML = _p[name];
+					return;
+				}
+			
+				//Otherwise, set the passed string to the current selector
+				this.el.innerHTML = name;
+				return;
+			}
+			
+			//Otherwise, get the template, parse it, and apply it
+			$_.get(url, {}, function(res){
+				var parsed;
+			
+				if(res === "")
+				{
+					console.log("Template is empty or can not be found");
+					return;
+				}
+				
+				//Cache the template in an object for later use
+				_t[name] = res;
+				parsed = this.parse(name, data);
+				_p[name] = parsed;
+				
+				this.el.innerHTML = parsed;
+			});
 		}
 	};
 	
-	$_.ext('indexedDB', indexedDB);
+	//Add the module to the library
+	$_.ext('template', t);
 	
-}());
+})();
 
 // --------------------------------------------------------------------------
 
@@ -1472,500 +1971,3 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	$_.ext('util', u);
 }());
 
-
-// --------------------------------------------------------------------------
-
-/**
- * Event
- *
- * Event api wrapper
- */
-(function (){
-
-	"use strict";
-
-	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_5_0";
-
-	var _attach, _remove, _add_remove, e, _attach_delegate;
-
-	// Define the proper _attach and _remove functions
-	// based on browser support
-	if(typeof document.addEventListener !== "undefined")
-	{
-		/**
-		 * @private
-		 */
-		_attach = function (sel, event, callback)
-		{
-			if(typeof sel.addEventListener !== "undefined")
-			{
-				// Duplicated events are dropped, per the specification
-				sel.addEventListener(event, callback, false);
-			}
-		};
-		/**
-		 * @private
-		 */
-		_remove = function (sel, event, callback)
-		{
-			if(typeof sel.removeEventListener !== "undefined")
-			{
-				sel.removeEventListener(event, callback, false);
-			}
-		};
-	}
-	// typeof function doesn't work in IE where attachEvent is available: brute force it
-	else if(typeof document.attachEvent !== "undefined") 
-	{
-		/**
-		 * @private
-		 */
-		_attach = function (sel, event, callback)
-		{
-			function _listener () {
-				// Internet Explorer fails to correctly set the 'this' object
-				// for event listeners, so we need to set it ourselves.
-				callback.apply(arguments[0]);
-			}
-			
-			if (typeof sel.attachEvent !== "undefined")
-			{
-				_remove(event, callback); // Make sure we don't have duplicate listeners
-				
-				sel.attachEvent("on" + event, _listener);
-				// Store our _listener so we can remove it later
-				var expando = sel[kis_expando] = sel[kis_expando] || {};
-				expando.listeners = expando.listeners || {};
-				expando.listeners[event] = expando.listeners[event] || [];
-				expando.listeners[event].push({
-					callback: callback,
-					_listener: _listener
-				});
-			}
-			else
-			{
-				console.log("Failed to _attach event:"+event+" on "+sel);
-			}
-		};
-		/**
-		 * @private
-		 */
-		_remove = function (sel, event, callback)
-		{
-			if(typeof sel.detachEvent !== "undefined")
-			{
-				var expando = sel[kis_expando];
-				if (expando && expando.listeners
-						&& expando.listeners[event])
-				{
-					var listeners = expando.listeners[event];
-					var len = listeners.length;
-					for (var i=0; i<len; i++)
-					{
-						if (listeners[i].callback === callback)
-						{
-							sel.detachEvent("on" + event, listeners[i]._listener);
-							listeners.splice(i, 1);
-							if(listeners.length === 0)
-							{
-								delete expando.listeners[event];
-							}
-							return;
-						}
-					}
-				}
-			}
-		};
-	}
-	
-	_add_remove = function (sel, event, callback, add)
-	{
-		var i, len;
-		
-		if(typeof sel === "undefined")
-		{
-			console.log(arguments);
-			console.log(event);
-			return false;
-		}
-
-		// Multiple events? Run recursively!
-		if (!event.match(/^([\w\-]+)$/))
-		{
-			event = event.split(" ");
-			
-			len = event.length;
-
-			for (i = 0; i < len; i++)
-			{
-				_add_remove(sel, event[i], callback, add);
-			}
-
-			return;
-		}
-
-		
-		if(add === true)
-		{
-			_attach(sel, event, callback);
-		}
-		else
-		{
-			_remove(sel, event, callback);
-		}
-	};
-
-	_attach_delegate = function(sel, target, event, callback)
-	{
-		// attach the listener to the parent object
-		_add_remove(sel, event, function(e){
-		
-			var elem, t, tar;
-			
-			// IE 8 doesn't have event bound to element
-			e = e || window.event;
-			
-			// Get the live version of the target selector
-			t = $_.$(target);
-			
-			// Check each element to see if it matches the target
-			for(elem in t)
-			{
-				// IE 8 doesn't have target in the event object
-				tar = e.target || e.srcElement;
-			
-				// Fire target callback when event bubbles from target
-				if(tar == t[elem])
-				{
-					// Trigger the event callback
-					callback.call(t[elem], e);
-					
-					// Stop event propegation
-					e.stopPropagation();
-				}
-			}
-			
-		}, true);
-	};
-	
-	
-	
-	// --------------------------------------------------------------------------
-
-	/**
-	 * Event Listener module
-	 *
-	 * @namespace
-	 * @name event
-	 * @memberOf $_
-	 */
-	e = {
-		/**
-		 * Adds an event that returns a callback when triggered on the selected
-		 * event and selector
-		 * 
-		 * @memberOf $_.event
-		 * @name add
-		 * @function
-		 * @example Eg. $_("#selector").event.add("click", do_something());
-		 * @param string event
-		 * @param function callback
-		 */
-		add: function (event, callback)
-		{
-			$_.each(function(e){
-				_add_remove(e, event, callback, true);
-			});
-		},
-		/**
-		 * Removes an event bound the the specified selector, event type, and callback
-		 *
-		 * @memberOf $_.event
-		 * @name remove
-		 * @function
-		 * @example Eg. $_("#selector").event.remove("click", do_something());
-		 * @param string event
-		 * @param string callback
-		 */
-		remove: function (event, callback)
-		{
-			$_.each(function(e){
-				_add_remove(e, event, callback, false);
-			});
-		},
-		/** 
-		 * Binds a persistent event to the document
-		 *
-		 * @memberOf $_.event
-		 * @name live
-		 * @function
-		 * @example Eg. $_.event.live(".button", "click", do_something());
-		 * @param string target
-		 * @param string event
-		 * @param function callback
-		 */
-		live: function (target, event, callback)
-		{
-			_attach_delegate(document.documentElement, target, event, callback);
-		},
-		/** 
-		 * Binds an event to a parent object
-		 *
-		 * @memberOf $_.event
-		 * @name delegate
-		 * @function
-		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
-		 * @param string target
-		 * @param string event_type
-		 * @param function callback
-		 */
-		delegate: function (target, event, callback)
-		{
-			$_.each(function(e){
-				_attach_delegate(e, target, event, callback);
-			});
-		}
-	};
-
-	$_.ext('event', e);
-
-}());
-
-// --------------------------------------------------------------------------
-
-/** 
- * Template module for simple javascript templating
- */
-(function(){
-	"use strict";
-	
-	//This module relies on some others for simplicity
-	//so, if they aren't there, don't initialize the module
-	if($_.ajax === "undefined")
-	{
-		return;
-	}
-	
-	var t, _t, _p;
-	
-	
-	//Private object to store retrieved templates
-	_t = {};
-	
-	//Private object to store parsed templates
-	_p = {};
-	
-	
-	/**
-	 * Module for html templating. Requires ajax module.
-	 * 
-	 * @name template
-	 * @namespace
-	 * @memberOf $_
-	 */
-	t = {
-		/**
-		 * Retrieves a template
-		 * 
-		 * @memberOf $_.template
-		 * @name get
-		 * @param string name
-		 * @return string
-		 * @function
-		 * @type string
-		 */
-		get: function(name)
-		{
-			var res;
-
-			res = this.el.innerHTML;
-			
-			if(res === "")
-			{
-				console.log("Template is empty or cannot be found");
-				return;
-			}
-			
-			_t[name] = res;
-			return res;
-		},
-		/**
-		 * Formats a template
-		 * 
-		 * @memberOf $_.template
-		 * @name parse
-		 * @param string template_name
-		 * @param object replace_data
-		 * @return string
-		 * @function
-		 * @type string
-		 */
-		parse: function(name, data)
-		{
-			var tmp = _t[name],
-				pairs = [],
-				pair_reg = /\{([A-Z0-9_\-]+)\}(.*)\{\/\1\}/gim,
-				var_reg = /\{([A-Z0-9_\-]+)\}/gim,
-				pseudos = [], 
-				num_pairs = 0,
-				num_pseudos = 0,
-				i = 0,
-				j = 0,
-				var_name = '',
-				rep_data = {},
-				tmp_data = '',
-				data_len,
-				frag,
-				frag_section,
-				emptys,
-				x;
-				
-			tmp = String(tmp);
-		
-			//Remove newlines and tabs from template because
-			//those whitespace characters are extra bandwidth
-			tmp = tmp.replace(/\s+/gim, " ");
-			tmp = tmp.replace(/>\s+</gim, "><");
-			tmp = tmp.replace(/>\s+\{/gim, ">{");
-			tmp = tmp.replace(/\}\s+</gim, "}<");
-			
-			//Match all the looped sections of content
-			pairs = tmp.match(pair_reg);
-			
-			if(pairs != null)
-			{
-				num_pairs = pairs.length;
-				
-				//Go through the template, and match the pairs
-				for(i=0;i<num_pairs;i++)
-				{
-					//Put the loop in a placeholder
-					tmp = tmp.replace(pairs[i], "{"+i+"}");
-					
-					//Create a place to store looped data
-					tmp_data = "";
-					
-					//The replace variable is the name of the tag
-					var_name = String(pairs[i]).match(/^\{([A-Z0-9_\-]+)\}/i);
-					rep_data = data[var_name[1]];
-					
-					//Make sure there are loops
-					if(rep_data.length > 0)
-					{
-						data_len = rep_data.length;
-						
-						//Get rid of the loop tags
-						pairs[i] = pairs[i].replace(pair_reg, "$2");
-						
-						//Replace psudovariables with data
-						for(j=0;j<data_len;j++)
-						{
-							//Is there a better way to do this, rather than an inline function?
-							tmp_data += pairs[i].replace(var_reg, function(_, varName){
-								return (rep_data[j][varName]) ? rep_data[j][varName] : ""; 
-							});
-						}
-					}
-					
-					//Replace the looped content
-					tmp = tmp.replace("{"+i+"}", tmp_data);
-				}
-			}
-			
-			//Replace all the rest of the psudeovariables
-			pseudos = tmp.match(var_reg);
-			
-			if(pseudos != null)
-			{
-				num_pseudos = pseudos.length;
-			
-				for(i=0;i<num_pseudos;i++)
-				{
-					//Remove the {} from the pseudos
-					var_name = pseudos[i].replace('{', '');
-					var_name = var_name.replace('}', '');
-					
-					//Replace each pseudovariable with the value of the object
-					//property of the same name
-					tmp = tmp.replace(pseudos[i], data[var_name]);
-				}
-			}
-			
-			//Create an empty fragement
-			frag = document.createDocumentFragment();
-			
-			//Insert the html
-			frag.appendChild(document.createElement('section'));
-			frag_section = frag.querySelectorAll('section')[0];
-			frag_section.innerHTML = tmp;
-			
-			//Remove bad elements in the fragment, should be faster than being done live
-			emptys = frag_section.querySelectorAll('[src=""], [href=""]');
-			
-			for(x in emptys)
-			{
-				if(emptys[x].parentNode)
-				{
-					emptys[x].parentNode.removeChild(emptys[x]);
-				}
-			}
-			
-			//Save the parsed template in an object for later retrieval
-			_p[name] = tmp;
-			
-			return tmp;
-		},
-		/** 
-		 * Inserts the formatted template into the page. If the url and data parameters
-		 * are passed, it will retrieve a template file from the same domain, parse, 
-		 * and insert the template into the page. 
-		 *
-		 * @memberOf $_.template
-		 * @name apply
-		 * @function
-		 * @param string parsed_template/template_name
-		 * @param [string] url
-		 * @param [object] data
-		 */
-		apply: function(name, url, data)
-		{
-			//If the parsed template is supplied, just apply it to the passed selector
-			if(typeof url === "undefined" && typeof data === "undefined")
-			{
-				//If the "name" variable is in the _p object, set that
-				if(typeof _p[name] !== "undefined")
-				{
-					this.el.innerHTML = _p[name];
-					return;
-				}
-			
-				//Otherwise, set the passed string to the current selector
-				this.el.innerHTML = name;
-				return;
-			}
-			
-			//Otherwise, get the template, parse it, and apply it
-			$_.get(url, {}, function(res){
-				var parsed;
-			
-				if(res === "")
-				{
-					console.log("Template is empty or can not be found");
-					return;
-				}
-				
-				//Cache the template in an object for later use
-				_t[name] = res;
-				parsed = this.parse(name, data);
-				_p[name] = parsed;
-				
-				this.el.innerHTML = parsed;
-			});
-		}
-	};
-	
-	//Add the module to the library
-	$_.ext('template', t);
-	
-})();
