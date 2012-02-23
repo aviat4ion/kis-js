@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.5.0-pre
+	Version		0.5.0
  */
 (function (){
 
@@ -253,12 +253,12 @@
 	{
 		Event.prototype.preventDefault = function() 
 		{
-			window.event.stop();
+			window.event.returnValue = false;
 		},
 		Event.prototype.stopPropagation = function()
 		{
-			window.event.returnValue = false;
-		}
+			window.event.cancelBubble = true;
+		}	
 	}
 	
 }());
@@ -512,6 +512,10 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		return (typeof value !== "undefined") ? value : oldVal;
 	}
 	
+	/**
+	 * Change css property name to it's
+	 * javascript camel case equivalent
+	 */
 	function _toCamel(s)
 	{
 		return s.replace(/(\-[a-z])/g, function($1){
@@ -691,10 +695,10 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			
 			set = (typeof value !== "undefined") ? true : false;
 			
-			type = (typeof sel.innerText !== "undefined")
-				? "innerText"
-				: (typeof sel.textContent !== "undefined")
-					? "textContent"
+			type = (typeof sel.textContent !== "undefined")
+				? "textContent"
+				: (typeof sel.innerText !== "undefined")
+					? "innerText"
 					: "innerHTML";
 
 			oldValue = sel[type];
@@ -976,7 +980,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				_remove(event, callback); // Make sure we don't have duplicate listeners
 				
 				sel.attachEvent("on" + event, _listener);
-				// Store our _listener so we can remove it later
+				// Store our listener so we can remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
 				expando.listeners = expando.listeners || {};
 				expando.listeners[event] = expando.listeners[event] || [];
@@ -1033,7 +1037,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		}
 
 		// Multiple events? Run recursively!
-		if (!event.match(/^([\w\-]+)$/))
+		if ( ! event.match(/^([\w\-]+)$/))
 		{
 			event = event.split(" ");
 			
@@ -1069,7 +1073,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			e = e || window.event;
 			
 			// Get the live version of the target selector
-			t = $_.$(target);
+			t = $_.$(target, sel);
 			
 			// Check each element to see if it matches the target
 			for(elem in t)
@@ -1184,6 +1188,12 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	
 	var db = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB,
 		indexedDB = {};
+		
+	//Well, some browsers don't support it yet
+	if(typeof db === "undefined")
+	{
+		return;
+	}
 
 	/**
 	 * Module for simplifying Indexed DB access

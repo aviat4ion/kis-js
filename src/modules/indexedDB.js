@@ -6,6 +6,12 @@
 	
 	var db = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB,
 		indexedDB = {};
+		
+	//Well, some browsers don't support it yet
+	if(typeof db === "undefined")
+	{
+		return;
+	}
 
 	/**
 	 * Module for simplifying Indexed DB access

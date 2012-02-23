@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.5.0-pre
+	Version		0.5.0
  */
 (function (){
 

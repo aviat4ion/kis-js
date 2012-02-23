@@ -48,7 +48,7 @@
 		var text = (typeof ele.innerText !== "undefined") ? ele.innerText : ele.textContent;
 		
 		equal($test.el, $("article#r14"), "Selector property is correct");
-		equal($test.dom.text(), text, "Getting text");
+		equal($test.dom.text().trim(), text.trim(), "Getting text");
 		equal($test.dom.text(""), "", "Setting text");
 	});
 	
@@ -100,7 +100,7 @@
 		
 		$_("#r14 ul").dom.append('<li>This is a test item</li>');
 		
-		equal($('#r14').innerHTML, html, "Append adds a child to the end of the selected element");
+		equal($('#r14').innerHTML.toLowerCase(), html.toLowerCase(), "Append adds a child to the end of the selected element");
 	});
 	
 	test("prepend", function(){
@@ -111,7 +111,7 @@
 		
 		$_("#r14 ul").dom.prepend('<li>Test2</li>');
 		
-		equal($('#r14').innerHTML, html, "Prepend adds a child to the beginning of the selected element");
+		equal($('#r14').innerHTML.toLowerCase(), html.toLowerCase(), "Prepend adds a child to the beginning of the selected element");
 		
 		//Clean up the html
 		$_("#r14").dom.html("");

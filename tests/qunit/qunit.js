@@ -3,7 +3,7 @@
  *
  * http://docs.jquery.com/QUnit
  *
- * Copyright (c) 2011 John Resig, Jörn Zaefferer
+ * Copyright (c) 2012 John Resig, Jörn Zaefferer
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * or GPL (GPL-LICENSE.txt) licenses.
  */
@@ -13,8 +13,11 @@
 var defined = {
 	setTimeout: typeof window.setTimeout !== "undefined",
 	sessionStorage: (function() {
+		var x = "qunit-test-string";
 		try {
-			return !!sessionStorage.getItem;
+			sessionStorage.setItem(x, x);
+			sessionStorage.removeItem(x);
+			return true;
 		} catch(e) {
 			return false;
 		}
@@ -59,6 +62,10 @@ Test.prototype = {
 			}
 			config.previousModule = this.module;
 			config.moduleStats = { all: 0, bad: 0 };
+			runLoggingCallbacks( 'moduleStart', QUnit, {
+				name: this.module
+			} );
+		} else if (config.autorun) {
 			runLoggingCallbacks( 'moduleStart', QUnit, {
 				name: this.module
 			} );
@@ -447,9 +454,14 @@ var QUnit = {
 	QUnit.constructor = F;
 })();
 
-// Backwards compatibility, deprecated
-QUnit.equals = QUnit.equal;
-QUnit.same = QUnit.deepEqual;
+// deprecated; still export them to window to provide clear error messages
+// next step: remove entirely
+QUnit.equals = function() {
+	throw new Error("QUnit.equals has been deprecated since 2009 (e88049a0), use QUnit.equal instead");
+};
+QUnit.same = function() {
+	throw new Error("QUnit.same has been deprecated since 2009 (e88049a0), use QUnit.deepEqual instead");
+};
 
 // Maintain internal state
 var config = {
@@ -564,15 +576,15 @@ extend(QUnit, {
 	/**
 	 * Resets the test setup. Useful for tests that modify the DOM.
 	 *
-	 * If jQuery is available, uses jQuery's html(), otherwise just innerHTML.
+	 * If jQuery is available, uses jQuery's replaceWith(), otherwise use replaceChild
 	 */
 	reset: function() {
 		if ( window.jQuery ) {
-			jQuery( "#qunit-fixture" ).html( config.fixture );
+			jQuery( "#qunit-fixture" ).replaceWith( config.fixture.cloneNode(true) );
 		} else {
 			var main = id( 'qunit-fixture' );
 			if ( main ) {
-				main.innerHTML = config.fixture;
+				main.parentNode.replaceChild(config.fixture.cloneNode(true), main);
 			}
 		}
 	},
@@ -645,21 +657,22 @@ extend(QUnit, {
 
 		message = escapeInnerText(message) || (result ? "okay" : "failed");
 		message = '<span class="test-message">' + message + "</span>";
-		expected = escapeInnerText(QUnit.jsDump.parse(expected));
-		actual = escapeInnerText(QUnit.jsDump.parse(actual));
-		var output = message + '<table><tr class="test-expected"><th>Expected: </th><td><pre>' + expected + '</pre></td></tr>';
-		if (actual != expected) {
-			output += '<tr class="test-actual"><th>Result: </th><td><pre>' + actual + '</pre></td></tr>';
-			output += '<tr class="test-diff"><th>Diff: </th><td><pre>' + QUnit.diff(expected, actual) +'</pre></td></tr>';
-		}
+		var output = message;
 		if (!result) {
+			expected = escapeInnerText(QUnit.jsDump.parse(expected));
+			actual = escapeInnerText(QUnit.jsDump.parse(actual));
+			output += '<table><tr class="test-expected"><th>Expected: </th><td><pre>' + expected + '</pre></td></tr>';
+			if (actual != expected) {
+				output += '<tr class="test-actual"><th>Result: </th><td><pre>' + actual + '</pre></td></tr>';
+				output += '<tr class="test-diff"><th>Diff: </th><td><pre>' + QUnit.diff(expected, actual) +'</pre></td></tr>';
+			}
 			var source = sourceFromStacktrace();
 			if (source) {
 				details.source = source;
 				output += '<tr class="test-source"><th>Source: </th><td><pre>' + escapeInnerText(source) + '</pre></td></tr>';
 			}
+			output += "</table>";
 		}
-		output += "</table>";
 
 		runLoggingCallbacks( 'log', QUnit, details );
 
@@ -779,7 +792,7 @@ QUnit.load = function() {
 
 	var main = id('qunit-fixture');
 	if ( main ) {
-		config.fixture = main.innerHTML;
+		config.fixture = main.cloneNode(true);
 	}
 
 	if (config.autostart) {
@@ -890,7 +903,11 @@ function sourceFromStacktrace() {
 			return e.stacktrace.split("\n")[6];
 		} else if (e.stack) {
 			// Firefox, Chrome
-			return e.stack.split("\n")[4];
+			var stack = e.stack.split("\n");
+			if (/^error$/i.test(stack[0])) {
+				stack.shift();
+			}
+			return stack[3];
 		} else if (e.sourceURL) {
 			// Safari, PhantomJS
 			// TODO sourceURL points at the 'throw new Error' line above, useless
@@ -1369,9 +1386,9 @@ QUnit.jsDump = (function() {
 				var ret = [ ];
 				QUnit.jsDump.up();
 				for ( var key in map ) {
-				    var val = map[key];
+					var val = map[key];
 					ret.push( QUnit.jsDump.parse(key,'key') + ': ' + QUnit.jsDump.parse(val, undefined, stack));
-                }
+				}
 				QUnit.jsDump.down();
 				return join( '{', ret, '}' );
 			},

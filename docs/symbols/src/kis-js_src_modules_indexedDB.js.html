@@ -13,60 +13,66 @@
 <span class='line'>  6</span> </span><span class="WHIT">	
 <span class='line'>  7</span> 	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">db</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">window.indexedDB</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">window.webkitIndexedDB</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">window.mozIndexedDB</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">window.msIndexedDB</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'>  8</span> </span><span class="WHIT">		</span><span class="NAME">indexedDB</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>  9</span> 
-<span class='line'> 10</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'> 11</span> 	 * Module for simplifying Indexed DB access
-<span class='line'> 12</span> 	 *
-<span class='line'> 13</span> 	 * @namespace
-<span class='line'> 14</span> 	 * @name indexedDB
-<span class='line'> 15</span> 	 * @memberOf $_
-<span class='line'> 16</span> 	 */</span><span class="WHIT">
-<span class='line'> 17</span> </span><span class="WHIT">	</span><span class="NAME">indexedDB</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 18</span> </span><span class="WHIT">		</span><span class="NAME">current_db</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 19</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'> 20</span> 		 * Connects to an indexedDB database
-<span class='line'> 21</span> 		 *
-<span class='line'> 22</span> 		 * @memberOf $_.indexedDB
-<span class='line'> 23</span> 		 * @name connect
-<span class='line'> 24</span> 		 * @function
-<span class='line'> 25</span> 		 * @param string dbname
-<span class='line'> 26</span> 		 * @param [int] version
-<span class='line'> 27</span> 		 * @param [function] onupgradeneeded
-<span class='line'> 28</span> 		 */</span><span class="WHIT">
-<span class='line'> 29</span> </span><span class="WHIT">		</span><span class="NAME">connect</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">dbname</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">version</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onupgradeneeded</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'> 30</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 31</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">request</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 32</span> </span><span class="WHIT">		
-<span class='line'> 33</span> 			</span><span class="NAME">version</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">version</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 34</span> </span><span class="WHIT">			
-<span class='line'> 35</span> 			</span><span class="COMM">// Ask for permission to use db</span><span class="WHIT">
-<span class='line'> 36</span> </span><span class="WHIT">			</span><span class="NAME">request</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">db.open</span><span class="PUNC">(</span><span class="NAME">dbname</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">version</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 37</span> </span><span class="WHIT">			
-<span class='line'> 38</span> 			</span><span class="COMM">// Assign onupgradeneeded callback</span><span class="WHIT">
-<span class='line'> 39</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">onupgradeneeded</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'> 40</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 41</span> </span><span class="WHIT">				</span><span class="NAME">request.onupgradeneeded</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onupgradeneeded</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 42</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>  9</span> </span><span class="WHIT">		
+<span class='line'> 10</span> 	</span><span class="COMM">//Well, some browsers don't support it yet</span><span class="WHIT">
+<span class='line'> 11</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">db</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 12</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 13</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 14</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 15</span> 
+<span class='line'> 16</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 17</span> 	 * Module for simplifying Indexed DB access
+<span class='line'> 18</span> 	 *
+<span class='line'> 19</span> 	 * @namespace
+<span class='line'> 20</span> 	 * @name indexedDB
+<span class='line'> 21</span> 	 * @memberOf $_
+<span class='line'> 22</span> 	 */</span><span class="WHIT">
+<span class='line'> 23</span> </span><span class="WHIT">	</span><span class="NAME">indexedDB</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 24</span> </span><span class="WHIT">		</span><span class="NAME">current_db</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 25</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'> 26</span> 		 * Connects to an indexedDB database
+<span class='line'> 27</span> 		 *
+<span class='line'> 28</span> 		 * @memberOf $_.indexedDB
+<span class='line'> 29</span> 		 * @name connect
+<span class='line'> 30</span> 		 * @function
+<span class='line'> 31</span> 		 * @param string dbname
+<span class='line'> 32</span> 		 * @param [int] version
+<span class='line'> 33</span> 		 * @param [function] onupgradeneeded
+<span class='line'> 34</span> 		 */</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">		</span><span class="NAME">connect</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">dbname</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">version</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onupgradeneeded</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 36</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">request</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="WHIT">		
+<span class='line'> 39</span> 			</span><span class="NAME">version</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">version</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 40</span> </span><span class="WHIT">			
+<span class='line'> 41</span> 			</span><span class="COMM">// Ask for permission to use db</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">			</span><span class="NAME">request</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">db.open</span><span class="PUNC">(</span><span class="NAME">dbname</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">version</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 43</span> </span><span class="WHIT">			
-<span class='line'> 44</span> 			</span><span class="COMM">/**
-<span class='line'> 45</span> 			 * @private
-<span class='line'> 46</span> 			 */</span><span class="WHIT">	
-<span class='line'> 47</span> 			</span><span class="NAME">request.onerror</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'> 48</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 49</span> </span><span class="WHIT">				</span><span class="NAME">console.log</span><span class="PUNC">(</span><span class="STRN">"IndexedDB disallowed."</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 50</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 51</span> </span><span class="WHIT">			
-<span class='line'> 52</span> 			</span><span class="COMM">/**
-<span class='line'> 53</span> 			 * @private
-<span class='line'> 54</span> 			 */</span><span class="WHIT">
-<span class='line'> 55</span> </span><span class="WHIT">			</span><span class="NAME">request.onsuccess</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'> 56</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 57</span> </span><span class="WHIT">				</span><span class="COMM">// Connect to the specified db</span><span class="WHIT">
-<span class='line'> 58</span> </span><span class="WHIT">				</span><span class="NAME">indexedDB.current_db</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">request.result</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 59</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 60</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 61</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 62</span> </span><span class="WHIT">	
-<span class='line'> 63</span> 	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'indexedDB'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">indexedDB</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 64</span> </span><span class="WHIT">	
-<span class='line'> 65</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>
+<span class='line'> 44</span> 			</span><span class="COMM">// Assign onupgradeneeded callback</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">onupgradeneeded</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">				</span><span class="NAME">request.onupgradeneeded</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onupgradeneeded</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">			
+<span class='line'> 50</span> 			</span><span class="COMM">/**
+<span class='line'> 51</span> 			 * @private
+<span class='line'> 52</span> 			 */</span><span class="WHIT">	
+<span class='line'> 53</span> 			</span><span class="NAME">request.onerror</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="WHIT">				</span><span class="NAME">console.log</span><span class="PUNC">(</span><span class="STRN">"IndexedDB disallowed."</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 56</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">			
+<span class='line'> 58</span> 			</span><span class="COMM">/**
+<span class='line'> 59</span> 			 * @private
+<span class='line'> 60</span> 			 */</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">			</span><span class="NAME">request.onsuccess</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">				</span><span class="COMM">// Connect to the specified db</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">				</span><span class="NAME">indexedDB.current_db</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">request.result</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">	
+<span class='line'> 69</span> 	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'indexedDB'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">indexedDB</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">	
+<span class='line'> 71</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

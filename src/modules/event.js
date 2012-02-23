@@ -57,7 +57,7 @@
 				_remove(event, callback); // Make sure we don't have duplicate listeners
 				
 				sel.attachEvent("on" + event, _listener);
-				// Store our _listener so we can remove it later
+				// Store our listener so we can remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
 				expando.listeners = expando.listeners || {};
 				expando.listeners[event] = expando.listeners[event] || [];
@@ -114,7 +114,7 @@
 		}
 
 		// Multiple events? Run recursively!
-		if (!event.match(/^([\w\-]+)$/))
+		if ( ! event.match(/^([\w\-]+)$/))
 		{
 			event = event.split(" ");
 			
@@ -150,7 +150,7 @@
 			e = e || window.event;
 			
 			// Get the live version of the target selector
-			t = $_.$(target);
+			t = $_.$(target, sel);
 			
 			// Check each element to see if it matches the target
 			for(elem in t)

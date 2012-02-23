@@ -245,6 +245,10 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		return (typeof value !== "undefined") ? value : oldVal;
 	}
 	
+	/**
+	 * Change css property name to it's
+	 * javascript camel case equivalent
+	 */
 	function _toCamel(s)
 	{
 		return s.replace(/(\-[a-z])/g, function($1){
@@ -424,10 +428,10 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			
 			set = (typeof value !== "undefined") ? true : false;
 			
-			type = (typeof sel.innerText !== "undefined")
-				? "innerText"
-				: (typeof sel.textContent !== "undefined")
-					? "textContent"
+			type = (typeof sel.textContent !== "undefined")
+				? "textContent"
+				: (typeof sel.innerText !== "undefined")
+					? "innerText"
 					: "innerHTML";
 
 			oldValue = sel[type];

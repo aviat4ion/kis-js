@@ -40,12 +40,12 @@
 	{
 		Event.prototype.preventDefault = function() 
 		{
-			window.event.stop();
+			window.event.returnValue = false;
 		},
 		Event.prototype.stopPropagation = function()
 		{
-			window.event.returnValue = false;
-		}
+			window.event.cancelBubble = true;
+		}	
 	}
 	
 }());
