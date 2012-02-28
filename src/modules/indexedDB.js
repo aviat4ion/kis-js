@@ -36,7 +36,7 @@
 		{
 			var request = {};
 		
-			version = version || 0;
+			version = version || 1;
 			
 			// Ask for permission to use db
 			request = db.open(dbname, version);
@@ -63,7 +63,51 @@
 				// Connect to the specified db
 				indexedDB.current_db = request.result;
 			};
+		},
+		/**
+		 * Helper function to create a new object store
+		 *
+		 * @memberOf $_.indexedDB
+		 * @name create_store
+		 * @function
+		 * @param string name
+		 * @param [string] key
+		 * @param [bool] generator
+		 * @return IDBDataStore object
+		 */
+		create_store: function(name, key, generator)
+		{
+			var params = {};
+				
+			if(typeof key !== "undefined")
+			{
+				params.keyPath = key;
+			}
+			
+			if(typeof generator !== "undefined")
+			{
+				// Cast to a boolean value
+				params.autoIncrement = !! generator;
+			}
+			
+			return db.createObjectStore(name, params);
+		},
+		/**
+		 * Delete an object store
+		 *
+		 * @memberOf $_.indexedDB
+		 * @name delete_store
+		 * @function
+		 * @param string name
+		 */
+		delete_store: function(name)
+		{
+			var request = db.deleteObjectStore();
+			
+			// Pass the error up
+			request.onerror = db.onerror;
 		}
+		 
 	};
 	
 	$_.ext('indexedDB', indexedDB);
