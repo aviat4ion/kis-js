@@ -2,13 +2,14 @@
  * Event
  *
  * Event api wrapper
+ * @todo Add method for triggering events
  */
 (function (){
 
 	"use strict";
 
 	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_5_0";
+	var kis_expando = "KIS_0_6_0";
 
 	var _attach, _remove, _add_remove, e, _attach_delegate;
 
@@ -39,7 +40,7 @@
 		};
 	}
 	// typeof function doesn't work in IE where attachEvent is available: brute force it
-	else if(typeof document.attachEvent !== "undefined") 
+	else if(typeof document.attachEvent !== "undefined")
 	{
 		/**
 		 * @private
@@ -51,11 +52,11 @@
 				// for event listeners, so we need to set it ourselves.
 				callback.apply(arguments[0]);
 			}
-			
+
 			if (typeof sel.attachEvent !== "undefined")
 			{
 				_remove(event, callback); // Make sure we don't have duplicate listeners
-				
+
 				sel.attachEvent("on" + event, _listener);
 				// Store our listener so we can remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
@@ -101,11 +102,11 @@
 			}
 		};
 	}
-	
+
 	_add_remove = function (sel, event, callback, add)
 	{
 		var i, len;
-		
+
 		if(typeof sel === "undefined")
 		{
 			console.log(arguments);
@@ -117,7 +118,7 @@
 		if ( ! event.match(/^([\w\-]+)$/))
 		{
 			event = event.split(" ");
-			
+
 			len = event.length;
 
 			for (i = 0; i < len; i++)
@@ -128,7 +129,7 @@
 			return;
 		}
 
-		
+
 		if(add === true)
 		{
 			_attach(sel, event, callback);
@@ -143,37 +144,35 @@
 	{
 		// attach the listener to the parent object
 		_add_remove(sel, event, function(e){
-		
+
 			var elem, t, tar;
-			
+
 			// IE 8 doesn't have event bound to element
 			e = e || window.event;
-			
+
 			// Get the live version of the target selector
 			t = $_.$(target, sel);
-			
+
 			// Check each element to see if it matches the target
 			for(elem in t)
 			{
 				// IE 8 doesn't have target in the event object
 				tar = e.target || e.srcElement;
-			
+
 				// Fire target callback when event bubbles from target
 				if(tar == t[elem])
 				{
 					// Trigger the event callback
 					callback.call(t[elem], e);
-					
+
 					// Stop event propegation
 					e.stopPropagation();
 				}
 			}
-			
+
 		}, true);
 	};
-	
-	
-	
+
 	// --------------------------------------------------------------------------
 
 	/**
@@ -187,7 +186,7 @@
 		/**
 		 * Adds an event that returns a callback when triggered on the selected
 		 * event and selector
-		 * 
+		 *
 		 * @memberOf $_.event
 		 * @name add
 		 * @function
@@ -217,7 +216,7 @@
 				_add_remove(e, event, callback, false);
 			});
 		},
-		/** 
+		/**
 		 * Binds a persistent event to the document
 		 *
 		 * @memberOf $_.event
@@ -232,7 +231,7 @@
 		{
 			_attach_delegate(document.documentElement, target, event, callback);
 		},
-		/** 
+		/**
 		 * Binds an event to a parent object
 		 *
 		 * @memberOf $_.event

@@ -1,17 +1,18 @@
 /**
- * Store 
- * 
+ * Store
+ *
  * Wrapper for local / sessionstorage
  */
 (function (){
+
 	"use strict";
-	
+
 	//No support for localstorage? Bail out early
 	if(typeof localStorage === "undefined" || typeof JSON === "undefined")
 	{
-		return;
+		return null;
 	}
-	
+
 	//Shortcuts for wrapper
 	var l = localStorage,
 		s = sessionStorage;
@@ -25,11 +26,11 @@
 	 * @namespace
 	 * @memberOf $_
 	 */
-	var store = {		
+	var store = {
 		/**
-		 * Retrieves and deserializes a value from localstorage, 
+		 * Retrieves and deserializes a value from localstorage,
 		 * based on the specified key
-		 * 
+		 *
 		 * @param string key
 		 * @param bool session
 		 * @name get
@@ -41,7 +42,7 @@
 		get: function (key, sess)
 		{
 			var val = (sess) ? s.getItem(key) : l.getItem(key);
-		
+
 			return JSON.parse(val);
 		},
 		/**
@@ -58,13 +59,13 @@
 		set: function (key, value, sess)
 		{
 			// Localstorage generally only accepts strings
-			value = JSON.stringify(value);			
-			
+			value = JSON.stringify(value);
+
 			(sess) ? s.setItem(key, value) : l.setItem(key, value);
 		},
 		/**
 		 * Removes the specified item from storage
-		 * 
+		 *
 		 * @param string key
 		 * @param bool session
 		 * @name remove
@@ -77,7 +78,7 @@
 		},
 		/**
 		 * Returns an object of all the raw values in storage
-		 * 
+		 *
 		 * @param bool session
 		 * @name getAll
 		 * @memberOf $_.store
@@ -92,10 +93,10 @@
 				data = {},
 				k,
 				o;
-			
+
 			//Reference to session/localstorage
 			o = (sess) ? l : s;
-				
+
 			len = o.length;
 
 			for (i = 0; i < len; i++)

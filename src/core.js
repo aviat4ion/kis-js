@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.5.0
+	Version		0.6.0
  */
 (function (){
 
@@ -20,7 +20,7 @@
 	}
 
 	var $_, $, dcopy, sel;
-	
+
 
 	/**
 	 * $_
@@ -38,7 +38,7 @@
 		if(typeof s === "undefined")
 		{
 			//Defines a "global" selector for that instance
-			sel = (typeof $_.el !== "undefined") 
+			sel = (typeof $_.el !== "undefined")
 				? $_.el
 				: document.documentElement;
 		}
@@ -46,7 +46,7 @@
 		{
 			sel = (typeof s !== "object") ? $(s) : s;
 		}
-		
+
 		// Add the selector to the prototype
 		$_.prototype.el = sel;
 
@@ -54,19 +54,19 @@
 		var self = dcopy($_);
 
 		// Give sel to each extension.
-		for(var i in self) 
+		for(var i in self)
 		{
 			if(typeof self[i] === "object")
 			{
 				self[i].el = sel;
-			}	
+			}
 		}
 
 		self.el = sel;
-	
+
 		return self;
 	};
-	
+
 	/**
 	 * Simple DOM selector function
 	 *
@@ -79,14 +79,14 @@
 	$ = function (a, context)
 	{
 		var x, c;
-		
+
 		if (typeof a != "string" || typeof a === "undefined"){ return a;}
-		
+
 		//Check for a context of a specific element, otherwise, just run on the document
-		c  = (context != null && context.nodeType === 1) 
-			? context 
+		c  = (context != null && context.nodeType === 1)
+			? context
 			: document;
-		
+
 		//Pick the quickest method for each kind of selector
 		if (a.match(/^#([\w\-]+$)/))
 		{
@@ -96,11 +96,11 @@
 		{
 			x = c.querySelectorAll(a);
 		}
-		
+
 		//Return the single object if applicable
 		return (x.length === 1) ? x[0] : x;
 	};
-	
+
 	/**
 	 * Deep copy/prototypical constructor function
 	 *
@@ -112,38 +112,38 @@
 	dcopy = function(obj)
 	{
 		var type, F;
-		
+
 		if(typeof obj === "undefined")
 		{
 			return;
 		}
-		
+
 		if(typeof Object.create !== "undefined")
 		{
 			return Object.create(obj);
 		}
-		
+
 		type = typeof obj;
-		
+
 		if(type !== "object" && type !== "function")
 		{
 			return;
 		}
-		
+
 		/**
 		 * @private
 		 */
 		F = function(){};
-		
+
 		F.prototype = obj;
-		
+
 		return new F();
-		
+
 	};
-	
+
 	/**
 	 * Adds the property `obj` to the $_ object, calling it `name`
-	 * 
+	 *
 	 * @param string name
 	 * @param object obj
 	 */
@@ -152,7 +152,7 @@
 		obj.el = sel;
 		$_[name] = obj;
 	};
-	
+
 	/**
 	 * Iterates over a $_ object, applying a callback to each item
 	 *
@@ -183,7 +183,7 @@
 			callback.call(sel, sel);
 		}
 	});
-	
+
 	/**
 	 * Retrieves the type of the passed variable
 	 *
@@ -191,20 +191,20 @@
 	 * @return string
 	 * @type string
 	 */
-	$_.type = function(obj) 
-	{	
+	$_.type = function(obj)
+	{
 		if((function() {return obj && (obj !== this)}).call(obj))
 		{
 			//fallback on 'typeof' for truthy primitive values
 			return (typeof obj).toLowerCase();
 		}
-		
-		//Strip x from [object x] and return 
+
+		//Strip x from [object x] and return
 		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
 	};
 
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
 	$_.$ = $;
-	
+
 }());
