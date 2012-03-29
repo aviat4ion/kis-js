@@ -11,7 +11,7 @@
 if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
 {
 	(function (view){
-	
+
 		var classListProp = "classList",
 			protoProp = "prototype",
 			elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
@@ -167,7 +167,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 /**
  * DOM
- * 
+ *
  * Dom manipulation module
  */
 (function (){
@@ -175,7 +175,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	"use strict";
 
 	var d;
-	
+
 	//Private function for getting/setting attributes/properties
 	function _attr(sel, name, value)
 	{
@@ -209,7 +209,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			console.log(value);
 			console.log(sel);
 			console.log("Element does not have the selected attribute");
-			return;
+			return null;
 		}
 
 		//No value to set? Return the current value
@@ -228,7 +228,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			else
 			{
 				sel[name] = value;
-			} 
+			}
 		}
 		else if (value === null)
 		{
@@ -239,12 +239,12 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			else
 			{
 				delete sel[name];
-			} 
+			}
 		}
 
 		return (typeof value !== "undefined") ? value : oldVal;
 	}
-	
+
 	/**
 	 * Change css property name to it's
 	 * javascript camel case equivalent
@@ -259,7 +259,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	function _css(sel, prop, val)
 	{
 		var equi;
-		
+
 		//Camel-case
 		prop = _toCamel(prop);
 
@@ -269,8 +269,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			outerWidth: "offsetWidth",
 			top: "posTop"
 		};
-		
-		
+
+
 		//If you don't define a value, try returning the existing value
 		if(typeof val === "undefined" && sel.style[prop] !== "undefined")
 		{
@@ -287,23 +287,23 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			sel.style[prop] = val;
 
 			//Short circuit
-			return;
+			return null;
 		}
 		else if(sel.style[equi[prop]])
 		{
 			sel.style[equi[prop]] = val;
-			return;
+			return null;
 		}
-		
+
 		//No matches? Well, lets log it for now
 		console.log("Property " + prop + " nor an equivalent seems to exist");
 	}
-	
+
 	// --------------------------------------------------------------------------
 
 	/**
 	 * DOM
-	 * 
+	 *
 	 * Dom manipulation module
 	 * @namespace
 	 * @memberOf $_
@@ -313,7 +313,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		/**
 		 * Adds a class to the element(s) specified by the current
 		 * selector
-		 * 
+		 *
 		 * @name addClass
 		 * @memberOf $_.dom
 		 * @function
@@ -328,7 +328,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		/**
 		 * Removes a class from the element(s) specified by the current
 		 * selector
-		 * 
+		 *
 		 * @name removeClass
 		 * @memberOf $_.dom
 		 * @function
@@ -342,7 +342,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		/**
 		 * Hides the element(s) specified by the current selector
-		 * 
+		 *
 		 * @name hide
 		 * @memberOf $_.dom
 		 * @function
@@ -352,11 +352,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			this.css('display', 'none');
 		},
 		/**
-		 * Shows the element(s) specified by the current selector. 
+		 * Shows the element(s) specified by the current selector.
 		 * if type is specified, the element will have it's style
 		 * property set to "display:[your type]". If type is not
 		 * specified, the element is set to "display:block".
-		 * 
+		 *
 		 * @name  show
 		 * @memberOf $_.dom
 		 * @function
@@ -372,8 +372,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			this.css("display", type);
 		},
 		/**
-		 * Sets attributes on element(s) specified by the current 
-		 * selector, or, if name is not specified, returns the 
+		 * Sets attributes on element(s) specified by the current
+		 * selector, or, if name is not specified, returns the
 		 * value of the attribute of the element specified by the
 		 * current selector.
 		 *
@@ -409,7 +409,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		/**
 		 * Sets or retrieves the text content of the element
-		 * specified by the current selector. If a value is 
+		 * specified by the current selector. If a value is
 		 * passed, it will set that value on the current element,
 		 * otherwise it will return the value of the current element
 		 *
@@ -423,11 +423,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		text: function (value)
 		{
 			var oldValue, set, type, sel;
-		
+
 			sel = this.el;
-			
+
 			set = (typeof value !== "undefined") ? true : false;
-			
+
 			type = (typeof sel.textContent !== "undefined")
 				? "textContent"
 				: (typeof sel.innerText !== "undefined")
@@ -435,7 +435,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 					: "innerHTML";
 
 			oldValue = sel[type];
-			
+
 			if(set)
 			{
 				sel[type] = value;
@@ -448,7 +448,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		/**
 		 * Sets or retrieves a css property of the element
-		 * specified by the current selector. If a value is 
+		 * specified by the current selector. If a value is
 		 * passed, it will set that value on the current element,
 		 * otherwise it will return the value of the css property
 		 * on the current element
@@ -468,14 +468,14 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			{
 				return _css(this.el, prop);
 			}
-		
+
 			$_.each(function (e){
 				_css(e, prop, val);
 			});
 		},
 		/**
 		 * Adds to the innerHTML of the current element, after the last child.
-		 * 
+		 *
 		 * @example $_("ul").dom.append("&lt;li&gt;&lt;/li&gt;") adds an li element to the end of the selected ul element
 		 * @name append
 		 * @memberOf $_.dom
@@ -495,7 +495,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		/**
 		 * Adds to the innerHTML of the selected element, before the current children
-		 * 
+		 *
 		 * @name prepend
 		 * @memberOf $_.dom
 		 * @function
@@ -524,17 +524,17 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 */
 		html: function(htm)
 		{
-			
+
 			if(typeof htm !== "undefined")
 			{
 				this.el.innerHTML = htm;
 			}
-			
+
 			//If the parameter is undefined, just return the current value
 			return this.el.innerHTML;
 		}
 	};
 
 	$_.ext('dom', d);
-	
+
 }());

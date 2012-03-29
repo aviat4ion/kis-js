@@ -6,7 +6,7 @@
 (function (){
 
 	"use strict";
-	
+
 	// Don't bother even defining the object if the XMLHttpRequest isn't available
 	if(typeof window.XMLHttpRequest === "undefined")
 	{
@@ -16,9 +16,9 @@
 	var ajax = {
 		_do: function (url, data, callback, isPost)
 		{
-			var type, 
+			var type,
 				request = new XMLHttpRequest();
-		
+
 			if (typeof callback === "undefined")
 			{
 				/**
@@ -30,7 +30,7 @@
 			type = (isPost) ? "POST" : "GET";
 
 			url += (type === "GET") ? "?"+this._serialize(data) : '';
-			
+
 			request.open(type, url);
 
 			request.onreadystatechange = function ()
@@ -82,7 +82,7 @@
 
 	/**
 	 * Sends a GET type ajax request
-	 * 
+	 *
 	 * @name get
 	 * @function
 	 * @memberOf $_
@@ -93,10 +93,10 @@
 	$_.ext('get', function (url, data, callback){
 		ajax._do(url, data, callback, false);
 	});
-	
+
 	/**
 	 * Sends a POST type ajax request
-	 * 
+	 *
 	 * @name post
 	 * @function
 	 * @memberOf $_
@@ -107,4 +107,5 @@
 	$_.ext('post', function (url, data, callback){
 		ajax._do(url, data, callback, true);
 	});
+	
 }());
