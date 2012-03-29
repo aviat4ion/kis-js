@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.5.0
+	Version		0.6.0
  */
 (function (){
 
@@ -20,7 +20,7 @@
 	}
 
 	var $_, $, dcopy, sel;
-	
+
 
 	/**
 	 * $_
@@ -38,7 +38,7 @@
 		if(typeof s === "undefined")
 		{
 			//Defines a "global" selector for that instance
-			sel = (typeof $_.el !== "undefined") 
+			sel = (typeof $_.el !== "undefined")
 				? $_.el
 				: document.documentElement;
 		}
@@ -46,7 +46,7 @@
 		{
 			sel = (typeof s !== "object") ? $(s) : s;
 		}
-		
+
 		// Add the selector to the prototype
 		$_.prototype.el = sel;
 
@@ -54,19 +54,19 @@
 		var self = dcopy($_);
 
 		// Give sel to each extension.
-		for(var i in self) 
+		for(var i in self)
 		{
 			if(typeof self[i] === "object")
 			{
 				self[i].el = sel;
-			}	
+			}
 		}
 
 		self.el = sel;
-	
+
 		return self;
 	};
-	
+
 	/**
 	 * Simple DOM selector function
 	 *
@@ -79,14 +79,14 @@
 	$ = function (a, context)
 	{
 		var x, c;
-		
+
 		if (typeof a != "string" || typeof a === "undefined"){ return a;}
-		
+
 		//Check for a context of a specific element, otherwise, just run on the document
-		c  = (context != null && context.nodeType === 1) 
-			? context 
+		c  = (context != null && context.nodeType === 1)
+			? context
 			: document;
-		
+
 		//Pick the quickest method for each kind of selector
 		if (a.match(/^#([\w\-]+$)/))
 		{
@@ -96,11 +96,11 @@
 		{
 			x = c.querySelectorAll(a);
 		}
-		
+
 		//Return the single object if applicable
 		return (x.length === 1) ? x[0] : x;
 	};
-	
+
 	/**
 	 * Deep copy/prototypical constructor function
 	 *
@@ -112,38 +112,38 @@
 	dcopy = function(obj)
 	{
 		var type, F;
-		
+
 		if(typeof obj === "undefined")
 		{
 			return;
 		}
-		
+
 		if(typeof Object.create !== "undefined")
 		{
 			return Object.create(obj);
 		}
-		
+
 		type = typeof obj;
-		
+
 		if(type !== "object" && type !== "function")
 		{
 			return;
 		}
-		
+
 		/**
 		 * @private
 		 */
 		F = function(){};
-		
+
 		F.prototype = obj;
-		
+
 		return new F();
-		
+
 	};
-	
+
 	/**
 	 * Adds the property `obj` to the $_ object, calling it `name`
-	 * 
+	 *
 	 * @param string name
 	 * @param object obj
 	 */
@@ -152,7 +152,7 @@
 		obj.el = sel;
 		$_[name] = obj;
 	};
-	
+
 	/**
 	 * Iterates over a $_ object, applying a callback to each item
 	 *
@@ -183,7 +183,7 @@
 			callback.call(sel, sel);
 		}
 	});
-	
+
 	/**
 	 * Retrieves the type of the passed variable
 	 *
@@ -191,22 +191,22 @@
 	 * @return string
 	 * @type string
 	 */
-	$_.type = function(obj) 
-	{	
+	$_.type = function(obj)
+	{
 		if((function() {return obj && (obj !== this)}).call(obj))
 		{
 			//fallback on 'typeof' for truthy primitive values
 			return (typeof obj).toLowerCase();
 		}
-		
-		//Strip x from [object x] and return 
+
+		//Strip x from [object x] and return
 		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
 	};
 
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
 	$_.$ = $;
-	
+
 }());
 
 // --------------------------------------------------------------------------
@@ -214,11 +214,12 @@
 /**
  * A module of various browser polyfills
  * @file polyfill.js
+ * @todo create ES5 Foreach polyfill
  */
 (function(){
 
 	"use strict";
- 
+
 	// Console.log polyfill for IE 8 stupidity
 	if(typeof window.console === "undefined")
 	{
@@ -226,9 +227,9 @@
 			log:function(){}
 		};
 	}
-	
+
 	// --------------------------------------------------------------------------
-	
+
 	/**
 	 * String trim function polyfill
 	 */
@@ -244,23 +245,23 @@
 	}
 
 	// --------------------------------------------------------------------------
-	
+
 	/**
 	 * event.preventDefault/e.stopPropagation polyfill
 	 * @private
 	 */
 	if(typeof Event.preventDefault === "undefined" && typeof window.event !== "undefined")
 	{
-		Event.prototype.preventDefault = function() 
+		Event.prototype.preventDefault = function()
 		{
 			window.event.returnValue = false;
 		},
 		Event.prototype.stopPropagation = function()
 		{
 			window.event.cancelBubble = true;
-		}	
+		}
 	}
-	
+
 }());
 
 // --------------------------------------------------------------------------
@@ -278,7 +279,7 @@
 if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
 {
 	(function (view){
-	
+
 		var classListProp = "classList",
 			protoProp = "prototype",
 			elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
@@ -434,7 +435,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 /**
  * DOM
- * 
+ *
  * Dom manipulation module
  */
 (function (){
@@ -442,7 +443,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	"use strict";
 
 	var d;
-	
+
 	//Private function for getting/setting attributes/properties
 	function _attr(sel, name, value)
 	{
@@ -476,7 +477,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			console.log(value);
 			console.log(sel);
 			console.log("Element does not have the selected attribute");
-			return;
+			return null;
 		}
 
 		//No value to set? Return the current value
@@ -495,7 +496,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			else
 			{
 				sel[name] = value;
-			} 
+			}
 		}
 		else if (value === null)
 		{
@@ -506,12 +507,12 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			else
 			{
 				delete sel[name];
-			} 
+			}
 		}
 
 		return (typeof value !== "undefined") ? value : oldVal;
 	}
-	
+
 	/**
 	 * Change css property name to it's
 	 * javascript camel case equivalent
@@ -526,7 +527,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	function _css(sel, prop, val)
 	{
 		var equi;
-		
+
 		//Camel-case
 		prop = _toCamel(prop);
 
@@ -536,8 +537,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			outerWidth: "offsetWidth",
 			top: "posTop"
 		};
-		
-		
+
+
 		//If you don't define a value, try returning the existing value
 		if(typeof val === "undefined" && sel.style[prop] !== "undefined")
 		{
@@ -554,23 +555,23 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			sel.style[prop] = val;
 
 			//Short circuit
-			return;
+			return null;
 		}
 		else if(sel.style[equi[prop]])
 		{
 			sel.style[equi[prop]] = val;
-			return;
+			return null;
 		}
-		
+
 		//No matches? Well, lets log it for now
 		console.log("Property " + prop + " nor an equivalent seems to exist");
 	}
-	
+
 	// --------------------------------------------------------------------------
 
 	/**
 	 * DOM
-	 * 
+	 *
 	 * Dom manipulation module
 	 * @namespace
 	 * @memberOf $_
@@ -580,7 +581,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		/**
 		 * Adds a class to the element(s) specified by the current
 		 * selector
-		 * 
+		 *
 		 * @name addClass
 		 * @memberOf $_.dom
 		 * @function
@@ -595,7 +596,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		/**
 		 * Removes a class from the element(s) specified by the current
 		 * selector
-		 * 
+		 *
 		 * @name removeClass
 		 * @memberOf $_.dom
 		 * @function
@@ -609,7 +610,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		/**
 		 * Hides the element(s) specified by the current selector
-		 * 
+		 *
 		 * @name hide
 		 * @memberOf $_.dom
 		 * @function
@@ -619,11 +620,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			this.css('display', 'none');
 		},
 		/**
-		 * Shows the element(s) specified by the current selector. 
+		 * Shows the element(s) specified by the current selector.
 		 * if type is specified, the element will have it's style
 		 * property set to "display:[your type]". If type is not
 		 * specified, the element is set to "display:block".
-		 * 
+		 *
 		 * @name  show
 		 * @memberOf $_.dom
 		 * @function
@@ -639,8 +640,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			this.css("display", type);
 		},
 		/**
-		 * Sets attributes on element(s) specified by the current 
-		 * selector, or, if name is not specified, returns the 
+		 * Sets attributes on element(s) specified by the current
+		 * selector, or, if name is not specified, returns the
 		 * value of the attribute of the element specified by the
 		 * current selector.
 		 *
@@ -676,7 +677,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		/**
 		 * Sets or retrieves the text content of the element
-		 * specified by the current selector. If a value is 
+		 * specified by the current selector. If a value is
 		 * passed, it will set that value on the current element,
 		 * otherwise it will return the value of the current element
 		 *
@@ -690,11 +691,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		text: function (value)
 		{
 			var oldValue, set, type, sel;
-		
+
 			sel = this.el;
-			
+
 			set = (typeof value !== "undefined") ? true : false;
-			
+
 			type = (typeof sel.textContent !== "undefined")
 				? "textContent"
 				: (typeof sel.innerText !== "undefined")
@@ -702,7 +703,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 					: "innerHTML";
 
 			oldValue = sel[type];
-			
+
 			if(set)
 			{
 				sel[type] = value;
@@ -715,7 +716,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		/**
 		 * Sets or retrieves a css property of the element
-		 * specified by the current selector. If a value is 
+		 * specified by the current selector. If a value is
 		 * passed, it will set that value on the current element,
 		 * otherwise it will return the value of the css property
 		 * on the current element
@@ -735,14 +736,14 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			{
 				return _css(this.el, prop);
 			}
-		
+
 			$_.each(function (e){
 				_css(e, prop, val);
 			});
 		},
 		/**
 		 * Adds to the innerHTML of the current element, after the last child.
-		 * 
+		 *
 		 * @example $_("ul").dom.append("&lt;li&gt;&lt;/li&gt;") adds an li element to the end of the selected ul element
 		 * @name append
 		 * @memberOf $_.dom
@@ -762,7 +763,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		/**
 		 * Adds to the innerHTML of the selected element, before the current children
-		 * 
+		 *
 		 * @name prepend
 		 * @memberOf $_.dom
 		 * @function
@@ -791,19 +792,19 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 */
 		html: function(htm)
 		{
-			
+
 			if(typeof htm !== "undefined")
 			{
 				this.el.innerHTML = htm;
 			}
-			
+
 			//If the parameter is undefined, just return the current value
 			return this.el.innerHTML;
 		}
 	};
 
 	$_.ext('dom', d);
-	
+
 }());
 
 // --------------------------------------------------------------------------
@@ -816,7 +817,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 (function (){
 
 	"use strict";
-	
+
 	// Don't bother even defining the object if the XMLHttpRequest isn't available
 	if(typeof window.XMLHttpRequest === "undefined")
 	{
@@ -826,9 +827,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	var ajax = {
 		_do: function (url, data, callback, isPost)
 		{
-			var type, 
+			var type,
 				request = new XMLHttpRequest();
-		
+
 			if (typeof callback === "undefined")
 			{
 				/**
@@ -840,7 +841,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			type = (isPost) ? "POST" : "GET";
 
 			url += (type === "GET") ? "?"+this._serialize(data) : '';
-			
+
 			request.open(type, url);
 
 			request.onreadystatechange = function ()
@@ -892,7 +893,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	/**
 	 * Sends a GET type ajax request
-	 * 
+	 *
 	 * @name get
 	 * @function
 	 * @memberOf $_
@@ -903,10 +904,10 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	$_.ext('get', function (url, data, callback){
 		ajax._do(url, data, callback, false);
 	});
-	
+
 	/**
 	 * Sends a POST type ajax request
-	 * 
+	 *
 	 * @name post
 	 * @function
 	 * @memberOf $_
@@ -917,6 +918,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	$_.ext('post', function (url, data, callback){
 		ajax._do(url, data, callback, true);
 	});
+	
 }());
 
 // --------------------------------------------------------------------------
@@ -925,13 +927,14 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
  * Event
  *
  * Event api wrapper
+ * @todo Add method for triggering events
  */
 (function (){
 
 	"use strict";
 
 	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_5_0";
+	var kis_expando = "KIS_0_6_0";
 
 	var _attach, _remove, _add_remove, e, _attach_delegate;
 
@@ -962,7 +965,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		};
 	}
 	// typeof function doesn't work in IE where attachEvent is available: brute force it
-	else if(typeof document.attachEvent !== "undefined") 
+	else if(typeof document.attachEvent !== "undefined")
 	{
 		/**
 		 * @private
@@ -974,11 +977,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				// for event listeners, so we need to set it ourselves.
 				callback.apply(arguments[0]);
 			}
-			
+
 			if (typeof sel.attachEvent !== "undefined")
 			{
 				_remove(event, callback); // Make sure we don't have duplicate listeners
-				
+
 				sel.attachEvent("on" + event, _listener);
 				// Store our listener so we can remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
@@ -1024,11 +1027,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 		};
 	}
-	
+
 	_add_remove = function (sel, event, callback, add)
 	{
 		var i, len;
-		
+
 		if(typeof sel === "undefined")
 		{
 			console.log(arguments);
@@ -1040,7 +1043,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		if ( ! event.match(/^([\w\-]+)$/))
 		{
 			event = event.split(" ");
-			
+
 			len = event.length;
 
 			for (i = 0; i < len; i++)
@@ -1051,7 +1054,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			return;
 		}
 
-		
+
 		if(add === true)
 		{
 			_attach(sel, event, callback);
@@ -1066,37 +1069,35 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	{
 		// attach the listener to the parent object
 		_add_remove(sel, event, function(e){
-		
+
 			var elem, t, tar;
-			
+
 			// IE 8 doesn't have event bound to element
 			e = e || window.event;
-			
+
 			// Get the live version of the target selector
 			t = $_.$(target, sel);
-			
+
 			// Check each element to see if it matches the target
 			for(elem in t)
 			{
 				// IE 8 doesn't have target in the event object
 				tar = e.target || e.srcElement;
-			
+
 				// Fire target callback when event bubbles from target
 				if(tar == t[elem])
 				{
 					// Trigger the event callback
 					callback.call(t[elem], e);
-					
+
 					// Stop event propegation
 					e.stopPropagation();
 				}
 			}
-			
+
 		}, true);
 	};
-	
-	
-	
+
 	// --------------------------------------------------------------------------
 
 	/**
@@ -1110,7 +1111,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		/**
 		 * Adds an event that returns a callback when triggered on the selected
 		 * event and selector
-		 * 
+		 *
 		 * @memberOf $_.event
 		 * @name add
 		 * @function
@@ -1140,7 +1141,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				_add_remove(e, event, callback, false);
 			});
 		},
-		/** 
+		/**
 		 * Binds a persistent event to the document
 		 *
 		 * @memberOf $_.event
@@ -1155,7 +1156,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		{
 			_attach_delegate(document.documentElement, target, event, callback);
 		},
-		/** 
+		/**
 		 * Binds an event to a parent object
 		 *
 		 * @memberOf $_.event
@@ -1218,7 +1219,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		{
 			var request = {};
 		
-			version = version || 0;
+			version = version || 1;
 			
 			// Ask for permission to use db
 			request = db.open(dbname, version);
@@ -1245,7 +1246,51 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				// Connect to the specified db
 				indexedDB.current_db = request.result;
 			};
+		},
+		/**
+		 * Helper function to create a new object store
+		 *
+		 * @memberOf $_.indexedDB
+		 * @name create_store
+		 * @function
+		 * @param string name
+		 * @param [string] key
+		 * @param [bool] generator
+		 * @return IDBDataStore object
+		 */
+		create_store: function(name, key, generator)
+		{
+			var params = {};
+				
+			if(typeof key !== "undefined")
+			{
+				params.keyPath = key;
+			}
+			
+			if(typeof generator !== "undefined")
+			{
+				// Cast to a boolean value
+				params.autoIncrement = !! generator;
+			}
+			
+			return db.createObjectStore(name, params);
+		},
+		/**
+		 * Delete an object store
+		 *
+		 * @memberOf $_.indexedDB
+		 * @name delete_store
+		 * @function
+		 * @param string name
+		 */
+		delete_store: function(name)
+		{
+			var request = db.deleteObjectStore();
+			
+			// Pass the error up
+			request.onerror = db.onerror;
 		}
+		 
 	};
 	
 	$_.ext('indexedDB', indexedDB);
@@ -1255,19 +1300,20 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 // --------------------------------------------------------------------------
 
 /**
- * Store 
- * 
+ * Store
+ *
  * Wrapper for local / sessionstorage
  */
 (function (){
+
 	"use strict";
-	
+
 	//No support for localstorage? Bail out early
 	if(typeof localStorage === "undefined" || typeof JSON === "undefined")
 	{
-		return;
+		return null;
 	}
-	
+
 	//Shortcuts for wrapper
 	var l = localStorage,
 		s = sessionStorage;
@@ -1281,11 +1327,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	 * @namespace
 	 * @memberOf $_
 	 */
-	var store = {		
+	var store = {
 		/**
-		 * Retrieves and deserializes a value from localstorage, 
+		 * Retrieves and deserializes a value from localstorage,
 		 * based on the specified key
-		 * 
+		 *
 		 * @param string key
 		 * @param bool session
 		 * @name get
@@ -1297,7 +1343,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		get: function (key, sess)
 		{
 			var val = (sess) ? s.getItem(key) : l.getItem(key);
-		
+
 			return JSON.parse(val);
 		},
 		/**
@@ -1314,13 +1360,13 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		set: function (key, value, sess)
 		{
 			// Localstorage generally only accepts strings
-			value = JSON.stringify(value);			
-			
+			value = JSON.stringify(value);
+
 			(sess) ? s.setItem(key, value) : l.setItem(key, value);
 		},
 		/**
 		 * Removes the specified item from storage
-		 * 
+		 *
 		 * @param string key
 		 * @param bool session
 		 * @name remove
@@ -1333,7 +1379,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		},
 		/**
 		 * Returns an object of all the raw values in storage
-		 * 
+		 *
 		 * @param bool session
 		 * @name getAll
 		 * @memberOf $_.store
@@ -1348,10 +1394,10 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				data = {},
 				k,
 				o;
-			
+
 			//Reference to session/localstorage
 			o = (sess) ? l : s;
-				
+
 			len = o.length;
 
 			for (i = 0; i < len; i++)
@@ -1381,247 +1427,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 // --------------------------------------------------------------------------
 
-/** 
- * Template module for simple javascript templating
- */
-(function(){
-	"use strict";
-	
-	//This module relies on some others for simplicity
-	//so, if they aren't there, don't initialize the module
-	if($_.ajax === "undefined")
-	{
-		return;
-	}
-	
-	var t, _t, _p;
-	
-	
-	//Private object to store retrieved templates
-	_t = {};
-	
-	//Private object to store parsed templates
-	_p = {};
-	
-	
-	/**
-	 * Module for html templating. Requires ajax module.
-	 * 
-	 * @name template
-	 * @namespace
-	 * @memberOf $_
-	 */
-	t = {
-		/**
-		 * Retrieves a template
-		 * 
-		 * @memberOf $_.template
-		 * @name get
-		 * @param string name
-		 * @return string
-		 * @function
-		 * @type string
-		 */
-		get: function(name)
-		{
-			var res;
-
-			res = this.el.innerHTML;
-			
-			if(res === "")
-			{
-				console.log("Template is empty or cannot be found");
-				return;
-			}
-			
-			_t[name] = res;
-			return res;
-		},
-		/**
-		 * Formats a template
-		 * 
-		 * @memberOf $_.template
-		 * @name parse
-		 * @param string template_name
-		 * @param object replace_data
-		 * @return string
-		 * @function
-		 * @type string
-		 */
-		parse: function(name, data)
-		{
-			var tmp = _t[name],
-				pairs = [],
-				pair_reg = /\{([A-Z0-9_\-]+)\}(.*)\{\/\1\}/gim,
-				var_reg = /\{([A-Z0-9_\-]+)\}/gim,
-				pseudos = [], 
-				num_pairs = 0,
-				num_pseudos = 0,
-				i = 0,
-				j = 0,
-				var_name = '',
-				rep_data = {},
-				tmp_data = '',
-				data_len,
-				frag,
-				frag_section,
-				emptys,
-				x;
-				
-			tmp = String(tmp);
-		
-			//Remove newlines and tabs from template because
-			//those whitespace characters are extra bandwidth
-			tmp = tmp.replace(/\s+/gim, " ");
-			tmp = tmp.replace(/>\s+</gim, "><");
-			tmp = tmp.replace(/>\s+\{/gim, ">{");
-			tmp = tmp.replace(/\}\s+</gim, "}<");
-			
-			//Match all the looped sections of content
-			pairs = tmp.match(pair_reg);
-			
-			if(pairs != null)
-			{
-				num_pairs = pairs.length;
-				
-				//Go through the template, and match the pairs
-				for(i=0;i<num_pairs;i++)
-				{
-					//Put the loop in a placeholder
-					tmp = tmp.replace(pairs[i], "{"+i+"}");
-					
-					//Create a place to store looped data
-					tmp_data = "";
-					
-					//The replace variable is the name of the tag
-					var_name = String(pairs[i]).match(/^\{([A-Z0-9_\-]+)\}/i);
-					rep_data = data[var_name[1]];
-					
-					//Make sure there are loops
-					if(rep_data.length > 0)
-					{
-						data_len = rep_data.length;
-						
-						//Get rid of the loop tags
-						pairs[i] = pairs[i].replace(pair_reg, "$2");
-						
-						//Replace psudovariables with data
-						for(j=0;j<data_len;j++)
-						{
-							//Is there a better way to do this, rather than an inline function?
-							tmp_data += pairs[i].replace(var_reg, function(_, varName){
-								return (rep_data[j][varName]) ? rep_data[j][varName] : ""; 
-							});
-						}
-					}
-					
-					//Replace the looped content
-					tmp = tmp.replace("{"+i+"}", tmp_data);
-				}
-			}
-			
-			//Replace all the rest of the psudeovariables
-			pseudos = tmp.match(var_reg);
-			
-			if(pseudos != null)
-			{
-				num_pseudos = pseudos.length;
-			
-				for(i=0;i<num_pseudos;i++)
-				{
-					//Remove the {} from the pseudos
-					var_name = pseudos[i].replace('{', '');
-					var_name = var_name.replace('}', '');
-					
-					//Replace each pseudovariable with the value of the object
-					//property of the same name
-					tmp = tmp.replace(pseudos[i], data[var_name]);
-				}
-			}
-			
-			//Create an empty fragement
-			frag = document.createDocumentFragment();
-			
-			//Insert the html
-			frag.appendChild(document.createElement('section'));
-			frag_section = frag.querySelectorAll('section')[0];
-			frag_section.innerHTML = tmp;
-			
-			//Remove bad elements in the fragment, should be faster than being done live
-			emptys = frag_section.querySelectorAll('[src=""], [href=""]');
-			
-			for(x in emptys)
-			{
-				if(emptys[x].parentNode)
-				{
-					emptys[x].parentNode.removeChild(emptys[x]);
-				}
-			}
-			
-			//Save the parsed template in an object for later retrieval
-			_p[name] = tmp;
-			
-			return tmp;
-		},
-		/** 
-		 * Inserts the formatted template into the page. If the url and data parameters
-		 * are passed, it will retrieve a template file from the same domain, parse, 
-		 * and insert the template into the page. 
-		 *
-		 * @memberOf $_.template
-		 * @name apply
-		 * @function
-		 * @param string parsed_template/template_name
-		 * @param [string] url
-		 * @param [object] data
-		 */
-		apply: function(name, url, data)
-		{
-			//If the parsed template is supplied, just apply it to the passed selector
-			if(typeof url === "undefined" && typeof data === "undefined")
-			{
-				//If the "name" variable is in the _p object, set that
-				if(typeof _p[name] !== "undefined")
-				{
-					this.el.innerHTML = _p[name];
-					return;
-				}
-			
-				//Otherwise, set the passed string to the current selector
-				this.el.innerHTML = name;
-				return;
-			}
-			
-			//Otherwise, get the template, parse it, and apply it
-			$_.get(url, {}, function(res){
-				var parsed;
-			
-				if(res === "")
-				{
-					console.log("Template is empty or can not be found");
-					return;
-				}
-				
-				//Cache the template in an object for later use
-				_t[name] = res;
-				parsed = this.parse(name, data);
-				_p[name] = parsed;
-				
-				this.el.innerHTML = parsed;
-			});
-		}
-	};
-	
-	//Add the module to the library
-	$_.ext('template', t);
-	
-})();
-
-// --------------------------------------------------------------------------
-
 /**
  * Util Object
- * 
+ *
  * Various object and string manipulation functions
  * Note: these are based on similar phpjs functions: http://phpjs.org
  */
@@ -1629,56 +1437,55 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	"use strict";
 
-	var 
-	reverse_key_sort =  function(o)
+	var reverse_key_sort =  function(o)
 	{
 		//Define some variables
 		var keys = [],
 			num_keys = 0,
 			new_o = {},
 			i;
-	
+
 		//Extract the keys
 		keys = u.object_keys(o);
-		
+
 		//Sort the keys
-		keys.sort(function (b, a) {		
+		keys.sort(function (b, a) {
 			var aFloat = parseFloat(a),
 				bFloat = parseFloat(b),
 				aNumeric = aFloat + '' === a,
 				bNumeric = bFloat + '' === b;
 
-			if (aNumeric && bNumeric) 
+			if (aNumeric && bNumeric)
 			{
 				return aFloat > bFloat ? 1 : aFloat < bFloat ? -1 : 0;
-			} 
-			else if (aNumeric && !bNumeric) 
+			}
+			else if (aNumeric && !bNumeric)
 			{
 				return 1;
-			} 
-			else if (!aNumeric && bNumeric) 
+			}
+			else if (!aNumeric && bNumeric)
 			{
 				return -1;
 			}
-			
+
 			return a > b ? 1 : a < b ? -1 : 0;
 		});
-		
+
 		// cache object/array size
 		num_keys = keys.length;
-		
+
 		// Recreate the object/array
 		for(i=0; i < num_keys; i++)
 		{
 			new_o[keys[i]] = o[keys[i]];
 		}
-		
+
 		return new_o;
 	},
-	
+
 	/**
 	 * String and object manipulation utilities
-	 *	
+	 *
 	 * @namespace
 	 * @name util
 	 * @memberOf $_
@@ -1686,7 +1493,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	u = {
 		/**
 		 * Retrieve the keys, or member names of an object
-		 * 
+		 *
 		 * @name object_keys
 		 * @memberOf $_.util
 		 * @function
@@ -1698,7 +1505,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		{
 			var keys = [],
 				k;
-				
+
 			for(k in o)
 			{
 				if(o.hasOwnProperty(k))
@@ -1706,7 +1513,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 					keys.push(k);
 				}
 			}
-			
+
 			return keys;
 		},
 		/**
@@ -1724,20 +1531,20 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		{
 			var vals = [],
 				prop;
-			
+
 			for(prop in o)
 			{
 				vals.push(o[prop]);
 			}
-			
+
 			return vals;
 		},
 		/**
-		 * Creates an object, with the property names of the first array, 
-		 * and the values of the second. If objects are passed, the values 
-		 * of the object are used. If the arrays or objects passed are 
+		 * Creates an object, with the property names of the first array,
+		 * and the values of the second. If objects are passed, the values
+		 * of the object are used. If the arrays or objects passed are
 		 * not the same size, the function will return false.
-		 * 
+		 *
 		 * @name array_combine
 		 * @memberOf $_.util
 		 * @function
@@ -1751,7 +1558,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			var new_object = {},
 				num_keys,
 				i = 0;
-				
+
 			// Extract the keys or values if needed
 			if($_.type(keys) !== "array")
 			{
@@ -1761,31 +1568,31 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			{
 				vals = this.object_values(vals);
 			}
-			
+
 			// cache the number of keys
 			num_keys = keys.length;
-			
+
 			if(num_keys !== vals.length)
 			{
 				console.log("Object combine requires two arrays of the same size");
 				return false;
 			}
-			
+
 			// Create and return the new object
 			for(i = 0; i < num_keys; i++)
 			{
 				new_object[keys[i]] = vals[i];
 			}
-			
+
 			return new_object;
 		},
 		/**
 		 * Combines two or more objects/arrays. If the keys are numeric, the outputted
 		 * object will have re-indexed keys. If a key/value pair exists in both objects,
-		 * indentical values will be droped, but if a key exists with a different value, 
+		 * indentical values will be droped, but if a key exists with a different value,
 		 * with the same key, the value in the second array will replace the value in the
 		 * first
-		 * 
+		 *
 		 * @name object_merge
 		 * @memberOf $_.util
 		 * @function
@@ -1804,7 +1611,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				j,
 				x,
 				is_array = true;
-				
+
 			// Check for an array in the arguments
 			for(i=0; i < arg_len; i++)
 			{
@@ -1814,7 +1621,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 					break;
 				}
 			}
-			
+
 			// If all the arguments are javascript arrays
 			if(is_array)
 			{
@@ -1824,16 +1631,16 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				{
 					new_obj = new_obj.contact(args[i]);
 				}
-				
+
 				// Return early
 				return new_obj;
 			}
-			
+
 			// No, there's at least one object
 			for(i=0, x=0; i < arg_len; i++)
 			{
 				arg = args[i];
-				
+
 				// If the argument is an array, add the array items as
 				// numeric object properties
 				if ($_.type(arg) == "array")
@@ -1858,16 +1665,16 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 							else
 							{
 								new_obj[j] = arg[j];
-							} 
+							}
 						}
 					}
-				} 
+				}
 			}
-			
+
 			return new_obj;
 		},
 		/**
-		 * Replaces sections of strings in a greedy fashion, 
+		 * Replaces sections of strings in a greedy fashion,
 		 * starting with the longest replace pairs first. Accepts
 		 * one replace pair as two parameters, or an object, with
 		 * from => to replacements as key/value pairs
@@ -1900,14 +1707,14 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 				f,
 				i,
 				j;
-				
+
 			//Replace pairs? add them to the internal arrays
 			if(typeof from === 'object')
 			{
 				// Sort the keys in descending order for better
 				// replacement functionality
 				from = reverse_key_sort(from);
-				
+
 				for(f in from)
 				{
 					if(from.hasOwnProperty(f))
@@ -1916,18 +1723,18 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 						tos.push(from[f]);
 					}
 				}
-				
+
 				from = froms;
 				to = tos;
 			}
-			
+
 			//Go through the string, and replace characters as needed
 			str_len = str.length;
 			from_len = from.length;
 			to_len = to.length;
 			to_is_str = typeof to === 'string';
 			from_is_str = typeof from === 'string';
-			
+
 			for(i=0; i < str_len; i++)
 			{
 				match = false;
@@ -1952,7 +1759,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 						if(str.substr(i, from[j].length) == from[j])
 						{
 							match = true;
-							
+
 							//Go past the current match
 							i = (i + from[j].length) -1;
 							break;
@@ -1972,9 +1779,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 
 			return new_str;
-				
+
 		}
-		
+
 	};
 
 	//Add it to the $_ object

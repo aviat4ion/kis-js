@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.5.0
+	Version		0.6.0
  */
 (function (){
 
@@ -20,7 +20,7 @@
 	}
 
 	var $_, $, dcopy, sel;
-	
+
 
 	/**
 	 * $_
@@ -38,7 +38,7 @@
 		if(typeof s === "undefined")
 		{
 			//Defines a "global" selector for that instance
-			sel = (typeof $_.el !== "undefined") 
+			sel = (typeof $_.el !== "undefined")
 				? $_.el
 				: document.documentElement;
 		}
@@ -46,7 +46,7 @@
 		{
 			sel = (typeof s !== "object") ? $(s) : s;
 		}
-		
+
 		// Add the selector to the prototype
 		$_.prototype.el = sel;
 
@@ -54,19 +54,19 @@
 		var self = dcopy($_);
 
 		// Give sel to each extension.
-		for(var i in self) 
+		for(var i in self)
 		{
 			if(typeof self[i] === "object")
 			{
 				self[i].el = sel;
-			}	
+			}
 		}
 
 		self.el = sel;
-	
+
 		return self;
 	};
-	
+
 	/**
 	 * Simple DOM selector function
 	 *
@@ -79,14 +79,14 @@
 	$ = function (a, context)
 	{
 		var x, c;
-		
+
 		if (typeof a != "string" || typeof a === "undefined"){ return a;}
-		
+
 		//Check for a context of a specific element, otherwise, just run on the document
-		c  = (context != null && context.nodeType === 1) 
-			? context 
+		c  = (context != null && context.nodeType === 1)
+			? context
 			: document;
-		
+
 		//Pick the quickest method for each kind of selector
 		if (a.match(/^#([\w\-]+$)/))
 		{
@@ -96,11 +96,11 @@
 		{
 			x = c.querySelectorAll(a);
 		}
-		
+
 		//Return the single object if applicable
 		return (x.length === 1) ? x[0] : x;
 	};
-	
+
 	/**
 	 * Deep copy/prototypical constructor function
 	 *
@@ -112,38 +112,38 @@
 	dcopy = function(obj)
 	{
 		var type, F;
-		
+
 		if(typeof obj === "undefined")
 		{
 			return;
 		}
-		
+
 		if(typeof Object.create !== "undefined")
 		{
 			return Object.create(obj);
 		}
-		
+
 		type = typeof obj;
-		
+
 		if(type !== "object" && type !== "function")
 		{
 			return;
 		}
-		
+
 		/**
 		 * @private
 		 */
 		F = function(){};
-		
+
 		F.prototype = obj;
-		
+
 		return new F();
-		
+
 	};
-	
+
 	/**
 	 * Adds the property `obj` to the $_ object, calling it `name`
-	 * 
+	 *
 	 * @param string name
 	 * @param object obj
 	 */
@@ -152,7 +152,7 @@
 		obj.el = sel;
 		$_[name] = obj;
 	};
-	
+
 	/**
 	 * Iterates over a $_ object, applying a callback to each item
 	 *
@@ -183,7 +183,7 @@
 			callback.call(sel, sel);
 		}
 	});
-	
+
 	/**
 	 * Retrieves the type of the passed variable
 	 *
@@ -191,22 +191,22 @@
 	 * @return string
 	 * @type string
 	 */
-	$_.type = function(obj) 
-	{	
+	$_.type = function(obj)
+	{
 		if((function() {return obj && (obj !== this)}).call(obj))
 		{
 			//fallback on 'typeof' for truthy primitive values
 			return (typeof obj).toLowerCase();
 		}
-		
-		//Strip x from [object x] and return 
+
+		//Strip x from [object x] and return
 		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
 	};
 
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
 	$_.$ = $;
-	
+
 }());
 
 // --------------------------------------------------------------------------
@@ -214,11 +214,12 @@
 /**
  * A module of various browser polyfills
  * @file polyfill.js
+ * @todo create ES5 Foreach polyfill
  */
 (function(){
 
 	"use strict";
- 
+
 	// Console.log polyfill for IE 8 stupidity
 	if(typeof window.console === "undefined")
 	{
@@ -226,9 +227,9 @@
 			log:function(){}
 		};
 	}
-	
+
 	// --------------------------------------------------------------------------
-	
+
 	/**
 	 * String trim function polyfill
 	 */
@@ -244,23 +245,23 @@
 	}
 
 	// --------------------------------------------------------------------------
-	
+
 	/**
 	 * event.preventDefault/e.stopPropagation polyfill
 	 * @private
 	 */
 	if(typeof Event.preventDefault === "undefined" && typeof window.event !== "undefined")
 	{
-		Event.prototype.preventDefault = function() 
+		Event.prototype.preventDefault = function()
 		{
 			window.event.returnValue = false;
 		},
 		Event.prototype.stopPropagation = function()
 		{
 			window.event.cancelBubble = true;
-		}	
+		}
 	}
-	
+
 }());
 
 // --------------------------------------------------------------------------
@@ -273,7 +274,7 @@
 (function (){
 
 	"use strict";
-	
+
 	// Don't bother even defining the object if the XMLHttpRequest isn't available
 	if(typeof window.XMLHttpRequest === "undefined")
 	{
@@ -283,9 +284,9 @@
 	var ajax = {
 		_do: function (url, data, callback, isPost)
 		{
-			var type, 
+			var type,
 				request = new XMLHttpRequest();
-		
+
 			if (typeof callback === "undefined")
 			{
 				/**
@@ -297,7 +298,7 @@
 			type = (isPost) ? "POST" : "GET";
 
 			url += (type === "GET") ? "?"+this._serialize(data) : '';
-			
+
 			request.open(type, url);
 
 			request.onreadystatechange = function ()
@@ -349,7 +350,7 @@
 
 	/**
 	 * Sends a GET type ajax request
-	 * 
+	 *
 	 * @name get
 	 * @function
 	 * @memberOf $_
@@ -360,10 +361,10 @@
 	$_.ext('get', function (url, data, callback){
 		ajax._do(url, data, callback, false);
 	});
-	
+
 	/**
 	 * Sends a POST type ajax request
-	 * 
+	 *
 	 * @name post
 	 * @function
 	 * @memberOf $_
@@ -374,6 +375,7 @@
 	$_.ext('post', function (url, data, callback){
 		ajax._do(url, data, callback, true);
 	});
+	
 }());
 
 // --------------------------------------------------------------------------
@@ -382,13 +384,14 @@
  * Event
  *
  * Event api wrapper
+ * @todo Add method for triggering events
  */
 (function (){
 
 	"use strict";
 
 	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_5_0";
+	var kis_expando = "KIS_0_6_0";
 
 	var _attach, _remove, _add_remove, e, _attach_delegate;
 
@@ -419,7 +422,7 @@
 		};
 	}
 	// typeof function doesn't work in IE where attachEvent is available: brute force it
-	else if(typeof document.attachEvent !== "undefined") 
+	else if(typeof document.attachEvent !== "undefined")
 	{
 		/**
 		 * @private
@@ -431,11 +434,11 @@
 				// for event listeners, so we need to set it ourselves.
 				callback.apply(arguments[0]);
 			}
-			
+
 			if (typeof sel.attachEvent !== "undefined")
 			{
 				_remove(event, callback); // Make sure we don't have duplicate listeners
-				
+
 				sel.attachEvent("on" + event, _listener);
 				// Store our listener so we can remove it later
 				var expando = sel[kis_expando] = sel[kis_expando] || {};
@@ -481,11 +484,11 @@
 			}
 		};
 	}
-	
+
 	_add_remove = function (sel, event, callback, add)
 	{
 		var i, len;
-		
+
 		if(typeof sel === "undefined")
 		{
 			console.log(arguments);
@@ -497,7 +500,7 @@
 		if ( ! event.match(/^([\w\-]+)$/))
 		{
 			event = event.split(" ");
-			
+
 			len = event.length;
 
 			for (i = 0; i < len; i++)
@@ -508,7 +511,7 @@
 			return;
 		}
 
-		
+
 		if(add === true)
 		{
 			_attach(sel, event, callback);
@@ -523,37 +526,35 @@
 	{
 		// attach the listener to the parent object
 		_add_remove(sel, event, function(e){
-		
+
 			var elem, t, tar;
-			
+
 			// IE 8 doesn't have event bound to element
 			e = e || window.event;
-			
+
 			// Get the live version of the target selector
 			t = $_.$(target, sel);
-			
+
 			// Check each element to see if it matches the target
 			for(elem in t)
 			{
 				// IE 8 doesn't have target in the event object
 				tar = e.target || e.srcElement;
-			
+
 				// Fire target callback when event bubbles from target
 				if(tar == t[elem])
 				{
 					// Trigger the event callback
 					callback.call(t[elem], e);
-					
+
 					// Stop event propegation
 					e.stopPropagation();
 				}
 			}
-			
+
 		}, true);
 	};
-	
-	
-	
+
 	// --------------------------------------------------------------------------
 
 	/**
@@ -567,7 +568,7 @@
 		/**
 		 * Adds an event that returns a callback when triggered on the selected
 		 * event and selector
-		 * 
+		 *
 		 * @memberOf $_.event
 		 * @name add
 		 * @function
@@ -597,7 +598,7 @@
 				_add_remove(e, event, callback, false);
 			});
 		},
-		/** 
+		/**
 		 * Binds a persistent event to the document
 		 *
 		 * @memberOf $_.event
@@ -612,7 +613,7 @@
 		{
 			_attach_delegate(document.documentElement, target, event, callback);
 		},
-		/** 
+		/**
 		 * Binds an event to a parent object
 		 *
 		 * @memberOf $_.event
