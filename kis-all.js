@@ -919,6 +919,36 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		ajax._do(url, data, callback, true);
 	});
 	
+	/**
+	 * Watches for server-sent events, or falls back to ajax polling
+	 * - defaults to 30 second intervals
+	 *
+	 * @name sse
+	 * @function
+	 * @memberOf $_
+	 * @param string url
+	 * @param function callback
+	 * @param [int] 30000
+	 */
+	$_.ext('sse', function(url, callback, poll_rate){
+	
+		var source;
+		
+		//Check for server-sent event support
+		if (typeof EventSource !== 'undefined')
+		{
+			source = new EventSource(url);
+			
+			// Apply the callback
+			source.onmessage = callback;
+		}
+		else // Ajax polling fallback
+		{
+			poll_rate = poll_rate || 30000;
+			setInterval($_.get, poll_rate, url, {}, callback);
+		}
+	});
+	
 }());
 
 // --------------------------------------------------------------------------
