@@ -129,12 +129,19 @@
 			source = new EventSource(url);
 			
 			// Apply the callback
-			source.onmessage = callback;
+			source.onmessage = function(event){
+				callback(event.data);	
+			};
 		}
 		else // Ajax polling fallback
 		{
 			poll_rate = poll_rate || 30000;
-			setInterval($_.get, poll_rate, url, {}, callback);
+			
+			setInterval($_.get, poll_rate, url, {}, function(res){
+				res.replace(/data:/gim, '');
+				res.replace(/^event|id|retry?:(.*)$/gim, '');
+				callback(res);
+			});
 		}
 	});
 	
