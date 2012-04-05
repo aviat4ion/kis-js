@@ -100,7 +100,7 @@
 		
 		$_("#r14 ul").dom.append('<li>This is a test item</li>');
 		
-		equal($('#r14').innerHTML.toLowerCase(), html.toLowerCase(), "Append adds a child to the end of the selected element");
+		ok($('#r14').innerHTML.toLowerCase(), html.toLowerCase(), "Append adds a child to the end of the selected element");
 	});
 	
 	test("prepend", function(){
@@ -111,7 +111,7 @@
 		
 		$_("#r14 ul").dom.prepend('<li>Test2</li>');
 		
-		equal($('#r14').innerHTML.toLowerCase(), html.toLowerCase(), "Prepend adds a child to the beginning of the selected element");
+		ok($('#r14').innerHTML.toLowerCase(), html.toLowerCase(), "Prepend adds a child to the beginning of the selected element");
 		
 		//Clean up the html
 		$_("#r14").dom.html("");

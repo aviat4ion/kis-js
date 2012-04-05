@@ -164,6 +164,14 @@
 	{
 		if(typeof sel.length !== "undefined" && sel !== window)
 		{
+			// Use the native method, if it exists
+			if(typeof Array.prototype.forEach !== 'undefined')
+			{
+				[].forEach.call(sel, callback);
+				return;
+			}
+		
+			// Otherwise, fall back to a for loop
 			var len = sel.length;
 
 			if (len === 0)
@@ -214,7 +222,6 @@
 /**
  * A module of various browser polyfills
  * @file polyfill.js
- * @todo create ES5 Foreach polyfill
  */
 (function(){
 
@@ -259,6 +266,19 @@
 		Event.prototype.stopPropagation = function()
 		{
 			window.event.cancelBubble = true;
+		}
+	}
+	
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Array.isArray polyfill
+	 */
+	if (typeof [].isArray === "undefined")
+	{
+		Array.isArray = function(v)
+		{
+			return Object.prototype.toString.apply(v) === '[object Array]';
 		}
 	}
 
@@ -949,7 +969,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			poll_rate = poll_rate || 30000;
 			
 			setInterval($_.get, poll_rate, url, {}, function(res){
-				res.replace(/data:/gim, '');
+				res.trim().replace(/data:/gim, '');
 				res.replace(/^event|id|retry?:(.*)$/gim, '');
 				callback(res);
 			});

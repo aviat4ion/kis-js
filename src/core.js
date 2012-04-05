@@ -164,6 +164,14 @@
 	{
 		if(typeof sel.length !== "undefined" && sel !== window)
 		{
+			// Use the native method, if it exists
+			if(typeof Array.prototype.forEach !== 'undefined')
+			{
+				[].forEach.call(sel, callback);
+				return;
+			}
+		
+			// Otherwise, fall back to a for loop
 			var len = sel.length;
 
 			if (len === 0)

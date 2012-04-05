@@ -1,7 +1,6 @@
 /**
  * A module of various browser polyfills
  * @file polyfill.js
- * @todo create ES5 Foreach polyfill
  */
 (function(){
 
@@ -46,6 +45,19 @@
 		Event.prototype.stopPropagation = function()
 		{
 			window.event.cancelBubble = true;
+		}
+	}
+	
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Array.isArray polyfill
+	 */
+	if (typeof [].isArray === "undefined")
+	{
+		Array.isArray = function(v)
+		{
+			return Object.prototype.toString.apply(v) === '[object Array]';
 		}
 	}
 
