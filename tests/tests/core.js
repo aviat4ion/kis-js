@@ -53,6 +53,12 @@
 		equal($_().el, window.document.documentElement, "Empty selector is set to documentElement");
 	});
 	
+	test("Array.isArray", function(){
+		expect(2);
+		strictEqual(Array.isArray([1, 2, 3]), true, "Array.isArray returns true on an array");
+		strictEqual(Array.isArray({arr:[1,2,3]}), false, "Array.isArray returns false on a non-array");
+	});
+	
 	test("Sub-modules", function(){
 		expect(4);
 		ok($_().event, "Event module");

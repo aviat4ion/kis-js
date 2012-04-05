@@ -223,66 +223,69 @@
  * A module of various browser polyfills
  * @file polyfill.js
  */
-(function(){
 
-	"use strict";
+// Console.log polyfill for IE 8 stupidity
+if(typeof window.console === "undefined")
+{
+	window.console = {
+		log:function(){}
+	};
+}
 
-	// Console.log polyfill for IE 8 stupidity
-	if(typeof window.console === "undefined")
-	{
-		window.console = {
-			log:function(){}
-		};
-	}
+// --------------------------------------------------------------------------
 
-	// --------------------------------------------------------------------------
-
+/**
+ * String trim function polyfill
+ */
+if(typeof String.prototype.trim === "undefined")
+{
 	/**
-	 * String trim function polyfill
-	 */
-	if(typeof String.prototype.trim === "undefined")
-	{
-		/**
-		 * @private
-		 */
-		String.prototype.trim = function()
-		{
-			return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
-		};
-	}
-
-	// --------------------------------------------------------------------------
-
-	/**
-	 * event.preventDefault/e.stopPropagation polyfill
 	 * @private
 	 */
-	if(typeof Event.preventDefault === "undefined" && typeof window.event !== "undefined")
+	String.prototype.trim = function()
 	{
-		Event.prototype.preventDefault = function()
-		{
-			window.event.returnValue = false;
-		},
-		Event.prototype.stopPropagation = function()
-		{
-			window.event.cancelBubble = true;
-		}
-	}
-	
-	// --------------------------------------------------------------------------
-	
-	/**
-	 * Array.isArray polyfill
-	 */
-	if (typeof [].isArray === "undefined")
-	{
-		Array.isArray = function(v)
-		{
-			return Object.prototype.toString.apply(v) === '[object Array]';
-		}
-	}
+		return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
+	};
+}
 
-}());
+// --------------------------------------------------------------------------
+
+/**
+ * event.preventDefault/e.stopPropagation polyfill
+ * @private
+ */
+if(typeof Event.preventDefault === "undefined" && typeof window.event !== "undefined")
+{
+	Event.prototype.preventDefault = function()
+	{
+		window.event.returnValue = false;
+	},
+	Event.prototype.stopPropagation = function()
+	{
+		window.event.cancelBubble = true;
+	}
+}
+
+// --------------------------------------------------------------------------
+
+/**
+ * Array.isArray polyfill
+ */
+if (typeof Array.isArray === "undefined")
+{
+	Array.isArray = function(v)
+	{
+		return Object.prototype.toString.apply(v) === '[object Array]';
+	}
+}
+
+
+// --------------------------------------------------------------------------
+
+
+(function ($_){
+
+"use strict"
 
 // --------------------------------------------------------------------------
 
@@ -458,10 +461,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
  *
  * Dom manipulation module
  */
-(function (){
 
-	"use strict";
-
+	
 	var d;
 
 	//Private function for getting/setting attributes/properties
@@ -825,7 +826,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	$_.ext('dom', d);
 
-}());
+
 
 // --------------------------------------------------------------------------
 
@@ -834,10 +835,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
  *
  * Module for making ajax requests
  */
-(function (){
 
-	"use strict";
-
+	
 	// Don't bother even defining the object if the XMLHttpRequest isn't available
 	if(typeof window.XMLHttpRequest === "undefined")
 	{
@@ -976,7 +975,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		}
 	});
 	
-}());
+
 
 // --------------------------------------------------------------------------
 
@@ -986,10 +985,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
  * Event api wrapper
  * @todo Add method for triggering events
  */
-(function (){
 
-	"use strict";
-
+	
 	// Property name for expandos on DOM objects
 	var kis_expando = "KIS_0_6_0";
 
@@ -1234,16 +1231,14 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	$_.ext('event', e);
 
-}());
+
 
 // --------------------------------------------------------------------------
 
 /**
  * Module for simplifying Indexed DB access
  */
-(function() {
-	"use strict";
-	
+		
 	var db = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB,
 		indexedDB = {};
 		
@@ -1352,7 +1347,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	
 	$_.ext('indexedDB', indexedDB);
 	
-}());
+
 
 // --------------------------------------------------------------------------
 
@@ -1361,10 +1356,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
  *
  * Wrapper for local / sessionstorage
  */
-(function (){
 
-	"use strict";
-
+	
 	//No support for localstorage? Bail out early
 	if(typeof localStorage === "undefined" || typeof JSON === "undefined")
 	{
@@ -1480,7 +1473,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	};
 
 	$_.ext('store', store);
-}());
+
 
 // --------------------------------------------------------------------------
 
@@ -1490,10 +1483,8 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
  * Various object and string manipulation functions
  * Note: these are based on similar phpjs functions: http://phpjs.org
  */
-(function(){
 
-	"use strict";
-
+	
 	var reverse_key_sort =  function(o)
 	{
 		//Define some variables
@@ -1843,5 +1834,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	//Add it to the $_ object
 	$_.ext('util', u);
-}());
 
+
+}($_));
