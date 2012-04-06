@@ -139,8 +139,8 @@
 			
 			setInterval($_.get, poll_rate, url, {}, function(res){
 				res.trim().replace(/data:/gim, '');
-				res.replace(/^event|id|retry?:(.*)$/gim, '');
-				callback(res);
+				res.replace(/^(event|id|retry)?\:(.*)$/gim, '');
+				callback.call(res, res);
 			});
 		}
 	});

@@ -50,7 +50,7 @@
 		// Add the selector to the prototype
 		$_.prototype.el = sel;
 
-		// Make a copy before adding properties
+		// Use the $_ object as it's own prototype
 		var self = dcopy($_);
 
 		// Give sel to each extension.

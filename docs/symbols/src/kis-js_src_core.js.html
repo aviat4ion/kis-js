@@ -57,7 +57,7 @@
 <span class='line'> 50</span> </span><span class="WHIT">		</span><span class="COMM">// Add the selector to the prototype</span><span class="WHIT">
 <span class='line'> 51</span> </span><span class="WHIT">		</span><span class="NAME">$_.prototype.el</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">sel</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 52</span> 
-<span class='line'> 53</span> </span><span class="WHIT">		</span><span class="COMM">// Make a copy before adding properties</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">		</span><span class="COMM">// Use the $_ object as it's own prototype</span><span class="WHIT">
 <span class='line'> 54</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">self</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">dcopy</span><span class="PUNC">(</span><span class="NAME">$_</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 55</span> 
 <span class='line'> 56</span> </span><span class="WHIT">		</span><span class="COMM">// Give sel to each extension.</span><span class="WHIT">
