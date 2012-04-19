@@ -297,17 +297,17 @@ if (typeof Array.isArray === "undefined")
 	}
 
 	var ajax = {
-		_do: function (url, data, callback, isPost)
+		_do: function (url, data, success_callback, error_callback, isPost)
 		{
 			var type,
 				request = new XMLHttpRequest();
 
-			if (typeof callback === "undefined")
+			if (typeof success_callback === "undefined")
 			{
 				/**
 				 * @private
 				 */
-				callback = function (){};
+				success_callback = function (){};
 			}
 
 			type = (isPost) ? "POST" : "GET";
@@ -320,7 +320,18 @@ if (typeof Array.isArray === "undefined")
 			{
 				if (request.readyState === 4)
 				{
-					callback(request.responseText);
+					if (request.status === 200)
+					{
+						success_callback.call(request.responseText, request.responseText);
+					}
+					else
+					{
+						if (typeof error_callback !== 'undefined')
+						{
+							error_callback.call(request.status, request.status);
+						}
+					}
+					
 				}
 			};
 
@@ -371,10 +382,11 @@ if (typeof Array.isArray === "undefined")
 	 * @memberOf $_
 	 * @param string url
 	 * @param object data
-	 * @param function callback
+	 * @param function success_callback
+	 * @param function error_callback
 	 */
-	$_.ext('get', function (url, data, callback){
-		ajax._do(url, data, callback, false);
+	$_.ext('get', function (url, data, success_callback, error_callback){
+		ajax._do(url, data, success_callback, error_callback, false);
 	});
 
 	/**
@@ -385,10 +397,11 @@ if (typeof Array.isArray === "undefined")
 	 * @memberOf $_
 	 * @param string url
 	 * @param object data
-	 * @param function callback
+	 * @param function success_callback
+	 * @param function error_callback
 	 */
-	$_.ext('post', function (url, data, callback){
-		ajax._do(url, data, callback, true);
+	$_.ext('post', function (url, data, success_callback, error_callback){
+		ajax._do(url, data, success_callback, error_callback, true);
 	});
 	
 	/**
