@@ -224,16 +224,6 @@
  * @file polyfill.js
  */
 
-// Console.log polyfill for IE 8 stupidity
-if(typeof window.console === "undefined")
-{
-	window.console = {
-		log:function(){}
-	};
-}
-
-// --------------------------------------------------------------------------
-
 /**
  * String trim function polyfill
  */
@@ -289,7 +279,7 @@ if (typeof Array.isArray === "undefined")
 
 // --------------------------------------------------------------------------
 
-//This is used so IE 8 can use the classList api
+//This is used so IE can use the classList api
 /*
  * classList.js: Cross-browser full element.classList implementation.
  * 2011-06-15
@@ -495,9 +485,9 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		//Well, I guess that attribute doesn't exist
 		if (typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
 		{
-			console.log(value);
+			/*console.log(value);
 			console.log(sel);
-			console.log("Element does not have the selected attribute");
+			console.log("Element does not have the selected attribute");*/
 			return null;
 		}
 
@@ -583,9 +573,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			sel.style[equi[prop]] = val;
 			return null;
 		}
-
-		//No matches? Well, lets log it for now
-		console.log("Property " + prop + " nor an equivalent seems to exist");
 	}
 
 	// --------------------------------------------------------------------------
@@ -681,9 +668,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			//Make sure you don't try to get a bunch of elements
 			if (sel.length > 1 && typeof value === "undefined")
 			{
-				console.log(sel);
-				console.log("Must be a singular element");
-				return;
+				return null;
 			}
 			else if (sel.length > 1 && typeof value !== "undefined") //You can set a bunch, though
 			{
@@ -1047,10 +1032,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 					_listener: _listener
 				});
 			}
-			else
-			{
-				console.log("Failed to _attach event:"+event+" on "+sel);
-			}
 		};
 		/**
 		 * @private
@@ -1089,9 +1070,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 		if(typeof sel === "undefined")
 		{
-			console.log(arguments);
-			console.log(event);
-			return false;
+			return null;
 		}
 
 		// Multiple events? Run recursively!

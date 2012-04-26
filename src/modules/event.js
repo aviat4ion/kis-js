@@ -67,10 +67,6 @@
 					_listener: _listener
 				});
 			}
-			else
-			{
-				console.log("Failed to _attach event:"+event+" on "+sel);
-			}
 		};
 		/**
 		 * @private
@@ -109,9 +105,7 @@
 
 		if(typeof sel === "undefined")
 		{
-			console.log(arguments);
-			console.log(event);
-			return false;
+			return null;
 		}
 
 		// Multiple events? Run recursively!

@@ -224,16 +224,6 @@
  * @file polyfill.js
  */
 
-// Console.log polyfill for IE 8 stupidity
-if(typeof window.console === "undefined")
-{
-	window.console = {
-		log:function(){}
-	};
-}
-
-// --------------------------------------------------------------------------
-
 /**
  * String trim function polyfill
  */
@@ -502,10 +492,6 @@ if (typeof Array.isArray === "undefined")
 					_listener: _listener
 				});
 			}
-			else
-			{
-				console.log("Failed to _attach event:"+event+" on "+sel);
-			}
 		};
 		/**
 		 * @private
@@ -544,9 +530,7 @@ if (typeof Array.isArray === "undefined")
 
 		if(typeof sel === "undefined")
 		{
-			console.log(arguments);
-			console.log(event);
-			return false;
+			return null;
 		}
 
 		// Multiple events? Run recursively!

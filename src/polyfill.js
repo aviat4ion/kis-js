@@ -3,16 +3,6 @@
  * @file polyfill.js
  */
 
-// Console.log polyfill for IE 8 stupidity
-if(typeof window.console === "undefined")
-{
-	window.console = {
-		log:function(){}
-	};
-}
-
-// --------------------------------------------------------------------------
-
 /**
  * String trim function polyfill
  */
