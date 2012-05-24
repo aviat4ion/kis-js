@@ -29,7 +29,7 @@
 
 			type = (isPost) ? "POST" : "GET";
 
-			url += (type === "GET") ? "?"+this._serialize(data) : '';
+			url += (type === "GET") ? "?" + this._serialize(data) : '';
 
 			request.open(type, url);
 

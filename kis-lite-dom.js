@@ -302,7 +302,7 @@ if (typeof Array.isArray === "undefined")
 
 			type = (isPost) ? "POST" : "GET";
 
-			url += (type === "GET") ? "?"+this._serialize(data) : '';
+			url += (type === "GET") ? "?" + this._serialize(data) : '';
 
 			request.open(type, url);
 
@@ -684,7 +684,6 @@ if (typeof Array.isArray === "undefined")
  * Public Domain.
  * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
  */
-
 if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
 {
 	(function (view){

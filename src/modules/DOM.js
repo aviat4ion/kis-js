@@ -7,7 +7,6 @@
  * Public Domain.
  * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
  */
-
 if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
 {
 	(function (view){

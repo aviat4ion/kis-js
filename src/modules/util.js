@@ -145,7 +145,6 @@
 
 			if(num_keys !== vals.length)
 			{
-				console.log("Object combine requires two arrays of the same size");
 				return false;
 			}
 
@@ -358,4 +357,3 @@
 	//Add it to the $_ object
 	$_.ext('util', u);
 }());
-

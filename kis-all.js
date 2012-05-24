@@ -288,7 +288,6 @@ if (typeof Array.isArray === "undefined")
  * Public Domain.
  * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
  */
-
 if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
 {
 	(function (view){
@@ -844,7 +843,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 			type = (isPost) ? "POST" : "GET";
 
-			url += (type === "GET") ? "?"+this._serialize(data) : '';
+			url += (type === "GET") ? "?" + this._serialize(data) : '';
 
 			request.open(type, url);
 
@@ -1486,7 +1485,6 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 			if(num_keys !== vals.length)
 			{
-				console.log("Object combine requires two arrays of the same size");
 				return false;
 			}
 
@@ -1698,6 +1696,5 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	//Add it to the $_ object
 	$_.ext('util', u);
-
 
 }($_));
