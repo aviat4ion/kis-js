@@ -8,95 +8,12 @@
 
 	"use strict";
 
-	// Property name for expandos on DOM objects
-	var kis_expando = "KIS_0_6_0";
+	var _add_remove, e, _attach_delegate;
 
-	var _attach, _remove, _add_remove, e, _attach_delegate;
-
-	// Define the proper _attach and _remove functions
-	// based on browser support
-	if(typeof document.addEventListener !== "undefined")
+	// Don't bother defining the methods if event api isn't supports
+	if (typeof document.addEventListener === "undefined")
 	{
-		/**
-		 * @private
-		 */
-		_attach = function (sel, event, callback)
-		{
-			if(typeof sel.addEventListener !== "undefined")
-			{
-				// Duplicated events are dropped, per the specification
-				sel.addEventListener(event, callback, false);
-			}
-		};
-		/**
-		 * @private
-		 */
-		_remove = function (sel, event, callback)
-		{
-			if(typeof sel.removeEventListener !== "undefined")
-			{
-				sel.removeEventListener(event, callback, false);
-			}
-		};
-	}
-	// typeof function doesn't work in IE where attachEvent is available: brute force it
-	else if(typeof document.attachEvent !== "undefined")
-	{
-		/**
-		 * @private
-		 */
-		_attach = function (sel, event, callback)
-		{
-			function _listener () {
-				// Internet Explorer fails to correctly set the 'this' object
-				// for event listeners, so we need to set it ourselves.
-				callback.apply(arguments[0]);
-			}
-
-			if (typeof sel.attachEvent !== "undefined")
-			{
-				_remove(event, callback); // Make sure we don't have duplicate listeners
-
-				sel.attachEvent("on" + event, _listener);
-				// Store our listener so we can remove it later
-				var expando = sel[kis_expando] = sel[kis_expando] || {};
-				expando.listeners = expando.listeners || {};
-				expando.listeners[event] = expando.listeners[event] || [];
-				expando.listeners[event].push({
-					callback: callback,
-					_listener: _listener
-				});
-			}
-		};
-		/**
-		 * @private
-		 */
-		_remove = function (sel, event, callback)
-		{
-			if(typeof sel.detachEvent !== "undefined")
-			{
-				var expando = sel[kis_expando];
-				if (expando && expando.listeners
-						&& expando.listeners[event])
-				{
-					var listeners = expando.listeners[event];
-					var len = listeners.length;
-					for (var i=0; i<len; i++)
-					{
-						if (listeners[i].callback === callback)
-						{
-							sel.detachEvent("on" + event, listeners[i]._listener);
-							listeners.splice(i, 1);
-							if(listeners.length === 0)
-							{
-								delete expando.listeners[event];
-							}
-							return;
-						}
-					}
-				}
-			}
-		};
+		return false;
 	}
 
 	_add_remove = function (sel, event, callback, add)
@@ -123,15 +40,10 @@
 			return;
 		}
 
-
-		if(add === true)
-		{
-			_attach(sel, event, callback);
-		}
-		else
-		{
-			_remove(sel, event, callback);
-		}
+		// Bind the event
+		(add === true)
+			? sel.addEventListener(event, callback, false)
+			: sel.removeEventListener(event, callback, false);
 	};
 
 	_attach_delegate = function(sel, target, event, callback)
@@ -139,10 +51,7 @@
 		// attach the listener to the parent object
 		_add_remove(sel, event, function(e){
 
-			var elem, t, tar;
-
-			// IE 8 doesn't have event bound to element
-			e = e || window.event;
+			var elem, t;
 
 			// Get the live version of the target selector
 			t = $_.$(target, sel);
@@ -150,11 +59,8 @@
 			// Check each element to see if it matches the target
 			for(elem in t)
 			{
-				// IE 8 doesn't have target in the event object
-				tar = e.target || e.srcElement;
-
 				// Fire target callback when event bubbles from target
-				if(tar == t[elem])
+				if(e.target == t[elem])
 				{
 					// Trigger the event callback
 					callback.call(t[elem], e);

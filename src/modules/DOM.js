@@ -416,23 +416,17 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 */
 		text: function (value)
 		{
-			var oldValue, set, type, sel;
+			var oldValue, set, sel;
 
 			sel = this.el;
 
 			set = (typeof value !== "undefined") ? true : false;
 
-			type = (typeof sel.textContent !== "undefined")
-				? "textContent"
-				: (typeof sel.innerText !== "undefined")
-					? "innerText"
-					: "innerHTML";
-
-			oldValue = sel[type];
+			oldValue = sel.textContent;
 
 			if(set)
 			{
-				sel[type] = value;
+				sel.textContent = value;
 				return value;
 			}
 			else

@@ -2,7 +2,7 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.6.0
+	Version		0.7.0
  */
 (function (){
 
@@ -34,17 +34,17 @@
 	 */
 	$_ = function(s)
 	{
-		//Have documentElement be default selector, just in case
-		if(typeof s === "undefined")
+		// Have documentElement be default selector, just in case
+		if (typeof s === "undefined")
 		{
-			//Defines a "global" selector for that instance
+			// Defines a "global" selector for that instance
 			sel = (typeof $_.el !== "undefined")
 				? $_.el
 				: document.documentElement;
 		}
 		else
 		{
-			sel = (typeof s !== "object") ? $(s) : s;
+			sel = $(s);
 		}
 
 		// Add the selector to the prototype
@@ -170,7 +170,7 @@
 				[].forEach.call(sel, callback);
 				return;
 			}
-		
+
 			// Otherwise, fall back to a for loop
 			var len = sel.length;
 

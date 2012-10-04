@@ -48,7 +48,7 @@
 							error_callback.call(request.status, request.status);
 						}
 					}
-					
+
 				}
 			};
 
@@ -120,7 +120,7 @@
 	$_.ext('post', function (url, data, success_callback, error_callback){
 		ajax._do(url, data, success_callback, error_callback, true);
 	});
-	
+
 	/**
 	 * Watches for server-sent events and applies a callback on message
 	 *
@@ -130,20 +130,20 @@
 	 * @param string url
 	 * @param function callback
 	 */
-	$_.ext('sse', function(url, callback, poll_rate){
-	
+	$_.ext('sse', function(url, callback){
+
 		var source;
-		
+
 		// Check for server-sent event support
 		if (typeof EventSource !== 'undefined')
 		{
 			source = new EventSource(url);
-			
+
 			// Apply the callback
 			source.onmessage = function(event){
-				callback.call(event.data, event.data);	
+				callback.call(event.data, event.data);
 			};
 		}
 	});
-	
+
 }());

@@ -423,119 +423,113 @@
 <span class='line'>416</span> 		 */</span><span class="WHIT">
 <span class='line'>417</span> </span><span class="WHIT">		</span><span class="NAME">text</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>418</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>419</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">oldValue</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">set</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sel</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>419</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">oldValue</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">set</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sel</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>420</span> 
 <span class='line'>421</span> </span><span class="WHIT">			</span><span class="NAME">sel</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.el</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>422</span> 
 <span class='line'>423</span> </span><span class="WHIT">			</span><span class="NAME">set</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>424</span> 
-<span class='line'>425</span> </span><span class="WHIT">			</span><span class="NAME">type</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">sel.textContent</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>426</span> </span><span class="WHIT">				</span><span class="PUNC">?</span><span class="WHIT"> </span><span class="STRN">"textContent"</span><span class="WHIT">
-<span class='line'>427</span> </span><span class="WHIT">				</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">sel.innerText</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>428</span> </span><span class="WHIT">					</span><span class="PUNC">?</span><span class="WHIT"> </span><span class="STRN">"innerText"</span><span class="WHIT">
-<span class='line'>429</span> </span><span class="WHIT">					</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"innerHTML"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>430</span> 
-<span class='line'>431</span> </span><span class="WHIT">			</span><span class="NAME">oldValue</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">sel</span><span class="PUNC">[</span><span class="NAME">type</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>432</span> 
-<span class='line'>433</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">set</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>434</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>435</span> </span><span class="WHIT">				</span><span class="NAME">sel</span><span class="PUNC">[</span><span class="NAME">type</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>436</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>437</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>438</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="WHIT">
-<span class='line'>439</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>440</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">oldValue</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>441</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>442</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>443</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>444</span> 		 * Sets or retrieves a css property of the element
-<span class='line'>445</span> 		 * specified by the current selector. If a value is
-<span class='line'>446</span> 		 * passed, it will set that value on the current element,
-<span class='line'>447</span> 		 * otherwise it will return the value of the css property
-<span class='line'>448</span> 		 * on the current element
-<span class='line'>449</span> 		 *
-<span class='line'>450</span> 		 * @name css
-<span class='line'>451</span> 		 * @memberOf $_.dom
-<span class='line'>452</span> 		 * @function
-<span class='line'>453</span> 		 * @param string property
-<span class='line'>454</span> 		 * @param [string] value
-<span class='line'>455</span> 		 * @return string
-<span class='line'>456</span> 		 * @type string
-<span class='line'>457</span> 		 */</span><span class="WHIT">
-<span class='line'>458</span> </span><span class="WHIT">		</span><span class="NAME">css</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">prop</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">val</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>459</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>460</span> </span><span class="WHIT">			</span><span class="COMM">//Return the current value if a value is not set</span><span class="WHIT">
-<span class='line'>461</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">val</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>462</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>463</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_css</span><span class="PUNC">(</span><span class="NAME">this.el</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">prop</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>464</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>465</span> 
-<span class='line'>466</span> </span><span class="WHIT">			</span><span class="NAME">$_.each</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>467</span> </span><span class="WHIT">				</span><span class="NAME">_css</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">prop</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">val</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>468</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>469</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>470</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>471</span> 		 * Adds to the innerHTML of the current element, after the last child.
-<span class='line'>472</span> 		 *
-<span class='line'>473</span> 		 * @example $_("ul").dom.append("&lt;li&gt;&lt;/li&gt;") adds an li element to the end of the selected ul element
-<span class='line'>474</span> 		 * @name append
-<span class='line'>475</span> 		 * @memberOf $_.dom
-<span class='line'>476</span> 		 * @function
-<span class='line'>477</span> 		 * @param string htm
-<span class='line'>478</span> 		 */</span><span class="WHIT">
-<span class='line'>479</span> </span><span class="WHIT">		</span><span class="NAME">append</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">htm</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>480</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>481</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">document.insertAdjacentHTML</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>482</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>483</span> </span><span class="WHIT">				</span><span class="NAME">this.el.insertAdjacentHTML</span><span class="PUNC">(</span><span class="STRN">'beforeend'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>484</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>485</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="WHIT">
-<span class='line'>486</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>487</span> </span><span class="WHIT">				</span><span class="NAME">this.el.innerHTML</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>488</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>489</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>490</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>491</span> 		 * Adds to the innerHTML of the selected element, before the current children
-<span class='line'>492</span> 		 *
-<span class='line'>493</span> 		 * @name prepend
-<span class='line'>494</span> 		 * @memberOf $_.dom
-<span class='line'>495</span> 		 * @function
-<span class='line'>496</span> 		 * @param string htm
-<span class='line'>497</span> 		 */</span><span class="WHIT">
-<span class='line'>498</span> </span><span class="WHIT">		 </span><span class="NAME">prepend</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">htm</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>499</span> </span><span class="WHIT">		 </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>500</span> </span><span class="WHIT">		 	</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">document.insertAdjacentHTML</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>501</span> </span><span class="WHIT">		 	</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>502</span> </span><span class="WHIT">		 		</span><span class="NAME">this.el.insertAdjacentHTML</span><span class="PUNC">(</span><span class="STRN">'afterbegin'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>503</span> </span><span class="WHIT">		 	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>504</span> </span><span class="WHIT">		 	</span><span class="KEYW">else</span><span class="WHIT">
-<span class='line'>505</span> </span><span class="WHIT">		 	</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>506</span> </span><span class="WHIT">		 		</span><span class="NAME">this.el.innerHTML</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">this.el.innerHTML</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>507</span> </span><span class="WHIT">		 	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>508</span> </span><span class="WHIT">		 </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>509</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>510</span> 		 * Sets or gets the innerHTML propery of the element(s) passed
-<span class='line'>511</span> 		 *
-<span class='line'>512</span> 		 * @name html
-<span class='line'>513</span> 		 * @memberOf $_.dom
-<span class='line'>514</span> 		 * @function
-<span class='line'>515</span> 		 * @param [string] htm
-<span class='line'>516</span> 		 * @return string
-<span class='line'>517</span> 		 * @type string
-<span class='line'>518</span> 		 */</span><span class="WHIT">
-<span class='line'>519</span> </span><span class="WHIT">		</span><span class="NAME">html</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">htm</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>520</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>521</span> 
-<span class='line'>522</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>523</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>524</span> </span><span class="WHIT">				</span><span class="NAME">this.el.innerHTML</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>525</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>526</span> 
-<span class='line'>527</span> </span><span class="WHIT">			</span><span class="COMM">//If the parameter is undefined, just return the current value</span><span class="WHIT">
-<span class='line'>528</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.el.innerHTML</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>529</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>530</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>531</span> 
-<span class='line'>532</span> </span><span class="WHIT">	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'dom'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">d</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>533</span> 
-<span class='line'>534</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>
+<span class='line'>425</span> </span><span class="WHIT">			</span><span class="NAME">oldValue</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">sel.textContent</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>426</span> 
+<span class='line'>427</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">set</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>428</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>429</span> </span><span class="WHIT">				</span><span class="NAME">sel.textContent</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>430</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>431</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>432</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="WHIT">
+<span class='line'>433</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>434</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">oldValue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>435</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>436</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>437</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>438</span> 		 * Sets or retrieves a css property of the element
+<span class='line'>439</span> 		 * specified by the current selector. If a value is
+<span class='line'>440</span> 		 * passed, it will set that value on the current element,
+<span class='line'>441</span> 		 * otherwise it will return the value of the css property
+<span class='line'>442</span> 		 * on the current element
+<span class='line'>443</span> 		 *
+<span class='line'>444</span> 		 * @name css
+<span class='line'>445</span> 		 * @memberOf $_.dom
+<span class='line'>446</span> 		 * @function
+<span class='line'>447</span> 		 * @param string property
+<span class='line'>448</span> 		 * @param [string] value
+<span class='line'>449</span> 		 * @return string
+<span class='line'>450</span> 		 * @type string
+<span class='line'>451</span> 		 */</span><span class="WHIT">
+<span class='line'>452</span> </span><span class="WHIT">		</span><span class="NAME">css</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">prop</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">val</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>453</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>454</span> </span><span class="WHIT">			</span><span class="COMM">//Return the current value if a value is not set</span><span class="WHIT">
+<span class='line'>455</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">val</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>456</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>457</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_css</span><span class="PUNC">(</span><span class="NAME">this.el</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">prop</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>458</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>459</span> 
+<span class='line'>460</span> </span><span class="WHIT">			</span><span class="NAME">$_.each</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>461</span> </span><span class="WHIT">				</span><span class="NAME">_css</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">prop</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">val</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>462</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>463</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>464</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>465</span> 		 * Adds to the innerHTML of the current element, after the last child.
+<span class='line'>466</span> 		 *
+<span class='line'>467</span> 		 * @example $_("ul").dom.append("&lt;li&gt;&lt;/li&gt;") adds an li element to the end of the selected ul element
+<span class='line'>468</span> 		 * @name append
+<span class='line'>469</span> 		 * @memberOf $_.dom
+<span class='line'>470</span> 		 * @function
+<span class='line'>471</span> 		 * @param string htm
+<span class='line'>472</span> 		 */</span><span class="WHIT">
+<span class='line'>473</span> </span><span class="WHIT">		</span><span class="NAME">append</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">htm</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>474</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>475</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">document.insertAdjacentHTML</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>476</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>477</span> </span><span class="WHIT">				</span><span class="NAME">this.el.insertAdjacentHTML</span><span class="PUNC">(</span><span class="STRN">'beforeend'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>478</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>479</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="WHIT">
+<span class='line'>480</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>481</span> </span><span class="WHIT">				</span><span class="NAME">this.el.innerHTML</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>482</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>483</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>484</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>485</span> 		 * Adds to the innerHTML of the selected element, before the current children
+<span class='line'>486</span> 		 *
+<span class='line'>487</span> 		 * @name prepend
+<span class='line'>488</span> 		 * @memberOf $_.dom
+<span class='line'>489</span> 		 * @function
+<span class='line'>490</span> 		 * @param string htm
+<span class='line'>491</span> 		 */</span><span class="WHIT">
+<span class='line'>492</span> </span><span class="WHIT">		 </span><span class="NAME">prepend</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">htm</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>493</span> </span><span class="WHIT">		 </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>494</span> </span><span class="WHIT">		 	</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">document.insertAdjacentHTML</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>495</span> </span><span class="WHIT">		 	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>496</span> </span><span class="WHIT">		 		</span><span class="NAME">this.el.insertAdjacentHTML</span><span class="PUNC">(</span><span class="STRN">'afterbegin'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>497</span> </span><span class="WHIT">		 	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>498</span> </span><span class="WHIT">		 	</span><span class="KEYW">else</span><span class="WHIT">
+<span class='line'>499</span> </span><span class="WHIT">		 	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>500</span> </span><span class="WHIT">		 		</span><span class="NAME">this.el.innerHTML</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">this.el.innerHTML</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>501</span> </span><span class="WHIT">		 	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>502</span> </span><span class="WHIT">		 </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>503</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>504</span> 		 * Sets or gets the innerHTML propery of the element(s) passed
+<span class='line'>505</span> 		 *
+<span class='line'>506</span> 		 * @name html
+<span class='line'>507</span> 		 * @memberOf $_.dom
+<span class='line'>508</span> 		 * @function
+<span class='line'>509</span> 		 * @param [string] htm
+<span class='line'>510</span> 		 * @return string
+<span class='line'>511</span> 		 * @type string
+<span class='line'>512</span> 		 */</span><span class="WHIT">
+<span class='line'>513</span> </span><span class="WHIT">		</span><span class="NAME">html</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">htm</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>514</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>515</span> 
+<span class='line'>516</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>517</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>518</span> </span><span class="WHIT">				</span><span class="NAME">this.el.innerHTML</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">htm</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>519</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>520</span> 
+<span class='line'>521</span> </span><span class="WHIT">			</span><span class="COMM">//If the parameter is undefined, just return the current value</span><span class="WHIT">
+<span class='line'>522</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.el.innerHTML</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>523</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>524</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>525</span> 
+<span class='line'>526</span> </span><span class="WHIT">	</span><span class="NAME">$_.ext</span><span class="PUNC">(</span><span class="STRN">'dom'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">d</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>527</span> 
+<span class='line'>528</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>
