@@ -818,8 +818,13 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 
 			type = (isPost) ? "POST" : "GET";
-
-			url += (type === "GET") ? "?" + this._serialize(data) : '';
+			
+			if (type === "GET")
+			{
+				url += ( ! url.match('?')) 
+					? "?" + this._serialize(data) 
+					: this._serialize(data);
+			}
 
 			request.open(type, url);
 
