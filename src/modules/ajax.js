@@ -28,12 +28,12 @@
 			}
 
 			type = (isPost) ? "POST" : "GET";
-			
+
 			if (type === "GET")
 			{
-				url += ( ! url.match('?')) 
-					? "?" + this._serialize(data) 
-					: this._serialize(data);
+				url += (url.match(/\?/))
+					? this._serialize(data)
+					: "?" + this._serialize(data);
 			}
 
 			request.open(type, url);
