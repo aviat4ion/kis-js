@@ -2,9 +2,9 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.7.0
+	Version		0.8.0
  */
-(function (){
+(function (undefined){
 
 	"use strict";
 
@@ -14,7 +14,7 @@
 	// selector engine. I choose to just use the
 	// browser feature, since it is present in
 	// IE 8+, and all other major browsers
-	if (typeof document.querySelector === "undefined")
+	if (document.querySelector === undefined)
 	{
 		return;
 	}
@@ -35,10 +35,10 @@
 	$_ = function(s)
 	{
 		// Have documentElement be default selector, just in case
-		if (typeof s === "undefined")
+		if (s === undefined)
 		{
 			// Defines a "global" selector for that instance
-			sel = (typeof $_.el !== "undefined")
+			sel = ($_.el !== undefined)
 				? $_.el
 				: document.documentElement;
 		}
@@ -80,7 +80,7 @@
 	{
 		var x, c;
 
-		if (typeof a != "string" || typeof a === "undefined"){ return a;}
+		if (typeof a != "string" || a === undefined){ return a;}
 
 		//Check for a context of a specific element, otherwise, just run on the document
 		c  = (context != null && context.nodeType === 1)
@@ -113,12 +113,12 @@
 	{
 		var type, F;
 
-		if(typeof obj === "undefined")
+		if(obj === undefined)
 		{
 			return;
 		}
 
-		if(typeof Object.create !== "undefined")
+		if(Object.create !== undefined)
 		{
 			return Object.create(obj);
 		}
@@ -162,10 +162,10 @@
 	 */
 	$_.ext('each', function (callback)
 	{
-		if(typeof sel.length !== "undefined" && sel !== window)
+		if(sel.length !== undefined && sel !== window)
 		{
 			// Use the native method, if it exists
-			if(typeof Array.prototype.forEach !== 'undefined')
+			if(Array.prototype.forEach !== undefined)
 			{
 				[].forEach.call(sel, callback);
 				return;
@@ -255,177 +255,15 @@ if (typeof Array.isArray === "undefined")
 // --------------------------------------------------------------------------
 
 
-(function ($_){
+(function ($_, undefined){
 
 "use strict"
 
 // --------------------------------------------------------------------------
 
 //This is used so IE can use the classList api
-/*
- * classList.js: Cross-browser full element.classList implementation.
- * 2011-06-15
- *
- * By Eli Grey, http://eligrey.com
- * Public Domain.
- * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
- */
-if (typeof document !== "undefined" && !("classList" in document.createElement("a")))
-{
-	(function (view){
-
-		var classListProp = "classList",
-			protoProp = "prototype",
-			elemCtrProto = (view.HTMLElement || view.Element)[protoProp],
-			objCtr = Object,
-			strTrim = String[protoProp].trim ||
-			function ()
-			{
-				return this.replace(/^\s+|\s+$/g, "");
-			},
-			arrIndexOf = Array[protoProp].indexOf ||
-			function (item)
-			{
-				var
-				i = 0,
-					len = this.length;
-				for (; i < len; i++)
-				{
-					if (i in this && this[i] === item)
-					{
-						return i;
-					}
-				}
-				return -1;
-			}
-			// Vendors: please allow content code to instantiate DOMExceptions
-			,
-			/**
-			 * @private
-			 */
-			DOMEx = function (type, message)
-			{
-				this.name = type;
-				this.code = DOMException[type];
-				this.message = message;
-			},
-			/**
-			 * @private
-			 */
-			checkTokenAndGetIndex = function (classList, token)
-			{
-				if (token === "")
-				{
-					throw new DOMEx("SYNTAX_ERR", "An invalid or illegal string was specified");
-				}
-				if (/\s/.test(token))
-				{
-					throw new DOMEx("INVALID_CHARACTER_ERR", "String contains an invalid character");
-				}
-				return arrIndexOf.call(classList, token);
-			},
-			/**
-			 * @private
-			 */
-			ClassList = function (elem)
-			{
-				var
-				trimmedClasses = strTrim.call(elem.className),
-					classes = trimmedClasses ? trimmedClasses.split(/\s+/) : [],
-					i = 0,
-					len = classes.length;
-				for (; i < len; i++)
-				{
-					this.push(classes[i]);
-				}
-				this._updateClassName = function ()
-				{
-					elem.className = this.toString();
-				};
-			},
-			classListProto = ClassList[protoProp] = [],
-			/**
-			 * @private
-			 */
-			classListGetter = function ()
-			{
-				return new ClassList(this);
-			};
-		// Most DOMException implementations don't allow calling DOMException's toString()
-		// on non-DOMExceptions. Error's toString() is sufficient here.
-		DOMEx[protoProp] = Error[protoProp];
-		classListProto.item = function (i)
-		{
-			return this[i] || null;
-		};
-		classListProto.contains = function (token)
-		{
-			token += "";
-			return checkTokenAndGetIndex(this, token) !== -1;
-		};
-		classListProto.add = function (token)
-		{
-			token += "";
-			if (checkTokenAndGetIndex(this, token) === -1)
-			{
-				this.push(token);
-				this._updateClassName();
-			}
-		};
-		classListProto.remove = function (token)
-		{
-			token += "";
-			var index = checkTokenAndGetIndex(this, token);
-			if (index !== -1)
-			{
-				this.splice(index, 1);
-				this._updateClassName();
-			}
-		};
-		classListProto.toggle = function (token)
-		{
-			token += "";
-			if (checkTokenAndGetIndex(this, token) === -1)
-			{
-				this.add(token);
-			}
-			else
-			{
-				this.remove(token);
-			}
-		};
-		classListProto.toString = function ()
-		{
-			return this.join(" ");
-		};
-
-		if (objCtr.defineProperty)
-		{
-			var classListPropDesc = {
-				get: classListGetter,
-				enumerable: true,
-				configurable: true
-			};
-			try
-			{
-				objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
-			}
-			catch (ex)
-			{ // IE 8 doesn't support enumerable:true
-				if (ex.number === -0x7FF5EC54)
-				{
-					classListPropDesc.enumerable = false;
-					objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
-				}
-			}
-		}
-		else if (objCtr[protoProp].__defineGetter__)
-		{
-			elemCtrProto.__defineGetter__(classListProp, classListGetter);
-		}
-
-	}(self));
-}
+/*! @source http://purl.eligrey.com/github/classList.js/blob/master/classList.js*/
+if(typeof document!=="undefined"&&!("classList" in document.createElement("a"))){(function(j){if(!("HTMLElement" in j)&&!("Element" in j)){return}var a="classList",f="prototype",m=(j.HTMLElement||j.Element)[f],b=Object,k=String[f].trim||function(){return this.replace(/^\s+|\s+$/g,"")},c=Array[f].indexOf||function(q){var p=0,o=this.length;for(;p<o;p++){if(p in this&&this[p]===q){return p}}return -1},n=function(o,p){this.name=o;this.code=DOMException[o];this.message=p},g=function(p,o){if(o===""){throw new n("SYNTAX_ERR","An invalid or illegal string was specified")}if(/\s/.test(o)){throw new n("INVALID_CHARACTER_ERR","String contains an invalid character")}return c.call(p,o)},d=function(s){var r=k.call(s.className),q=r?r.split(/\s+/):[],p=0,o=q.length;for(;p<o;p++){this.push(q[p])}this._updateClassName=function(){s.className=this.toString()}},e=d[f]=[],i=function(){return new d(this)};n[f]=Error[f];e.item=function(o){return this[o]||null};e.contains=function(o){o+="";return g(this,o)!==-1};e.add=function(){var s=arguments,r=0,p=s.length,q,o=false;do{q=s[r]+"";if(g(this,q)===-1){this.push(q);o=true}}while(++r<p);if(o){this._updateClassName()}};e.remove=function(){var t=arguments,s=0,p=t.length,r,o=false;do{r=t[s]+"";var q=g(this,r);if(q!==-1){this.splice(q,1);o=true}}while(++s<p);if(o){this._updateClassName()}};e.toggle=function(p,q){p+="";var o=this.contains(p),r=o?q!==true&&"remove":q!==false&&"add";if(r){this[r](p)}return !o};e.toString=function(){return this.join(" ")};if(b.defineProperty){var l={get:i,enumerable:true,configurable:true};try{b.defineProperty(m,a,l)}catch(h){if(h.number===-2146823252){l.enumerable=false;b.defineProperty(m,a,l)}}}else{if(b[f].__defineGetter__){m.__defineGetter__(a,i)}}}(self))};
 
 /**
  * DOM
@@ -442,7 +280,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		var oldVal, doAttr;
 
 		//Get the value of the attribute, if it exists
-		if (typeof sel.hasAttribute !== "undefined")
+		if (sel.hasAttribute !== undefined)
 		{
 			if (sel.hasAttribute(name))
 			{
@@ -451,12 +289,12 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 			doAttr = true;
 		}
-		else if (typeof sel[name] !== "undefined")
+		else if (sel[name] !== undefined)
 		{
 			oldVal = sel[name];
 			doAttr = false;
 		}
-		else if (name === "class" && typeof sel.className !== "undefined") //className attribute
+		else if (name === "class" && sel.className !== undefined) //className attribute
 		{
 			name = "className";
 			oldVal = sel.className;
@@ -464,22 +302,19 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		}
 
 		//Well, I guess that attribute doesn't exist
-		if (typeof oldVal === "undefined" && (typeof value === "undefined" || value === null))
+		if (oldVal === undefined && (value === undefined || value === null))
 		{
-			/*console.log(value);
-			console.log(sel);
-			console.log("Element does not have the selected attribute");*/
 			return null;
 		}
 
 		//No value to set? Return the current value
-		if (typeof value === "undefined")
+		if (value === undefined)
 		{
 			return oldVal;
 		}
 
 		//Determine what to do with the attribute
-		if (typeof value !== "undefined" && value !== null)
+		if (value !== undefined && value !== null)
 		{
 			if(doAttr === true)
 			{
@@ -502,7 +337,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			}
 		}
 
-		return (typeof value !== "undefined") ? value : oldVal;
+		return (value !== undefined) ? value : oldVal;
 	}
 
 	/**
@@ -532,17 +367,17 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 
 		//If you don't define a value, try returning the existing value
-		if(typeof val === "undefined" && sel.style[prop] !== "undefined")
+		if(val === undefined && sel.style[prop] !== undefined)
 		{
 			return sel.style[prop];
 		}
-		else if(typeof val === "undefined" && sel.style[equi[prop]] !== "undefined")
+		else if(val === undefined && sel.style[equi[prop]] !== undefined)
 		{
 			return sel.style[equi[prop]];
 		}
 
 		//Let's try the easy way first
-		if(typeof sel.style[prop] !== "undefined")
+		if(sel.style[prop] !== undefined)
 		{
 			sel.style[prop] = val;
 
@@ -579,7 +414,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		addClass: function (c)
 		{
 			$_.each(function (e){
-				e.classList.add(c);
+				this.classList.add(c);
 			});
 		},
 		/**
@@ -621,7 +456,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 */
 		show: function (type)
 		{
-			if (typeof type === "undefined")
+			if (type === undefined)
 			{
 				type = "block";
 			}
@@ -647,11 +482,11 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			var sel = this.el;
 
 			//Make sure you don't try to get a bunch of elements
-			if (sel.length > 1 && typeof value === "undefined")
+			if (sel.length > 1 && value === undefined)
 			{
 				return null;
 			}
-			else if (sel.length > 1 && typeof value !== "undefined") //You can set a bunch, though
+			else if (sel.length > 1 && value !== undefined) //You can set a bunch, though
 			{
 				$_.each(function (e){
 					return _attr(e, name, value);
@@ -681,7 +516,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 			sel = this.el;
 
-			set = (typeof value !== "undefined") ? true : false;
+			set = (value !== undefined) ? true : false;
 
 			oldValue = sel.textContent;
 
@@ -713,7 +548,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		css: function (prop, val)
 		{
 			//Return the current value if a value is not set
-			if(typeof val === "undefined")
+			if(val === undefined)
 			{
 				return _css(this.el, prop);
 			}
@@ -733,7 +568,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 */
 		append: function(htm)
 		{
-			if(typeof document.insertAdjacentHTML !== "undefined")
+			if(document.insertAdjacentHTML !== undefined)
 			{
 				this.el.insertAdjacentHTML('beforeend', htm);
 			}
@@ -752,7 +587,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		 */
 		 prepend: function(htm)
 		 {
-		 	if(typeof document.insertAdjacentHTML !== "undefined")
+		 	if(document.insertAdjacentHTML !== undefined)
 		 	{
 		 		this.el.insertAdjacentHTML('afterbegin', htm);
 		 	}
@@ -774,7 +609,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		html: function(htm)
 		{
 
-			if(typeof htm !== "undefined")
+			if(htm !== undefined)
 			{
 				this.el.innerHTML = htm;
 			}
@@ -798,7 +633,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	
 	// Don't bother even defining the object if the XMLHttpRequest isn't available
-	if(typeof window.XMLHttpRequest === "undefined")
+	if(window.XMLHttpRequest === undefined)
 	{
 		return;
 	}
@@ -809,7 +644,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 			var type,
 				request = new XMLHttpRequest();
 
-			if (typeof success_callback === "undefined")
+			if (success_callback === undefined)
 			{
 				/**
 				 * @private
@@ -838,7 +673,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 					}
 					else
 					{
-						if (typeof error_callback !== 'undefined')
+						if (error_callback !== undefined)
 						{
 							error_callback.call(request.status, request.status);
 						}
@@ -930,7 +765,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 		var source;
 
 		// Check for server-sent event support
-		if (typeof EventSource !== 'undefined')
+		if (EventSource !== undefined)
 		{
 			source = new EventSource(url);
 
@@ -956,7 +791,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	var _add_remove, e, _attach_delegate;
 
 	// Don't bother defining the methods if event api isn't supports
-	if (typeof document.addEventListener === "undefined")
+	if (document.addEventListener === undefined)
 	{
 		return false;
 	}
@@ -965,7 +800,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 	{
 		var i, len;
 
-		if(typeof sel === "undefined")
+		if(sel === undefined)
 		{
 			return null;
 		}
@@ -1109,7 +944,7 @@ if (typeof document !== "undefined" && !("classList" in document.createElement("
 
 	
 	//No support for localstorage? Bail out early
-	if(typeof localStorage === "undefined" || typeof JSON === "undefined")
+	if(localStorage === undefined || JSON === undefined)
 	{
 		return null;
 	}

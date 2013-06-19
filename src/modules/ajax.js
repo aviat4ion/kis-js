@@ -3,12 +3,12 @@
  *
  * Module for making ajax requests
  */
-(function (){
+(function (undefined){
 
 	"use strict";
 
 	// Don't bother even defining the object if the XMLHttpRequest isn't available
-	if(typeof window.XMLHttpRequest === "undefined")
+	if(window.XMLHttpRequest === undefined)
 	{
 		return;
 	}
@@ -19,7 +19,7 @@
 			var type,
 				request = new XMLHttpRequest();
 
-			if (typeof success_callback === "undefined")
+			if (success_callback === undefined)
 			{
 				/**
 				 * @private
@@ -48,7 +48,7 @@
 					}
 					else
 					{
-						if (typeof error_callback !== 'undefined')
+						if (error_callback !== undefined)
 						{
 							error_callback.call(request.status, request.status);
 						}
@@ -140,7 +140,7 @@
 		var source;
 
 		// Check for server-sent event support
-		if (typeof EventSource !== 'undefined')
+		if (EventSource !== undefined)
 		{
 			source = new EventSource(url);
 

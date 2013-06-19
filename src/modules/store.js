@@ -3,12 +3,12 @@
  *
  * Wrapper for local / sessionstorage
  */
-(function (){
+(function (undefined){
 
 	"use strict";
 
 	//No support for localstorage? Bail out early
-	if(typeof localStorage === "undefined" || typeof JSON === "undefined")
+	if(localStorage === undefined || JSON === undefined)
 	{
 		return null;
 	}

@@ -2,9 +2,9 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.7.0
+	Version		0.8.0
  */
-(function (){
+(function (undefined){
 
 	"use strict";
 
@@ -14,7 +14,7 @@
 	// selector engine. I choose to just use the
 	// browser feature, since it is present in
 	// IE 8+, and all other major browsers
-	if (typeof document.querySelector === "undefined")
+	if (document.querySelector === undefined)
 	{
 		return;
 	}
@@ -35,10 +35,10 @@
 	$_ = function(s)
 	{
 		// Have documentElement be default selector, just in case
-		if (typeof s === "undefined")
+		if (s === undefined)
 		{
 			// Defines a "global" selector for that instance
-			sel = (typeof $_.el !== "undefined")
+			sel = ($_.el !== undefined)
 				? $_.el
 				: document.documentElement;
 		}
@@ -80,7 +80,7 @@
 	{
 		var x, c;
 
-		if (typeof a != "string" || typeof a === "undefined"){ return a;}
+		if (typeof a != "string" || a === undefined){ return a;}
 
 		//Check for a context of a specific element, otherwise, just run on the document
 		c  = (context != null && context.nodeType === 1)
@@ -113,12 +113,12 @@
 	{
 		var type, F;
 
-		if(typeof obj === "undefined")
+		if(obj === undefined)
 		{
 			return;
 		}
 
-		if(typeof Object.create !== "undefined")
+		if(Object.create !== undefined)
 		{
 			return Object.create(obj);
 		}
@@ -162,10 +162,10 @@
 	 */
 	$_.ext('each', function (callback)
 	{
-		if(typeof sel.length !== "undefined" && sel !== window)
+		if(sel.length !== undefined && sel !== window)
 		{
 			// Use the native method, if it exists
-			if(typeof Array.prototype.forEach !== 'undefined')
+			if(Array.prototype.forEach !== undefined)
 			{
 				[].forEach.call(sel, callback);
 				return;
@@ -258,12 +258,12 @@ if (typeof Array.isArray === "undefined")
  *
  * Module for making ajax requests
  */
-(function (){
+(function (undefined){
 
 	"use strict";
 
 	// Don't bother even defining the object if the XMLHttpRequest isn't available
-	if(typeof window.XMLHttpRequest === "undefined")
+	if(window.XMLHttpRequest === undefined)
 	{
 		return;
 	}
@@ -274,7 +274,7 @@ if (typeof Array.isArray === "undefined")
 			var type,
 				request = new XMLHttpRequest();
 
-			if (typeof success_callback === "undefined")
+			if (success_callback === undefined)
 			{
 				/**
 				 * @private
@@ -303,7 +303,7 @@ if (typeof Array.isArray === "undefined")
 					}
 					else
 					{
-						if (typeof error_callback !== 'undefined')
+						if (error_callback !== undefined)
 						{
 							error_callback.call(request.status, request.status);
 						}
@@ -395,7 +395,7 @@ if (typeof Array.isArray === "undefined")
 		var source;
 
 		// Check for server-sent event support
-		if (typeof EventSource !== 'undefined')
+		if (EventSource !== undefined)
 		{
 			source = new EventSource(url);
 
@@ -416,14 +416,14 @@ if (typeof Array.isArray === "undefined")
  * Event api wrapper
  * @todo Add method for triggering events
  */
-(function (){
+(function (undefined){
 
 	"use strict";
 
 	var _add_remove, e, _attach_delegate;
 
 	// Don't bother defining the methods if event api isn't supports
-	if (typeof document.addEventListener === "undefined")
+	if (document.addEventListener === undefined)
 	{
 		return false;
 	}
@@ -432,7 +432,7 @@ if (typeof Array.isArray === "undefined")
 	{
 		var i, len;
 
-		if(typeof sel === "undefined")
+		if(sel === undefined)
 		{
 			return null;
 		}

@@ -4,7 +4,7 @@
  * Various object and string manipulation functions
  * Note: these are based on similar phpjs functions: http://phpjs.org
  */
-(function (){
+(function (undefined){
 
 	"use strict";
 

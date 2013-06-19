@@ -10,12 +10,12 @@
 <span class='line'>  3</span>  *
 <span class='line'>  4</span>  * Module for making ajax requests
 <span class='line'>  5</span>  */</span><span class="WHIT">
-<span class='line'>  6</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>  6</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>  7</span> 
 <span class='line'>  8</span> </span><span class="WHIT">	</span><span class="STRN">"use strict"</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>  9</span> 
 <span class='line'> 10</span> </span><span class="WHIT">	</span><span class="COMM">// Don't bother even defining the object if the XMLHttpRequest isn't available</span><span class="WHIT">
-<span class='line'> 11</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">window.XMLHttpRequest</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 11</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">window.XMLHttpRequest</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'> 12</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 13</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 14</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
@@ -26,7 +26,7 @@
 <span class='line'> 19</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'> 20</span> </span><span class="WHIT">				</span><span class="NAME">request</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">XMLHttpRequest</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 21</span> 
-<span class='line'> 22</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">success_callback</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 22</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">success_callback</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'> 23</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 24</span> </span><span class="WHIT">				</span><span class="COMM">/**
 <span class='line'> 25</span> 				 * @private
@@ -55,7 +55,7 @@
 <span class='line'> 48</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'> 49</span> </span><span class="WHIT">					</span><span class="KEYW">else</span><span class="WHIT">
 <span class='line'> 50</span> </span><span class="WHIT">					</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 51</span> </span><span class="WHIT">						</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">error_callback</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">						</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">error_callback</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'> 52</span> </span><span class="WHIT">						</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 53</span> </span><span class="WHIT">							</span><span class="NAME">error_callback.call</span><span class="PUNC">(</span><span class="NAME">request.status</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">request.status</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 54</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
@@ -147,7 +147,7 @@
 <span class='line'>140</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">source</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>141</span> 
 <span class='line'>142</span> </span><span class="WHIT">		</span><span class="COMM">// Check for server-sent event support</span><span class="WHIT">
-<span class='line'>143</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">EventSource</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>143</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">EventSource</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>144</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>145</span> </span><span class="WHIT">			</span><span class="NAME">source</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">EventSource</span><span class="PUNC">(</span><span class="NAME">url</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>146</span> 

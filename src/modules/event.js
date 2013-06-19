@@ -4,14 +4,14 @@
  * Event api wrapper
  * @todo Add method for triggering events
  */
-(function (){
+(function (undefined){
 
 	"use strict";
 
 	var _add_remove, e, _attach_delegate;
 
 	// Don't bother defining the methods if event api isn't supports
-	if (typeof document.addEventListener === "undefined")
+	if (document.addEventListener === undefined)
 	{
 		return false;
 	}
@@ -20,7 +20,7 @@
 	{
 		var i, len;
 
-		if(typeof sel === "undefined")
+		if(sel === undefined)
 		{
 			return null;
 		}
