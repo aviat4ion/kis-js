@@ -7,12 +7,6 @@
 
 	"use strict";
 
-	//No support for localstorage? Bail out early
-	if(localStorage === undefined || JSON === undefined)
-	{
-		return null;
-	}
-
 	//Shortcuts for wrapper
 	var l = localStorage,
 		s = sessionStorage;

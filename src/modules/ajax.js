@@ -7,12 +7,6 @@
 
 	"use strict";
 
-	// Don't bother even defining the object if the XMLHttpRequest isn't available
-	if(window.XMLHttpRequest === undefined)
-	{
-		return;
-	}
-
 	var ajax = {
 		_do: function (url, data, success_callback, error_callback, isPost)
 		{
@@ -75,11 +69,7 @@
 
 			for (name in data)
 			{
-				if (!data.hasOwnProperty(name))
-				{
-					continue;
-				}
-				if (typeof data[name] === "function")
+				if ( ! data.hasOwnProperty(name) || typeof data[name] === "function")
 				{
 					continue;
 				}
@@ -125,30 +115,4 @@
 	$_.ext('post', function (url, data, success_callback, error_callback){
 		ajax._do(url, data, success_callback, error_callback, true);
 	});
-
-	/**
-	 * Watches for server-sent events and applies a callback on message
-	 *
-	 * @name sse
-	 * @function
-	 * @memberOf $_
-	 * @param string url
-	 * @param function callback
-	 */
-	$_.ext('sse', function(url, callback){
-
-		var source;
-
-		// Check for server-sent event support
-		if (EventSource !== undefined)
-		{
-			source = new EventSource(url);
-
-			// Apply the callback
-			source.onmessage = function(event){
-				callback.call(event.data, event.data);
-			};
-		}
-	});
-
 }());

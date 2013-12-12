@@ -153,7 +153,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		addClass: function (c)
 		{
 			$_.each(function (e){
-				this.classList.add(c);
+				e.classList.add(c);
 			});
 		},
 		/**

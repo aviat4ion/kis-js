@@ -8,18 +8,7 @@
 
 	"use strict";
 
-	// Most functions rely on a string selector
-	// which returns html elements. This requires
-	// document.querySelectorAll or a custom
-	// selector engine. I choose to just use the
-	// browser feature, since it is present in
-	// IE 8+, and all other major browsers
-	if (document.querySelector === undefined)
-	{
-		return;
-	}
-
-	var $_, $, dcopy, sel;
+	var $_, $, sel;
 
 
 	/**
@@ -51,7 +40,7 @@
 		$_.prototype.el = sel;
 
 		// Use the $_ object as it's own prototype
-		var self = dcopy($_);
+		var self = Object.create($_);
 
 		// Give sel to each extension.
 		for(var i in self)
@@ -102,46 +91,6 @@
 	};
 
 	/**
-	 * Deep copy/prototypical constructor function
-	 *
-	 * @param object obj
-	 * @private
-	 * @return object
-	 * @type object
-	 */
-	dcopy = function(obj)
-	{
-		var type, F;
-
-		if(obj === undefined)
-		{
-			return;
-		}
-
-		if(Object.create !== undefined)
-		{
-			return Object.create(obj);
-		}
-
-		type = typeof obj;
-
-		if(type !== "object" && type !== "function")
-		{
-			return;
-		}
-
-		/**
-		 * @private
-		 */
-		F = function(){};
-
-		F.prototype = obj;
-
-		return new F();
-
-	};
-
-	/**
 	 * Adds the property `obj` to the $_ object, calling it `name`
 	 *
 	 * @param string name
@@ -164,27 +113,7 @@
 	{
 		if(sel.length !== undefined && sel !== window)
 		{
-			// Use the native method, if it exists
-			if(Array.prototype.forEach !== undefined)
-			{
-				[].forEach.call(sel, callback);
-				return;
-			}
-
-			// Otherwise, fall back to a for loop
-			var len = sel.length;
-
-			if (len === 0)
-			{
-				return;
-			}
-
-			var selx;
-			for (var x = 0; x < len; x++)
-			{
-				selx = (sel.item(x)) ? sel.item(x) : sel[x];
-				callback.call(selx, selx);
-			}
+			[].forEach.call(sel, callback);
 		}
 		else
 		{
@@ -214,5 +143,4 @@
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
 	$_.$ = $;
-
 }());

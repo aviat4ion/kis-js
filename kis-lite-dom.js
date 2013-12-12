@@ -8,18 +8,7 @@
 
 	"use strict";
 
-	// Most functions rely on a string selector
-	// which returns html elements. This requires
-	// document.querySelectorAll or a custom
-	// selector engine. I choose to just use the
-	// browser feature, since it is present in
-	// IE 8+, and all other major browsers
-	if (document.querySelector === undefined)
-	{
-		return;
-	}
-
-	var $_, $, dcopy, sel;
+	var $_, $, sel;
 
 
 	/**
@@ -51,7 +40,7 @@
 		$_.prototype.el = sel;
 
 		// Use the $_ object as it's own prototype
-		var self = dcopy($_);
+		var self = Object.create($_);
 
 		// Give sel to each extension.
 		for(var i in self)
@@ -102,46 +91,6 @@
 	};
 
 	/**
-	 * Deep copy/prototypical constructor function
-	 *
-	 * @param object obj
-	 * @private
-	 * @return object
-	 * @type object
-	 */
-	dcopy = function(obj)
-	{
-		var type, F;
-
-		if(obj === undefined)
-		{
-			return;
-		}
-
-		if(Object.create !== undefined)
-		{
-			return Object.create(obj);
-		}
-
-		type = typeof obj;
-
-		if(type !== "object" && type !== "function")
-		{
-			return;
-		}
-
-		/**
-		 * @private
-		 */
-		F = function(){};
-
-		F.prototype = obj;
-
-		return new F();
-
-	};
-
-	/**
 	 * Adds the property `obj` to the $_ object, calling it `name`
 	 *
 	 * @param string name
@@ -164,27 +113,7 @@
 	{
 		if(sel.length !== undefined && sel !== window)
 		{
-			// Use the native method, if it exists
-			if(Array.prototype.forEach !== undefined)
-			{
-				[].forEach.call(sel, callback);
-				return;
-			}
-
-			// Otherwise, fall back to a for loop
-			var len = sel.length;
-
-			if (len === 0)
-			{
-				return;
-			}
-
-			var selx;
-			for (var x = 0; x < len; x++)
-			{
-				selx = (sel.item(x)) ? sel.item(x) : sel[x];
-				callback.call(selx, selx);
-			}
+			[].forEach.call(sel, callback);
 		}
 		else
 		{
@@ -214,8 +143,8 @@
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
 	$_.$ = $;
-
 }());
+
 
 // --------------------------------------------------------------------------
 
@@ -261,12 +190,6 @@ if (typeof Array.isArray === "undefined")
 (function (undefined){
 
 	"use strict";
-
-	// Don't bother even defining the object if the XMLHttpRequest isn't available
-	if(window.XMLHttpRequest === undefined)
-	{
-		return;
-	}
 
 	var ajax = {
 		_do: function (url, data, success_callback, error_callback, isPost)
@@ -330,11 +253,7 @@ if (typeof Array.isArray === "undefined")
 
 			for (name in data)
 			{
-				if (!data.hasOwnProperty(name))
-				{
-					continue;
-				}
-				if (typeof data[name] === "function")
+				if ( ! data.hasOwnProperty(name) || typeof data[name] === "function")
 				{
 					continue;
 				}
@@ -380,33 +299,8 @@ if (typeof Array.isArray === "undefined")
 	$_.ext('post', function (url, data, success_callback, error_callback){
 		ajax._do(url, data, success_callback, error_callback, true);
 	});
-
-	/**
-	 * Watches for server-sent events and applies a callback on message
-	 *
-	 * @name sse
-	 * @function
-	 * @memberOf $_
-	 * @param string url
-	 * @param function callback
-	 */
-	$_.ext('sse', function(url, callback){
-
-		var source;
-
-		// Check for server-sent event support
-		if (EventSource !== undefined)
-		{
-			source = new EventSource(url);
-
-			// Apply the callback
-			source.onmessage = function(event){
-				callback.call(event.data, event.data);
-			};
-		}
-	});
-
 }());
+
 
 // --------------------------------------------------------------------------
 
@@ -421,12 +315,6 @@ if (typeof Array.isArray === "undefined")
 	"use strict";
 
 	var _add_remove, e, _attach_delegate;
-
-	// Don't bother defining the methods if event api isn't supports
-	if (document.addEventListener === undefined)
-	{
-		return false;
-	}
 
 	_add_remove = function (sel, event, callback, add)
 	{
@@ -723,7 +611,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		addClass: function (c)
 		{
 			$_.each(function (e){
-				this.classList.add(c);
+				e.classList.add(c);
 			});
 		},
 		/**

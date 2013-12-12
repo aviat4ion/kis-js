@@ -50,7 +50,25 @@
 			equal(e, $_("div").el[i], ".each function has current selector");
 			i++;
 		});
-		equal($_().el, window.document.documentElement, "Empty selector is set to documentElement");
+		
+		strictEqual($_().el, window.document.documentElement, "Empty selector is set to documentElement");
+		strictEqual($_('#qunit').el, document.getElementById('qunit'), "Id selector equivalence")
+		
+		strictEqual(is_clone($_('#qunit').el, $_.$('#qunit')), true, "El attribute is same as direct selector");
+		strictEqual(is_clone($_('div').el, $_.$('div')), true, "El attribute is same as direct selector");
+		
+	});
+	
+	asyncTest("Interator tests", function() {
+		$_('#qunit').each(function(el) {
+			equal(el, $_.$('#qunit'));
+			start();
+		});
+		
+		/*$_('foo').each(function(el) {
+			equal(el, undefined);
+			start();	
+		});*/
 	});
 	
 	test("Array.isArray", function(){

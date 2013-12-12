@@ -1,5 +1,5 @@
 /**
- * QUnit v1.11.0pre - A JavaScript Unit Testing Framework
+ * QUnit v1.12.0 - A JavaScript Unit Testing Framework
  *
  * http://qunitjs.com
  *
@@ -109,6 +109,11 @@
 #qunit-tests li a:hover,
 #qunit-tests li a:focus {
 	color: #000;
+}
+
+#qunit-tests li .runtime {
+	float: right;
+	font-size: smaller;
 }
 
 .qunit-assert-list {

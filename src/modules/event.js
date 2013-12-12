@@ -10,12 +10,6 @@
 
 	var _add_remove, e, _attach_delegate;
 
-	// Don't bother defining the methods if event api isn't supports
-	if (document.addEventListener === undefined)
-	{
-		return false;
-	}
-
 	_add_remove = function (sel, event, callback, add)
 	{
 		var i, len;
