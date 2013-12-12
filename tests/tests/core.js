@@ -82,6 +82,6 @@
 		ok($_().event, "Event module");
 		ok($_.store, "Local Storage module");
 		ok($_().dom, "Dom manipulation module");
-		ok($_.util, "Utilities module");
+		ok($_.get, "Ajaz module");
 	});
 }());

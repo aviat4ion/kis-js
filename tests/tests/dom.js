@@ -53,7 +53,7 @@
 	});
 	
 	test("Attr", function(){
-		expect(2);
+		expect(3);
 	
 		var $test = $_("section");
 		var ele = $test.el;
@@ -62,6 +62,8 @@
 		
 		equal($test.dom.attr('id'), "testing", "Getting attribute");
 		equal(ele.id, "testing", "Setting attribute");
+		
+		equal($_("div").dom.attr('id'), null, "Trying to get an attribute for multiple elements");
 		
 	});
 	

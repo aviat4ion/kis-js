@@ -14,11 +14,6 @@
 	{
 		var i, len;
 
-		if(sel === undefined)
-		{
-			return null;
-		}
-
 		// Multiple events? Run recursively!
 		if ( ! event.match(/^([\w\-]+)$/))
 		{
@@ -77,6 +72,35 @@
 	 * @memberOf $_
 	 */
 	e = {
+		/**
+		 * Create a custom event
+		 *
+		 * @memberOf $_.event
+		 * @name create
+		 * @function
+		 * @example Eg. var event = $_("#selector").event.create('foo', {});
+		 * @param string name
+		 * @param [object] data
+		 * @return object
+		 */
+		create: function(name, data)
+		{
+			// Do a terrible browser-sniffic hack because I don't know of a good
+			// feature test
+			if (/MSIE|Trident/i.test(navigator.userAgent))
+			{
+				// Okay, I guess we have to do this the hard way... :(
+				// Microsoft, your browser still sucks
+				var e = document.createEvent('CustomEvent');
+				e.initCustomEvent(name, true, true, data);
+
+				return e;
+			}
+			else
+			{
+				return new CustomEvent(name, data);
+			}
+		},
 		/**
 		 * Adds an event that returns a callback when triggered on the selected
 		 * event and selector
@@ -141,6 +165,22 @@
 			$_.each(function(e){
 				_attach_delegate(e, target, event, callback);
 			});
+		},
+		/**
+		 * Trigger an event to fire
+		 *
+		 * @memberOf $_.event
+		 * @name trigger
+		 * @function
+		 * @example Eg. $_("#my_id").trigger('click');
+		 * @param string target
+		 * @param object event
+		 * @return bool
+		 */
+		trigger: function(event)
+		{
+			var target = this.el;
+			return target.dispatchEvent(event);
 		}
 	};
 

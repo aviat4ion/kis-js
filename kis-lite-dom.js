@@ -253,7 +253,7 @@ if (typeof Array.isArray === "undefined")
 
 			for (name in data)
 			{
-				if ( ! data.hasOwnProperty(name) || typeof data[name] === "function")
+				if ( ! data.hasOwnProperty(name) || $_.type(data[name]) === "function")
 				{
 					continue;
 				}
@@ -320,11 +320,6 @@ if (typeof Array.isArray === "undefined")
 	{
 		var i, len;
 
-		if(sel === undefined)
-		{
-			return null;
-		}
-
 		// Multiple events? Run recursively!
 		if ( ! event.match(/^([\w\-]+)$/))
 		{
@@ -383,6 +378,35 @@ if (typeof Array.isArray === "undefined")
 	 * @memberOf $_
 	 */
 	e = {
+		/**
+		 * Create a custom event
+		 *
+		 * @memberOf $_.event
+		 * @name create
+		 * @function
+		 * @example Eg. var event = $_("#selector").event.create('foo', {});
+		 * @param string name
+		 * @param [object] data
+		 * @return object
+		 */
+		create: function(name, data)
+		{
+			// Do a terrible browser-sniffic hack because I don't know of a good 
+			// feature test
+			if (/MSIE|Trident/i.test(navigator.userAgent))
+			{
+				// Okay, I guess we have to do this the hard way... :(
+				// Microsoft, your browser still sucks
+				var e = document.createEvent('CustomEvent');
+				e.initCustomEvent(name, true, true, data);
+				
+				return e;
+			}
+			else
+			{
+				return new CustomEvent(name, data);
+			}
+		},
 		/**
 		 * Adds an event that returns a callback when triggered on the selected
 		 * event and selector
@@ -447,6 +471,22 @@ if (typeof Array.isArray === "undefined")
 			$_.each(function(e){
 				_attach_delegate(e, target, event, callback);
 			});
+		},
+		/**
+		 * Trigger an event to fire
+		 *
+		 * @memberOf $_.event
+		 * @name trigger
+		 * @function
+		 * @example Eg. $_("#my_id").trigger('click');
+		 * @param string target
+		 * @param object event
+		 * @return bool
+		 */
+		trigger: function(event)
+		{
+			var target = this.el;
+			return target.dispatchEvent(event);
 		}
 	};
 
@@ -765,14 +805,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 */
 		append: function(htm)
 		{
-			if(document.insertAdjacentHTML !== undefined)
-			{
-				this.el.insertAdjacentHTML('beforeend', htm);
-			}
-			else
-			{
-				this.el.innerHTML += htm;
-			}
+			this.el.insertAdjacentHTML('beforeend', htm);
 		},
 		/**
 		 * Adds to the innerHTML of the selected element, before the current children
@@ -784,14 +817,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 */
 		 prepend: function(htm)
 		 {
-		 	if(document.insertAdjacentHTML !== undefined)
-		 	{
-		 		this.el.insertAdjacentHTML('afterbegin', htm);
-		 	}
-		 	else
-		 	{
-		 		this.el.innerHTML = htm + this.el.innerHTML;
-		 	}
+		 	this.el.insertAdjacentHTML('afterbegin', htm);
 		 },
 		/**
 		 * Sets or gets the innerHTML propery of the element(s) passed

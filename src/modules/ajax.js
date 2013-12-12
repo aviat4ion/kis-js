@@ -69,7 +69,7 @@
 
 			for (name in data)
 			{
-				if ( ! data.hasOwnProperty(name) || typeof data[name] === "function")
+				if ( ! data.hasOwnProperty(name) || $_.type(data[name]) === "function")
 				{
 					continue;
 				}

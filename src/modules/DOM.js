@@ -307,14 +307,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 */
 		append: function(htm)
 		{
-			if(document.insertAdjacentHTML !== undefined)
-			{
-				this.el.insertAdjacentHTML('beforeend', htm);
-			}
-			else
-			{
-				this.el.innerHTML += htm;
-			}
+			this.el.insertAdjacentHTML('beforeend', htm);
 		},
 		/**
 		 * Adds to the innerHTML of the selected element, before the current children
@@ -326,14 +319,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 */
 		 prepend: function(htm)
 		 {
-		 	if(document.insertAdjacentHTML !== undefined)
-		 	{
-		 		this.el.insertAdjacentHTML('afterbegin', htm);
-		 	}
-		 	else
-		 	{
-		 		this.el.innerHTML = htm + this.el.innerHTML;
-		 	}
+			this.el.insertAdjacentHTML('afterbegin', htm);
 		 },
 		/**
 		 * Sets or gets the innerHTML propery of the element(s) passed
