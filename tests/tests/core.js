@@ -59,16 +59,15 @@
 		
 	});
 	
-	asyncTest("Interator tests", function() {
+	asyncTest("Iterator tests", function() {
 		$_('#qunit').each(function(el) {
 			equal(el, $_.$('#qunit'));
 			start();
 		});
 		
-		/*$_('foo').each(function(el) {
+		$_('foo').each(function(el) {
 			equal(el, undefined);
-			start();	
-		});*/
+		});
 	});
 	
 	test("Array.isArray", function(){

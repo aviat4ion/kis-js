@@ -16,10 +16,10 @@
 	 *
 	 * Constructor function
 	 *
-	 * @constuctor
-	 * @namespace
-	 * @param string selector
-	 * @return object
+	 * @constructor
+	 * @namespace $_
+	 * @param {string} selector - The dom selector string
+	 * @return {Object}
 	 */
 	$_ = function(s)
 	{
@@ -60,10 +60,9 @@
 	 * Simple DOM selector function
 	 *
 	 * @memberOf $_
-	 * @param string selector
-	 * @param object context
-	 * @return object
-	 * @type object
+	 * @param {string} selector
+	 * @param {Object} [context]
+	 * @return {Object}
 	 */
 	$ = function (a, context)
 	{
@@ -93,8 +92,8 @@
 	/**
 	 * Adds the property `obj` to the $_ object, calling it `name`
 	 *
-	 * @param string name
-	 * @param object obj
+	 * @param {string} name - name of the module
+	 * @param {object} obj - the object to add
 	 */
 	$_.ext = function(name, obj)
 	{
@@ -107,7 +106,7 @@
 	 *
 	 * @name $_.each
 	 * @function
-	 * @param function callback
+	 * @param {function} callback - iteration callback
 	 */
 	$_.ext('each', function (callback)
 	{
@@ -124,9 +123,8 @@
 	/**
 	 * Retrieves the type of the passed variable
 	 *
-	 * @param mixed obj
-	 * @return string
-	 * @type string
+	 * @param {*} obj
+	 * @return {string}
 	 */
 	$_.type = function(obj)
 	{
@@ -154,31 +152,9 @@
  */
 
 /**
- * String trim function polyfill
+ * Promise.prototype.done polyfill
  */
-if(typeof String.prototype.trim === "undefined")
-{
-	/**
-	 * @private
-	 */
-	String.prototype.trim = function()
-	{
-		return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
-	};
-}
-
-// --------------------------------------------------------------------------
-
-/**
- * Array.isArray polyfill
- */
-if (typeof Array.isArray === "undefined")
-{
-	Array.isArray = function(v)
-	{
-		return Object.prototype.toString.apply(v) === '[object Array]';
-	}
-}
+if (!Promise.prototype.done) { Promise.prototype.done = function (cb, eb) { this.then(cb, eb).then(null, function (err) { setTimeout(function () { throw err; }, 0); }); }; }
 
 // --------------------------------------------------------------------------
 
@@ -245,6 +221,13 @@ if (typeof Array.isArray === "undefined")
 				request.send(null);
 			}
 		},
+		/**
+		 * Url encoding for non-get requests
+		 *
+		 * @param data
+		 * @returns {string}
+		 * @private
+		 */
 		_serialize: function (data)
 		{
 			var name,
@@ -276,10 +259,10 @@ if (typeof Array.isArray === "undefined")
 	 * @name get
 	 * @function
 	 * @memberOf $_
-	 * @param string url
-	 * @param object data
-	 * @param function success_callback
-	 * @param function error_callback
+	 * @param {string} url - The url to retrieve
+	 * @param {Object} data - get parameters to send
+	 * @param {function} success_callback - callback called on success
+	 * @param {function} [error_callback] - callback called if there is an error
 	 */
 	$_.ext('get', function (url, data, success_callback, error_callback){
 		ajax._do(url, data, success_callback, error_callback, false);
@@ -291,10 +274,10 @@ if (typeof Array.isArray === "undefined")
 	 * @name post
 	 * @function
 	 * @memberOf $_
-	 * @param string url
-	 * @param object data
-	 * @param function success_callback
-	 * @param function error_callback
+	 * @param {string} url - The url to post to
+	 * @param {Object} data - post parameters to send
+	 * @param {function} success_callback - callback called on success
+	 * @param {function} [error_callback] - callback called if there is an error
 	 */
 	$_.ext('post', function (url, data, success_callback, error_callback){
 		ajax._do(url, data, success_callback, error_callback, true);
@@ -385,13 +368,13 @@ if (typeof Array.isArray === "undefined")
 		 * @name create
 		 * @function
 		 * @example Eg. var event = $_("#selector").event.create('foo', {});
-		 * @param string name
-		 * @param [object] data
-		 * @return object
+		 * @param {string} name
+		 * @param {object} [data]
+		 * @return {Object}
 		 */
 		create: function(name, data)
 		{
-			// Do a terrible browser-sniffic hack because I don't know of a good 
+			// Do a terrible browser-sniffic hack because I don't know of a good
 			// feature test
 			if (/MSIE|Trident/i.test(navigator.userAgent))
 			{
@@ -399,7 +382,7 @@ if (typeof Array.isArray === "undefined")
 				// Microsoft, your browser still sucks
 				var e = document.createEvent('CustomEvent');
 				e.initCustomEvent(name, true, true, data);
-				
+
 				return e;
 			}
 			else
@@ -415,8 +398,8 @@ if (typeof Array.isArray === "undefined")
 		 * @name add
 		 * @function
 		 * @example Eg. $_("#selector").event.add("click", do_something());
-		 * @param string event
-		 * @param function callback
+		 * @param {string} event
+		 * @param {function} callback
 		 */
 		add: function (event, callback)
 		{
@@ -431,8 +414,8 @@ if (typeof Array.isArray === "undefined")
 		 * @name remove
 		 * @function
 		 * @example Eg. $_("#selector").event.remove("click", do_something());
-		 * @param string event
-		 * @param string callback
+		 * @param {string} event
+		 * @param {string} callback
 		 */
 		remove: function (event, callback)
 		{
@@ -447,9 +430,9 @@ if (typeof Array.isArray === "undefined")
 		 * @name live
 		 * @function
 		 * @example Eg. $_.event.live(".button", "click", do_something());
-		 * @param string target
-		 * @param string event
-		 * @param function callback
+		 * @param {string} target
+		 * @param {string} event
+		 * @param {function} callback
 		 */
 		live: function (target, event, callback)
 		{
@@ -462,9 +445,9 @@ if (typeof Array.isArray === "undefined")
 		 * @name delegate
 		 * @function
 		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
-		 * @param string target
-		 * @param string event_type
-		 * @param function callback
+		 * @param {string} target
+		 * @param {string} event
+		 * @param {function} callback
 		 */
 		delegate: function (target, event, callback)
 		{
@@ -479,9 +462,8 @@ if (typeof Array.isArray === "undefined")
 		 * @name trigger
 		 * @function
 		 * @example Eg. $_("#my_id").trigger('click');
-		 * @param string target
-		 * @param object event
-		 * @return bool
+		 * @param {object} event
+		 * @return {boolean}
 		 */
 		trigger: function(event)
 		{

@@ -4,28 +4,6 @@
  */
 
 /**
- * String trim function polyfill
+ * Promise.prototype.done polyfill
  */
-if(typeof String.prototype.trim === "undefined")
-{
-	/**
-	 * @private
-	 */
-	String.prototype.trim = function()
-	{
-		return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
-	};
-}
-
-// --------------------------------------------------------------------------
-
-/**
- * Array.isArray polyfill
- */
-if (typeof Array.isArray === "undefined")
-{
-	Array.isArray = function(v)
-	{
-		return Object.prototype.toString.apply(v) === '[object Array]';
-	}
-}
+if (!Promise.prototype.done) { Promise.prototype.done = function (cb, eb) { this.then(cb, eb).then(null, function (err) { setTimeout(function () { throw err; }, 0); }); }; }

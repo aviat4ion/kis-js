@@ -9,7 +9,7 @@ src directory, and running the "combine.php" script. This will output a
 "kis-custom.js" file. (Be careful, as the script will overwrite any "kis-custom.js"
 file that already exists).
 
-Browser support: IE9+, Latest versions of Firefox, Chrome, Safari, Opera
+Browser support: IE10+, Latest versions of Firefox, Chrome, Safari, Opera
 
 ## Basic Use: ##
 

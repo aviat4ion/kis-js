@@ -16,10 +16,10 @@
 	 *
 	 * Constructor function
 	 *
-	 * @constuctor
-	 * @namespace
-	 * @param string selector
-	 * @return object
+	 * @constructor
+	 * @namespace $_
+	 * @param {string} selector - The dom selector string
+	 * @return {Object}
 	 */
 	$_ = function(s)
 	{
@@ -60,10 +60,9 @@
 	 * Simple DOM selector function
 	 *
 	 * @memberOf $_
-	 * @param string selector
-	 * @param object context
-	 * @return object
-	 * @type object
+	 * @param {string} selector
+	 * @param {Object} [context]
+	 * @return {Object}
 	 */
 	$ = function (a, context)
 	{
@@ -93,8 +92,8 @@
 	/**
 	 * Adds the property `obj` to the $_ object, calling it `name`
 	 *
-	 * @param string name
-	 * @param object obj
+	 * @param {string} name - name of the module
+	 * @param {object} obj - the object to add
 	 */
 	$_.ext = function(name, obj)
 	{
@@ -107,7 +106,7 @@
 	 *
 	 * @name $_.each
 	 * @function
-	 * @param function callback
+	 * @param {function} callback - iteration callback
 	 */
 	$_.ext('each', function (callback)
 	{
@@ -124,9 +123,8 @@
 	/**
 	 * Retrieves the type of the passed variable
 	 *
-	 * @param mixed obj
-	 * @return string
-	 * @type string
+	 * @param {*} obj
+	 * @return {string}
 	 */
 	$_.type = function(obj)
 	{
@@ -154,31 +152,9 @@
  */
 
 /**
- * String trim function polyfill
+ * Promise.prototype.done polyfill
  */
-if(typeof String.prototype.trim === "undefined")
-{
-	/**
-	 * @private
-	 */
-	String.prototype.trim = function()
-	{
-		return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
-	};
-}
-
-// --------------------------------------------------------------------------
-
-/**
- * Array.isArray polyfill
- */
-if (typeof Array.isArray === "undefined")
-{
-	Array.isArray = function(v)
-	{
-		return Object.prototype.toString.apply(v) === '[object Array]';
-	}
-}
+if (!Promise.prototype.done) { Promise.prototype.done = function (cb, eb) { this.then(cb, eb).then(null, function (err) { setTimeout(function () { throw err; }, 0); }); }; }
 
 
 // --------------------------------------------------------------------------
@@ -189,10 +165,6 @@ if (typeof Array.isArray === "undefined")
 "use strict"
 
 // --------------------------------------------------------------------------
-
-//This is used so IE can use the classList api
-/*! @source http://purl.eligrey.com/github/classList.js/blob/master/classList.js*/
-if(typeof document!=="undefined"&&!("classList" in document.createElement("a"))){(function(j){if(!("HTMLElement" in j)&&!("Element" in j)){return}var a="classList",f="prototype",m=(j.HTMLElement||j.Element)[f],b=Object,k=String[f].trim||function(){return this.replace(/^\s+|\s+$/g,"")},c=Array[f].indexOf||function(q){var p=0,o=this.length;for(;p<o;p++){if(p in this&&this[p]===q){return p}}return -1},n=function(o,p){this.name=o;this.code=DOMException[o];this.message=p},g=function(p,o){if(o===""){throw new n("SYNTAX_ERR","An invalid or illegal string was specified")}if(/\s/.test(o)){throw new n("INVALID_CHARACTER_ERR","String contains an invalid character")}return c.call(p,o)},d=function(s){var r=k.call(s.className),q=r?r.split(/\s+/):[],p=0,o=q.length;for(;p<o;p++){this.push(q[p])}this._updateClassName=function(){s.className=this.toString()}},e=d[f]=[],i=function(){return new d(this)};n[f]=Error[f];e.item=function(o){return this[o]||null};e.contains=function(o){o+="";return g(this,o)!==-1};e.add=function(){var s=arguments,r=0,p=s.length,q,o=false;do{q=s[r]+"";if(g(this,q)===-1){this.push(q);o=true}}while(++r<p);if(o){this._updateClassName()}};e.remove=function(){var t=arguments,s=0,p=t.length,r,o=false;do{r=t[s]+"";var q=g(this,r);if(q!==-1){this.splice(q,1);o=true}}while(++s<p);if(o){this._updateClassName()}};e.toggle=function(p,q){p+="";var o=this.contains(p),r=o?q!==true&&"remove":q!==false&&"add";if(r){this[r](p)}return !o};e.toString=function(){return this.join(" ")};if(b.defineProperty){var l={get:i,enumerable:true,configurable:true};try{b.defineProperty(m,a,l)}catch(h){if(h.number===-2146823252){l.enumerable=false;b.defineProperty(m,a,l)}}}else{if(b[f].__defineGetter__){m.__defineGetter__(a,i)}}}(self))};
 
 /**
  * DOM
@@ -206,28 +178,12 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 	//Private function for getting/setting attributes/properties
 	function _attr(sel, name, value)
 	{
-		var oldVal, doAttr;
+		var oldVal;
 
 		//Get the value of the attribute, if it exists
-		if (sel.hasAttribute !== undefined)
+		if (sel.hasAttribute(name))
 		{
-			if (sel.hasAttribute(name))
-			{
-				oldVal = sel.getAttribute(name);
-			}
-
-			doAttr = true;
-		}
-		else if (sel[name] !== undefined)
-		{
-			oldVal = sel[name];
-			doAttr = false;
-		}
-		else if (name === "class" && sel.className !== undefined) //className attribute
-		{
-			name = "className";
-			oldVal = sel.className;
-			doAttr = false;
+			oldVal = sel.getAttribute(name);
 		}
 
 		//Well, I guess that attribute doesn't exist
@@ -245,25 +201,11 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		//Determine what to do with the attribute
 		if (value !== undefined && value !== null)
 		{
-			if(doAttr === true)
-			{
-				sel.setAttribute(name, value);
-			}
-			else
-			{
-				sel[name] = value;
-			}
+			sel.setAttribute(name, value);
 		}
 		else if (value === null)
 		{
-			if(doAttr === true)
-			{
-				sel.removeAttribute(name);
-			}
-			else
-			{
-				delete sel[name];
-			}
+			sel.removeAttribute(name);
 		}
 
 		return (value !== undefined) ? value : oldVal;
@@ -275,7 +217,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 	 */
 	function _toCamel(s)
 	{
-		return s.replace(/(\-[a-z])/g, function($1){
+		return String(s).replace(/(\-[a-z])/g, function($1){
 			return $1.toUpperCase().replace('-','');
 		});
 	}
@@ -338,7 +280,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name addClass
 		 * @memberOf $_.dom
 		 * @function
-		 * @param string class
+		 * @param {string} class
 		 */
 		addClass: function (c)
 		{
@@ -353,7 +295,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name removeClass
 		 * @memberOf $_.dom
 		 * @function
-		 * @param string class
+		 * @param {string} class
 		 */
 		removeClass: function (c)
 		{
@@ -381,7 +323,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name  show
 		 * @memberOf $_.dom
 		 * @function
-		 * @param [string] type
+		 * @param {string} [type]
 		 */
 		show: function (type)
 		{
@@ -401,10 +343,9 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name attr
 		 * @memberOf $_.dom
 		 * @function
-		 * @param string name
-		 * @param [string] value
-		 * @return string
-		 * @type string
+		 * @param {string} name
+		 * @param {?string}[value]
+		 * @return {?string}
 		 */
 		attr: function (name, value)
 		{
@@ -435,9 +376,8 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name text
 		 * @memberOf $_.dom
 		 * @function
-		 * @param [string] value
-		 * @return string
-		 * @type string
+		 * @param {?string} [value]
+		 * @return {?string}
 		 */
 		text: function (value)
 		{
@@ -464,20 +404,36 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * specified by the current selector. If a value is
 		 * passed, it will set that value on the current element,
 		 * otherwise it will return the value of the css property
-		 * on the current element
+		 * on the current element.
+		 *
+		 * Accepts either key/value arguments, or an object with
+		 * multiple key/value pairs.
 		 *
 		 * @name css
 		 * @memberOf $_.dom
 		 * @function
-		 * @param string property
-		 * @param [string] value
-		 * @return string
-		 * @type string
+		 * @param {(string|Object)} property
+		 * @param {?string} [value]
+		 * @return {?string}
 		 */
 		css: function (prop, val)
 		{
+			var prop_key = null;
+
+			// If passed an object, recurse!
+			if($_.type(prop) === 'object')
+			{
+				for (prop_key in prop)
+				{
+					if ( ! prop.hasOwnProperty(prop_key)) continue;
+
+					$_.each(function (e){
+						_css(e, prop_key, prop[prop_key]);
+					});
+				}
+			}
 			//Return the current value if a value is not set
-			if(val === undefined)
+			else if(val === undefined && $_.type(prop) !== 'object')
 			{
 				return _css(this.el, prop);
 			}
@@ -493,7 +449,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name append
 		 * @memberOf $_.dom
 		 * @function
-		 * @param string htm
+		 * @param {string} htm
 		 */
 		append: function(htm)
 		{
@@ -505,11 +461,11 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name prepend
 		 * @memberOf $_.dom
 		 * @function
-		 * @param string htm
+		 * @param {string} htm
 		 */
 		 prepend: function(htm)
 		 {
-		 	this.el.insertAdjacentHTML('afterbegin', htm);
+			this.el.insertAdjacentHTML('afterbegin', htm);
 		 },
 		/**
 		 * Sets or gets the innerHTML propery of the element(s) passed
@@ -517,9 +473,8 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name html
 		 * @memberOf $_.dom
 		 * @function
-		 * @param [string] htm
-		 * @return string
-		 * @type string
+		 * @param {?string} [htm]
+		 * @return {?string}
 		 */
 		html: function(htm)
 		{
@@ -601,6 +556,13 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 				request.send(null);
 			}
 		},
+		/**
+		 * Url encoding for non-get requests
+		 *
+		 * @param data
+		 * @returns {string}
+		 * @private
+		 */
 		_serialize: function (data)
 		{
 			var name,
@@ -632,10 +594,10 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 	 * @name get
 	 * @function
 	 * @memberOf $_
-	 * @param string url
-	 * @param object data
-	 * @param function success_callback
-	 * @param function error_callback
+	 * @param {string} url - The url to retrieve
+	 * @param {Object} data - get parameters to send
+	 * @param {function} success_callback - callback called on success
+	 * @param {function} [error_callback] - callback called if there is an error
 	 */
 	$_.ext('get', function (url, data, success_callback, error_callback){
 		ajax._do(url, data, success_callback, error_callback, false);
@@ -647,10 +609,10 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 	 * @name post
 	 * @function
 	 * @memberOf $_
-	 * @param string url
-	 * @param object data
-	 * @param function success_callback
-	 * @param function error_callback
+	 * @param {string} url - The url to post to
+	 * @param {Object} data - post parameters to send
+	 * @param {function} success_callback - callback called on success
+	 * @param {function} [error_callback] - callback called if there is an error
 	 */
 	$_.ext('post', function (url, data, success_callback, error_callback){
 		ajax._do(url, data, success_callback, error_callback, true);
@@ -738,13 +700,13 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name create
 		 * @function
 		 * @example Eg. var event = $_("#selector").event.create('foo', {});
-		 * @param string name
-		 * @param [object] data
-		 * @return object
+		 * @param {string} name
+		 * @param {object} [data]
+		 * @return {Object}
 		 */
 		create: function(name, data)
 		{
-			// Do a terrible browser-sniffic hack because I don't know of a good 
+			// Do a terrible browser-sniffic hack because I don't know of a good
 			// feature test
 			if (/MSIE|Trident/i.test(navigator.userAgent))
 			{
@@ -752,7 +714,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 				// Microsoft, your browser still sucks
 				var e = document.createEvent('CustomEvent');
 				e.initCustomEvent(name, true, true, data);
-				
+
 				return e;
 			}
 			else
@@ -768,8 +730,8 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name add
 		 * @function
 		 * @example Eg. $_("#selector").event.add("click", do_something());
-		 * @param string event
-		 * @param function callback
+		 * @param {string} event
+		 * @param {function} callback
 		 */
 		add: function (event, callback)
 		{
@@ -784,8 +746,8 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name remove
 		 * @function
 		 * @example Eg. $_("#selector").event.remove("click", do_something());
-		 * @param string event
-		 * @param string callback
+		 * @param {string} event
+		 * @param {string} callback
 		 */
 		remove: function (event, callback)
 		{
@@ -800,9 +762,9 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name live
 		 * @function
 		 * @example Eg. $_.event.live(".button", "click", do_something());
-		 * @param string target
-		 * @param string event
-		 * @param function callback
+		 * @param {string} target
+		 * @param {string} event
+		 * @param {function} callback
 		 */
 		live: function (target, event, callback)
 		{
@@ -815,9 +777,9 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name delegate
 		 * @function
 		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
-		 * @param string target
-		 * @param string event_type
-		 * @param function callback
+		 * @param {string} target
+		 * @param {string} event
+		 * @param {function} callback
 		 */
 		delegate: function (target, event, callback)
 		{
@@ -832,9 +794,8 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * @name trigger
 		 * @function
 		 * @example Eg. $_("#my_id").trigger('click');
-		 * @param string target
-		 * @param object event
-		 * @return bool
+		 * @param {object} event
+		 * @return {boolean}
 		 */
 		trigger: function(event)
 		{
@@ -874,13 +835,12 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * Retrieves and deserializes a value from localstorage,
 		 * based on the specified key
 		 *
-		 * @param string key
-		 * @param bool session
+		 * @param {string} key
+		 * @param {bool} session
 		 * @name get
 		 * @memberOf $_.store
 		 * @function
-		 * @return object
-		 * @type object
+		 * @return {Object}
 		 */
 		get: function (key, sess)
 		{
@@ -892,9 +852,9 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		 * Puts a value into localstorage at the specified key,
 		 * and JSON-encodes the value if not a string
 		 *
-		 * @param string key
-		 * @param mixed value
-		 * @param bool session
+		 * @param {string} key
+		 * @param {mixed} value
+		 * @param {bool} session
 		 * @name set
 		 * @memberOf $_.store
 		 * @function
@@ -909,8 +869,8 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		/**
 		 * Removes the specified item from storage
 		 *
-		 * @param string key
-		 * @param bool session
+		 * @param {string} key
+		 * @param {bool} session
 		 * @name remove
 		 * @memberOf $_.store
 		 * @function
@@ -922,12 +882,11 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		/**
 		 * Returns an object of all the raw values in storage
 		 *
-		 * @param bool session
+		 * @param {bool} session
 		 * @name getAll
 		 * @memberOf $_.store
 		 * @function
-		 * @return object
-		 * @type object
+		 * @return {Object}
 		 */
 		getAll: function (sess)
 		{
@@ -953,7 +912,7 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
 		/**
 		 * Removes all values from the same domain storage
 		 *
-		 * @param bool session
+		 * @param {bool} session
 		 * @name clear
 		 * @memberOf $_.store
 		 * @function
