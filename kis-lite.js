@@ -19,9 +19,10 @@
 	 * @constructor
 	 * @namespace $_
 	 * @param {string} selector - The dom selector string
+	 * @param {Object} [context] - Context of the dom selector string
 	 * @return {Object}
 	 */
-	$_ = function(s)
+	$_ = function(s, context)
 	{
 		// Have documentElement be default selector, just in case
 		if (s === undefined)
@@ -33,7 +34,7 @@
 		}
 		else
 		{
-			sel = $(s);
+			sel = $(s, context);
 		}
 
 		// Add the selector to the prototype
@@ -64,29 +65,29 @@
 	 * @param {Object} [context]
 	 * @return {Object}
 	 */
-	$ = function (a, context)
+	$ = function (selector, context)
 	{
-		var x, c;
+		var elements;
 
-		if (typeof a != "string" || a === undefined){ return a;}
+		if (typeof selector != "string" || selector === undefined){ return selector;}
 
 		//Check for a context of a specific element, otherwise, just run on the document
-		c  = (context != null && context.nodeType === 1)
+		context  = (context != null && context.nodeType === 1)
 			? context
 			: document;
 
 		//Pick the quickest method for each kind of selector
-		if (a.match(/^#([\w\-]+$)/))
+		if (selector.match(/^#([\w\-]+$)/))
 		{
-			return document.getElementById(a.split('#')[1]);
+			return document.getElementById(selector.split('#')[1]);
 		}
 		else
 		{
-			x = c.querySelectorAll(a);
+			elements = context.querySelectorAll(selector);
 		}
 
 		//Return the single object if applicable
-		return (x.length === 1) ? x[0] : x;
+		return (elements.length === 1) ? elements[0] : elements;
 	};
 
 	/**
@@ -150,11 +151,6 @@
  * A module of various browser polyfills
  * @file polyfill.js
  */
-
-/**
- * Promise.prototype.done polyfill
- */
-if (!Promise.prototype.done) { Promise.prototype.done = function (cb, eb) { this.then(cb, eb).then(null, function (err) { setTimeout(function () { throw err; }, 0); }); }; }
 
 // --------------------------------------------------------------------------
 
@@ -374,21 +370,13 @@ if (!Promise.prototype.done) { Promise.prototype.done = function (cb, eb) { this
 		 */
 		create: function(name, data)
 		{
-			// Do a terrible browser-sniffic hack because I don't know of a good
-			// feature test
-			if (/MSIE|Trident/i.test(navigator.userAgent))
-			{
+			data = data || {};
+			
 				// Okay, I guess we have to do this the hard way... :(
-				// Microsoft, your browser still sucks
 				var e = document.createEvent('CustomEvent');
 				e.initCustomEvent(name, true, true, data);
 
 				return e;
-			}
-			else
-			{
-				return new CustomEvent(name, data);
-			}
 		},
 		/**
 		 * Adds an event that returns a callback when triggered on the selected

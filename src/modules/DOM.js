@@ -58,40 +58,20 @@
 
 	function _css(sel, prop, val)
 	{
-		var equi;
-
 		//Camel-case
 		prop = _toCamel(prop);
-
-		//Equivalent properties for 'special' browsers
-		equi = {
-			outerHeight: "offsetHeight",
-			outerWidth: "offsetWidth",
-			top: "posTop"
-		};
-
 
 		//If you don't define a value, try returning the existing value
 		if(val === undefined && sel.style[prop] !== undefined)
 		{
 			return sel.style[prop];
 		}
-		else if(val === undefined && sel.style[equi[prop]] !== undefined)
-		{
-			return sel.style[equi[prop]];
-		}
 
-		//Let's try the easy way first
+		// Let's set a value instead
 		if(sel.style[prop] !== undefined)
 		{
 			sel.style[prop] = val;
 
-			//Short circuit
-			return null;
-		}
-		else if(sel.style[equi[prop]])
-		{
-			sel.style[equi[prop]] = val;
 			return null;
 		}
 	}
@@ -257,14 +237,11 @@
 			// If passed an object, recurse!
 			if($_.type(prop) === 'object')
 			{
-				for (prop_key in prop)
-				{
-					if ( ! prop.hasOwnProperty(prop_key)) continue;
-
+				Object.keys(prop).forEach(function(prop_key) {
 					$_.each(function (e){
 						_css(e, prop_key, prop[prop_key]);
 					});
-				}
+				});
 			}
 			//Return the current value if a value is not set
 			else if(val === undefined && $_.type(prop) !== 'object')

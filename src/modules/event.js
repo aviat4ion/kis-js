@@ -85,21 +85,13 @@
 		 */
 		create: function(name, data)
 		{
-			// Do a terrible browser-sniffic hack because I don't know of a good
-			// feature test
-			if (/MSIE|Trident/i.test(navigator.userAgent))
-			{
+			data = data || {};
+			
 				// Okay, I guess we have to do this the hard way... :(
-				// Microsoft, your browser still sucks
 				var e = document.createEvent('CustomEvent');
 				e.initCustomEvent(name, true, true, data);
 
 				return e;
-			}
-			else
-			{
-				return new CustomEvent(name, data);
-			}
 		},
 		/**
 		 * Adds an event that returns a callback when triggered on the selected

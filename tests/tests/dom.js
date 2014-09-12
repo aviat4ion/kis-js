@@ -53,7 +53,7 @@
 	});
 	
 	test("Attr", function(){
-		expect(3);
+		expect(4);
 	
 		var $test = $_("section");
 		var ele = $test.el;
@@ -65,10 +65,13 @@
 		
 		equal($_("div").dom.attr('id'), null, "Trying to get an attribute for multiple elements");
 		
+		$test.dom.attr('id', null);
+		equal($test.dom.attr('id'), null, "Non-existent attribute");
+		
 	});
 	
 	test("CSS", function(){
-		expect(2);
+		expect(4);
 		
 		var $test = $_("section[hidden='hidden']");
 		var ele = $test.el;
@@ -76,6 +79,14 @@
 		$test.dom.css("display", "block");
 		equal(ele.style.display, "block", "Setting CSS");
 		equal($test.dom.css("display"), "block", "Getting CSS");
+		
+		// Multiple styles
+		$test.dom.css({
+			'border-color':'rgb(0, 0, 0)',
+			'border-radius':'5px'
+		});
+		equal(ele.style.borderColor, 'rgb(0, 0, 0)', 'Setting multiple css values 1');
+		equal(ele.style.borderRadius, '5px', 'Setting multiple css values 2');
 	});
 	
 	test("html", function(){
