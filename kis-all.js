@@ -2,13 +2,19 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.8.0
+	Version		0.9.0
  */
 (function (undefined){
 
 	"use strict";
 
-	var $_, $, sel;
+	/**
+	 * Current selector object
+	 *
+	 * @memberOf $_
+	 * @name el
+	 */
+	var sel;
 
 
 	/**
@@ -22,7 +28,7 @@
 	 * @param {Object} [context] - Context of the dom selector string
 	 * @return {Object}
 	 */
-	$_ = function(s, context)
+	var $_ = function(s, context)
 	{
 		// Have documentElement be default selector, just in case
 		if (s === undefined)
@@ -65,7 +71,7 @@
 	 * @param {Object} [context]
 	 * @return {Object}
 	 */
-	$ = function (selector, context)
+	var $ = function (selector, context)
 	{
 		var elements;
 
@@ -93,6 +99,9 @@
 	/**
 	 * Adds the property `obj` to the $_ object, calling it `name`
 	 *
+	 * @memberOf $_
+	 * @function ext
+	 * @example $_.ext('foo', {});
 	 * @param {string} name - name of the module
 	 * @param {object} obj - the object to add
 	 */
@@ -105,11 +114,12 @@
 	/**
 	 * Iterates over a $_ object, applying a callback to each item
 	 *
-	 * @name $_.each
-	 * @function
+	 * @memberOf $_
+	 * @function each
+	 * @example $_('form input').each(function(item) { alert(item) });
 	 * @param {function} callback - iteration callback
 	 */
-	$_.ext('each', function (callback)
+	$_.ext('each', function(callback)
 	{
 		if(sel.length !== undefined && sel !== window)
 		{
@@ -124,10 +134,13 @@
 	/**
 	 * Retrieves the type of the passed variable
 	 *
+	 * @memberOf $_
+	 * @function type
+	 * @example $_.type([]); // Returns 'array'
 	 * @param {*} obj
 	 * @return {string}
 	 */
-	$_.type = function(obj)
+	var type = function(obj)
 	{
 		if((function() {return obj && (obj !== this)}).call(obj))
 		{
@@ -142,15 +155,12 @@
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
 	$_.$ = $;
+	$_.type = type;
 }());
-
 
 // --------------------------------------------------------------------------
 
-/**
- * A module of various browser polyfills
- * @file polyfill.js
- */
+
 
 
 // --------------------------------------------------------------------------
@@ -385,6 +395,8 @@
 		 * Accepts either key/value arguments, or an object with
 		 * multiple key/value pairs.
 		 *
+		 * @example $_('#foo').dom.css('border', 0);
+		 * @example $_('#foo').dom.css({background:'#000', color:'#fff'});
 		 * @name css
 		 * @memberOf $_.dom
 		 * @function
@@ -418,7 +430,7 @@
 		/**
 		 * Adds to the innerHTML of the current element, after the last child.
 		 *
-		 * @example $_("ul").dom.append("&lt;li&gt;&lt;/li&gt;") adds an li element to the end of the selected ul element
+		 * @example $_("ul").dom.append("<li></li>"); // Adds an li element to the end of the selected ul element
 		 * @name append
 		 * @memberOf $_.dom
 		 * @function
@@ -431,6 +443,7 @@
 		/**
 		 * Adds to the innerHTML of the selected element, before the current children
 		 *
+		 * @example $_("ul").dom.append("<li></li>"); // Adds an li element to the beginning of the selected ul element
 		 * @name prepend
 		 * @memberOf $_.dom
 		 * @function
@@ -476,7 +489,7 @@
 
 	
 	var ajax = {
-		_do: function (url, data, success_callback, error_callback, isPost)
+		_do: function (url, data, success_callback, error_callback, type)
 		{
 			var type,
 				request = new XMLHttpRequest();
@@ -488,8 +501,6 @@
 				 */
 				success_callback = function (){};
 			}
-
-			type = (isPost) ? "POST" : "GET";
 
 			if (type === "GET")
 			{
@@ -519,7 +530,7 @@
 				}
 			};
 
-			if (type === "POST")
+			if (type !== "GET")
 			{
 				request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				request.send(this._serialize(data));
@@ -564,8 +575,7 @@
 	/**
 	 * Sends a GET type ajax request
 	 *
-	 * @name get
-	 * @function
+	 * @function get
 	 * @memberOf $_
 	 * @param {string} url - The url to retrieve
 	 * @param {Object} data - get parameters to send
@@ -573,14 +583,13 @@
 	 * @param {function} [error_callback] - callback called if there is an error
 	 */
 	$_.ext('get', function (url, data, success_callback, error_callback){
-		ajax._do(url, data, success_callback, error_callback, false);
+		ajax._do(url, data, success_callback, error_callback, 'GET');
 	});
 
 	/**
 	 * Sends a POST type ajax request
 	 *
-	 * @name post
-	 * @function
+	 * @function post
 	 * @memberOf $_
 	 * @param {string} url - The url to post to
 	 * @param {Object} data - post parameters to send
@@ -588,7 +597,35 @@
 	 * @param {function} [error_callback] - callback called if there is an error
 	 */
 	$_.ext('post', function (url, data, success_callback, error_callback){
-		ajax._do(url, data, success_callback, error_callback, true);
+		ajax._do(url, data, success_callback, error_callback, 'POST');
+	});
+
+	/**
+	 * Sends a PUT type ajax request
+	 *
+	 * @function put
+	 * @memberOf $_
+	 * @param {string} url - The url to post to
+	 * @param {Object} data - PUT parameters to send
+	 * @param {function} success_callback - callback called on success
+	 * @param {function} [error_callback] - callback called if there is an error
+	 */
+	$_.ext('put', function (url, data, success_callback, error_callback){
+		ajax._do(url, data, success_callback, error_callback, 'PUT');
+	});
+
+	/**
+	 * Sends a DELETE type ajax request
+	 *
+	 * @function delete
+	 * @memberOf $_
+	 * @param {string} url - The url to post to
+	 * @param {Object} data - delete parameters to send
+	 * @param {function} success_callback - callback called on success
+	 * @param {function} [error_callback] - callback called if there is an error
+	 */
+	$_.ext('delete', function (url, data, success_callback, error_callback){
+		ajax._do(url, data, success_callback, error_callback, 'DELETE');
 	});
 
 
@@ -672,7 +709,7 @@
 		 * @memberOf $_.event
 		 * @name create
 		 * @function
-		 * @example Eg. var event = $_("#selector").event.create('foo', {});
+		 * @example var event = $_("#selector").event.create('foo', {});
 		 * @param {string} name
 		 * @param {object} [data]
 		 * @return {Object}
@@ -680,12 +717,12 @@
 		create: function(name, data)
 		{
 			data = data || {};
-			
-				// Okay, I guess we have to do this the hard way... :(
-				var e = document.createEvent('CustomEvent');
-				e.initCustomEvent(name, true, true, data);
 
-				return e;
+			// Okay, I guess we have to do this the hard way... :(
+			var e = document.createEvent('CustomEvent');
+			e.initCustomEvent(name, true, true, data);
+
+			return e;
 		},
 		/**
 		 * Adds an event that returns a callback when triggered on the selected
@@ -694,7 +731,7 @@
 		 * @memberOf $_.event
 		 * @name add
 		 * @function
-		 * @example Eg. $_("#selector").event.add("click", do_something());
+		 * @example $_("#selector").event.add("click", do_something());
 		 * @param {string} event
 		 * @param {function} callback
 		 */
@@ -710,7 +747,7 @@
 		 * @memberOf $_.event
 		 * @name remove
 		 * @function
-		 * @example Eg. $_("#selector").event.remove("click", do_something());
+		 * @example $_("#selector").event.remove("click", do_something());
 		 * @param {string} event
 		 * @param {string} callback
 		 */
@@ -726,7 +763,7 @@
 		 * @memberOf $_.event
 		 * @name live
 		 * @function
-		 * @example Eg. $_.event.live(".button", "click", do_something());
+		 * @example $_.event.live(".button", "click", do_something());
 		 * @param {string} target
 		 * @param {string} event
 		 * @param {function} callback
@@ -741,7 +778,7 @@
 		 * @memberOf $_.event
 		 * @name delegate
 		 * @function
-		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
+		 * @example $_("#parent").delegate(".button", "click", do_something());
 		 * @param {string} target
 		 * @param {string} event
 		 * @param {function} callback
@@ -758,14 +795,13 @@
 		 * @memberOf $_.event
 		 * @name trigger
 		 * @function
-		 * @example Eg. $_("#my_id").trigger('click');
+		 * @example $_("#my_id").trigger('click');
 		 * @param {object} event
 		 * @return {boolean}
 		 */
 		trigger: function(event)
 		{
-			var target = this.el;
-			return target.dispatchEvent(event);
+			return this.el.dispatchEvent(event);
 		}
 	};
 

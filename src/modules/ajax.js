@@ -8,7 +8,7 @@
 	"use strict";
 
 	var ajax = {
-		_do: function (url, data, success_callback, error_callback, isPost)
+		_do: function (url, data, success_callback, error_callback, type)
 		{
 			var type,
 				request = new XMLHttpRequest();
@@ -20,8 +20,6 @@
 				 */
 				success_callback = function (){};
 			}
-
-			type = (isPost) ? "POST" : "GET";
 
 			if (type === "GET")
 			{
@@ -51,7 +49,7 @@
 				}
 			};
 
-			if (type === "POST")
+			if (type !== "GET")
 			{
 				request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				request.send(this._serialize(data));
@@ -96,8 +94,7 @@
 	/**
 	 * Sends a GET type ajax request
 	 *
-	 * @name get
-	 * @function
+	 * @function get
 	 * @memberOf $_
 	 * @param {string} url - The url to retrieve
 	 * @param {Object} data - get parameters to send
@@ -105,14 +102,13 @@
 	 * @param {function} [error_callback] - callback called if there is an error
 	 */
 	$_.ext('get', function (url, data, success_callback, error_callback){
-		ajax._do(url, data, success_callback, error_callback, false);
+		ajax._do(url, data, success_callback, error_callback, 'GET');
 	});
 
 	/**
 	 * Sends a POST type ajax request
 	 *
-	 * @name post
-	 * @function
+	 * @function post
 	 * @memberOf $_
 	 * @param {string} url - The url to post to
 	 * @param {Object} data - post parameters to send
@@ -120,6 +116,34 @@
 	 * @param {function} [error_callback] - callback called if there is an error
 	 */
 	$_.ext('post', function (url, data, success_callback, error_callback){
-		ajax._do(url, data, success_callback, error_callback, true);
+		ajax._do(url, data, success_callback, error_callback, 'POST');
+	});
+
+	/**
+	 * Sends a PUT type ajax request
+	 *
+	 * @function put
+	 * @memberOf $_
+	 * @param {string} url - The url to post to
+	 * @param {Object} data - PUT parameters to send
+	 * @param {function} success_callback - callback called on success
+	 * @param {function} [error_callback] - callback called if there is an error
+	 */
+	$_.ext('put', function (url, data, success_callback, error_callback){
+		ajax._do(url, data, success_callback, error_callback, 'PUT');
+	});
+
+	/**
+	 * Sends a DELETE type ajax request
+	 *
+	 * @function delete
+	 * @memberOf $_
+	 * @param {string} url - The url to post to
+	 * @param {Object} data - delete parameters to send
+	 * @param {function} success_callback - callback called on success
+	 * @param {function} [error_callback] - callback called if there is an error
+	 */
+	$_.ext('delete', function (url, data, success_callback, error_callback){
+		ajax._do(url, data, success_callback, error_callback, 'DELETE');
 	});
 }());

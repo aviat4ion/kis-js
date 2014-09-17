@@ -78,7 +78,7 @@
 		 * @memberOf $_.event
 		 * @name create
 		 * @function
-		 * @example Eg. var event = $_("#selector").event.create('foo', {});
+		 * @example var event = $_("#selector").event.create('foo', {});
 		 * @param {string} name
 		 * @param {object} [data]
 		 * @return {Object}
@@ -86,12 +86,12 @@
 		create: function(name, data)
 		{
 			data = data || {};
-			
-				// Okay, I guess we have to do this the hard way... :(
-				var e = document.createEvent('CustomEvent');
-				e.initCustomEvent(name, true, true, data);
 
-				return e;
+			// Okay, I guess we have to do this the hard way... :(
+			var e = document.createEvent('CustomEvent');
+			e.initCustomEvent(name, true, true, data);
+
+			return e;
 		},
 		/**
 		 * Adds an event that returns a callback when triggered on the selected
@@ -100,7 +100,7 @@
 		 * @memberOf $_.event
 		 * @name add
 		 * @function
-		 * @example Eg. $_("#selector").event.add("click", do_something());
+		 * @example $_("#selector").event.add("click", do_something());
 		 * @param {string} event
 		 * @param {function} callback
 		 */
@@ -116,7 +116,7 @@
 		 * @memberOf $_.event
 		 * @name remove
 		 * @function
-		 * @example Eg. $_("#selector").event.remove("click", do_something());
+		 * @example $_("#selector").event.remove("click", do_something());
 		 * @param {string} event
 		 * @param {string} callback
 		 */
@@ -132,7 +132,7 @@
 		 * @memberOf $_.event
 		 * @name live
 		 * @function
-		 * @example Eg. $_.event.live(".button", "click", do_something());
+		 * @example $_.event.live(".button", "click", do_something());
 		 * @param {string} target
 		 * @param {string} event
 		 * @param {function} callback
@@ -147,7 +147,7 @@
 		 * @memberOf $_.event
 		 * @name delegate
 		 * @function
-		 * @example Eg. $_("#parent").delegate(".button", "click", do_something());
+		 * @example $_("#parent").delegate(".button", "click", do_something());
 		 * @param {string} target
 		 * @param {string} event
 		 * @param {function} callback
@@ -164,14 +164,13 @@
 		 * @memberOf $_.event
 		 * @name trigger
 		 * @function
-		 * @example Eg. $_("#my_id").trigger('click');
+		 * @example $_("#my_id").trigger('click');
 		 * @param {object} event
 		 * @return {boolean}
 		 */
 		trigger: function(event)
 		{
-			var target = this.el;
-			return target.dispatchEvent(event);
+			return this.el.dispatchEvent(event);
 		}
 	};
 

@@ -2,13 +2,19 @@
 	Kis JS		Keep It Simple JS Library
 	Copyright	Timothy J. Warren
 	License		Public Domain
-	Version		0.8.0
+	Version		0.9.0
  */
 (function (undefined){
 
 	"use strict";
 
-	var $_, $, sel;
+	/**
+	 * Current selector object
+	 *
+	 * @memberOf $_
+	 * @name el
+	 */
+	var sel;
 
 
 	/**
@@ -22,7 +28,7 @@
 	 * @param {Object} [context] - Context of the dom selector string
 	 * @return {Object}
 	 */
-	$_ = function(s, context)
+	var $_ = function(s, context)
 	{
 		// Have documentElement be default selector, just in case
 		if (s === undefined)
@@ -65,7 +71,7 @@
 	 * @param {Object} [context]
 	 * @return {Object}
 	 */
-	$ = function (selector, context)
+	var $ = function (selector, context)
 	{
 		var elements;
 
@@ -93,6 +99,9 @@
 	/**
 	 * Adds the property `obj` to the $_ object, calling it `name`
 	 *
+	 * @memberOf $_
+	 * @function ext
+	 * @example $_.ext('foo', {});
 	 * @param {string} name - name of the module
 	 * @param {object} obj - the object to add
 	 */
@@ -105,11 +114,12 @@
 	/**
 	 * Iterates over a $_ object, applying a callback to each item
 	 *
-	 * @name $_.each
-	 * @function
+	 * @memberOf $_
+	 * @function each
+	 * @example $_('form input').each(function(item) { alert(item) });
 	 * @param {function} callback - iteration callback
 	 */
-	$_.ext('each', function (callback)
+	$_.ext('each', function(callback)
 	{
 		if(sel.length !== undefined && sel !== window)
 		{
@@ -124,10 +134,13 @@
 	/**
 	 * Retrieves the type of the passed variable
 	 *
+	 * @memberOf $_
+	 * @function type
+	 * @example $_.type([]); // Returns 'array'
 	 * @param {*} obj
 	 * @return {string}
 	 */
-	$_.type = function(obj)
+	var type = function(obj)
 	{
 		if((function() {return obj && (obj !== this)}).call(obj))
 		{
@@ -142,4 +155,5 @@
 	//Set global variables
 	$_ = window.$_ = window.$_ || $_;
 	$_.$ = $;
+	$_.type = type;
 }());

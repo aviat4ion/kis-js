@@ -2,4 +2,6 @@ kis-custom.js
 kis-custom-min.js
 combine-build.php
 test.html
+config.json
+docs.conf
 .*

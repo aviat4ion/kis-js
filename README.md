@@ -25,31 +25,28 @@ Browser support: IE10+, Latest versions of Firefox, Chrome, Safari, Opera
 
 * each: For applying changes to every item matched by a selector
 
-		 $_(selector).each(callback);
+	$_(selector).each(callback);
 
 	Example :
 
-        $_(".foo").each(function(e){
+		$_(".foo").each(function(e){
 			$_(e).dom.text(value);
 		}):
 
 * ext: For extending the library, adds this.el to the object or function supplied
 
-
-    	$_.ext("name", functionOrObject);
-
+	$_.ext("name", functionOrObject);
 
 	Example:
 
-		$_.ext("zip", function(){ //function });
-		Adds 'zip' function to $_.
+		$_.ext("zip", function(){ ... }); // Adds 'zip' function to $_.
 
 * type: For getting the type of a variable
 
 		$_.type(var);
 
 
-Have a look at the /docs folder included with the library for documentation on the included modules. The development version of the documentation is avaliable at
+Have a look at the right sidebar of the docs included with the library for documentation on the included modules. The development version of the documentation is avaliable at
 
 [http://github.timshomepage.net/kis-js/docs/](http://github.timshomepage.net/kis-js/docs/)
 

@@ -223,6 +223,8 @@
 		 * Accepts either key/value arguments, or an object with
 		 * multiple key/value pairs.
 		 *
+		 * @example $_('#foo').dom.css('border', 0);
+		 * @example $_('#foo').dom.css({background:'#000', color:'#fff'});
 		 * @name css
 		 * @memberOf $_.dom
 		 * @function
@@ -256,7 +258,7 @@
 		/**
 		 * Adds to the innerHTML of the current element, after the last child.
 		 *
-		 * @example $_("ul").dom.append("&lt;li&gt;&lt;/li&gt;") adds an li element to the end of the selected ul element
+		 * @example $_("ul").dom.append("<li></li>"); // Adds an li element to the end of the selected ul element
 		 * @name append
 		 * @memberOf $_.dom
 		 * @function
@@ -269,6 +271,7 @@
 		/**
 		 * Adds to the innerHTML of the selected element, before the current children
 		 *
+		 * @example $_("ul").dom.append("<li></li>"); // Adds an li element to the beginning of the selected ul element
 		 * @name prepend
 		 * @memberOf $_.dom
 		 * @function

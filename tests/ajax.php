@@ -3,25 +3,27 @@
 $verb = strtolower($_SERVER['REQUEST_METHOD']);
 
 // Send request method if nothing else is specified
-if (empty($_GET)) 
+if (empty($_GET))
 {
 	echo $verb;
 }
 else if (isset($_GET['data']))
 {
-	$var =& $_GET;
-
 	switch($verb)
 	{
 		case "get":
 			$var =& $_GET;
 		break;
-		
+
 		case "post":
 			$var =& $_POST;
 		break;
+
+		default:
+			parse_str(file_get_contents('php://input'), $var);
+		break;
 	}
-	
+
 	header('Content-type: application/json');
 	echo json_encode($var);
 }
